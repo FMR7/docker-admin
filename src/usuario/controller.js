@@ -38,5 +38,21 @@ router.post('/usuario/register', async (req, res) => {
     }
 });
 
+router.get('/usuario/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).json({ ok: false, message: 'Error al cerrar sesión' });
+        }
+        res.json({ ok: true, message: 'Sesión cerrada' });
+    });
+});
+
+router.get('/usuario/user', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ ok: false, message: 'No autenticado' });
+    }
+    res.json({ ok: true, user: req.session.user });
+});
+
 // Exportamos el router
 module.exports = router;
