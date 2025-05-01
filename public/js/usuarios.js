@@ -30,4 +30,5 @@ const logout = async () => {
 
   const result = await res.json();
   console.log(result);
+  window.location.href = '/signin.html';
 };

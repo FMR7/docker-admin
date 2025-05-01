@@ -16,22 +16,23 @@
   <link rel="shortcut icon" href="resources/images/favicon.png" type="image/x-icon">
 </head>
 
-<script>
-  onload = () => {
-    document.getElementById('btnSwitch').addEventListener('click', () => {
-      if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
-        document.documentElement.setAttribute('data-bs-theme', 'light');
-        document.getElementById('btnSwitch').innerHTML = '<i class="fa-solid fa-moon fa-xl"></i>';
-      }
-      else {
-        document.documentElement.setAttribute('data-bs-theme', 'dark');
-        document.getElementById('btnSwitch').innerHTML = '<i class="fa-solid fa-sun fa-xl"></i>';
-      }
-    });
-  }
-</script>
-
 <body class="bg-body-tertiary">
+
+  <header class="d-flex flex-wrap justify-content-center p-3 mb-4 border-bottom bg-body sticky-top">
+    <nav class="navbar navbar-expand-sm">
+      <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav nav-pills text-center">
+            <button id="btnSwitch" class="btn"><i class="fa-solid fa-sun fa-xl"></i></button>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
 
   <main class="form-signin position-absolute top-50 start-50 translate-middle w-100">
     <form id="loginForm">
@@ -55,13 +56,26 @@
 
   <script>
     onload = () => {
+      // Dark mode switcher
+      document.getElementById('btnSwitch').addEventListener('click', () => {
+        if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
+          document.documentElement.setAttribute('data-bs-theme', 'light');
+          document.getElementById('btnSwitch').innerHTML = '<i class="fa-solid fa-moon fa-xl"></i>';
+        }
+        else {
+          document.documentElement.setAttribute('data-bs-theme', 'dark');
+          document.getElementById('btnSwitch').innerHTML = '<i class="fa-solid fa-sun fa-xl"></i>';
+        }
+      });
+
+
       redirectIfLoggedIn();
     }
 
     function redirectIfLoggedIn() {
       isLoggedIn().then((result) => {
         if (result) {
-          //window.location.href = '/index.html';
+          window.location.href = '/index.html';
         }
       });
     }
