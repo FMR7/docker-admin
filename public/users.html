@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es" data-bs-theme="dark">
+
+<head>
+  <title>DOCKER ADMIN</title>
+  <!-- Required meta tags -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="css/sign-in.css" />
+  <link rel="shortcut icon" href="resources/images/favicon.png" type="image/x-icon">
+</head>
+
+<body class="bg-body-tertiary">
+
+  <header class="d-flex flex-wrap justify-content-center p-3 mb-4 border-bottom bg-body sticky-top">
+    <nav class="navbar navbar-expand-sm">
+      <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav nav-pills text-center">
+            <button id="btnSwitch" class="btn"><i class="fa-solid fa-sun fa-xl"></i></button>
+            <button class="btn btn-primary w-100 py-2" type="button" onclick="logout()">Logout</button>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="custom-form position-absolute top-50 start-50 translate-middle w-100">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Username</th>
+          <th scope="col">Active</th>
+          <th scope="col">Admin</th>
+        </tr>
+      </thead>
+      <tbody id="usuariosTableBody">
+        <!-- Data will be populated here -->
+      </tbody>
+    </table>
+  </main>
+
+
+  <script>
+    onload = () => {
+      // Dark mode switcher
+      document.getElementById('btnSwitch').addEventListener('click', () => {
+        if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
+          document.documentElement.setAttribute('data-bs-theme', 'light');
+          document.getElementById('btnSwitch').innerHTML = '<i class="fa-solid fa-moon fa-xl"></i>';
+        }
+        else {
+          document.documentElement.setAttribute('data-bs-theme', 'dark');
+          document.getElementById('btnSwitch').innerHTML = '<i class="fa-solid fa-sun fa-xl"></i>';
+        }
+      });
+
+
+      redirectIfLoggedOut();
+
+      // Call the function to fetch and display users
+      const data = findAll();
+      data.then((result) => {
+        const tableBody = document.getElementById('usuariosTableBody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        result.users.forEach(user => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${user.username}</td>
+            <td>${user.active ? '<span class="badge rounded-pill text-bg-success"><i class="fa-solid fa-check"></i>&nbsp;Yes</span>' : '<span class="badge rounded-pill text-bg-danger"><i class="fa-solid fa-close"></i>&nbsp;No</span>'}</td>
+            <td>${user.admin ? '<span class="badge rounded-pill text-bg-success"><i class="fa-solid fa-check"></i>&nbsp;Yes</span>' : '<span class="badge rounded-pill text-bg-danger"><i class="fa-solid fa-close"></i>&nbsp;No</span>'}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      });
+    }
+
+    function redirectIfLoggedOut() {
+      isLoggedIn().then((result) => {
+        if (!result) {
+          window.location.href = '/signin.html';
+        }
+      });
+    }
+  </script>
+  <script src="js/usuarios.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
