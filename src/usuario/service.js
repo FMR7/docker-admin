@@ -50,6 +50,7 @@ async function signin(username, password) {
         const updatedUser = await usuarioRepo.updatePasswordWrongTries(user.username);
         if (updatedUser.password_wrong_tries >= 3) {
             await usuarioRepo.disableUser(user.username);
+            throw new Error('User disabled due to too many failed login attempts. Contact admin.');
         }
 
         throw new Error('Invalid password');
