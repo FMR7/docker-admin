@@ -3,6 +3,8 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const usuarioRoutes = require('./src/user/userController');
+const containerRoutes = require('./src/container/containerController');
+
 const db = require('./src/config/db');
 
 const app = express();
@@ -15,6 +17,8 @@ app.use(session({
 }));
 
 app.use('/api', usuarioRoutes);
+app.use('/api', containerRoutes);
+
 
 // Serve static files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));

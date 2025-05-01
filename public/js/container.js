@@ -1,8 +1,7 @@
-const testCall = async (containerName) => {
-    const res = await fetch('/api/container/turn-on', {
+const turnOn = async (containerName) => {
+    const res = await fetch('/api/container/turn-on/' + containerName, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ containerName })
+        headers: { 'Content-Type': 'application/json' }
     });
 
     const result = await res.json();
