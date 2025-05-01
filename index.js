@@ -62,14 +62,6 @@ app.put('/api/on', (req, res) => {
     }
 });
 
-
-
-function isInvalidJwt(jwt) {
-    // TODO Validate token
-    return false;
-}
-
-
 // INI CONTAINER METHODS
 function getContainerStatusResponse() {
     const minecraftStatus = "running";  // TODO "docker status minecraft" 

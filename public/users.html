@@ -78,12 +78,22 @@
           const row = document.createElement('tr');
           row.innerHTML = `
             <td>${user.username}</td>
-            <td>${user.active ? '<span class="badge rounded-pill text-bg-success"><i class="fa-solid fa-check"></i>&nbsp;Yes</span>' : '<span class="badge rounded-pill text-bg-danger"><i class="fa-solid fa-close"></i>&nbsp;No</span>'}</td>
-            <td>${user.admin ? '<span class="badge rounded-pill text-bg-success"><i class="fa-solid fa-check"></i>&nbsp;Yes</span>' : '<span class="badge rounded-pill text-bg-danger"><i class="fa-solid fa-close"></i>&nbsp;No</span>'}</td>
+            <td>${'<div class="form-check form-switch"><input onchange="onActiveSwitchChange(event,\'' + user.username + '\')" class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault" ' + (user.active ? 'checked' : '') + '></div>'}</td>
+            <td>${'<div class="form-check form-switch"><input onchange="onAdminSwitchChange(event,\'' + user.username + '\')" class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault" ' + (user.admin ? 'checked' : '') + '></div>'}</td>
           `;
           tableBody.appendChild(row);
         });
       });
+    }
+
+    function onActiveSwitchChange(event, username) {
+      const isChecked = event.target.checked;
+      console.log('Set active', isChecked, 'for user:', username);
+    }
+
+    function onAdminSwitchChange(event, username) {
+      const isChecked = event.target.checked;
+      console.log('Set admin', isChecked, 'for user:', username);
     }
 
     function redirectIfLoggedOut() {
