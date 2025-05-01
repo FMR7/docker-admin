@@ -15,8 +15,8 @@ async function findByUsernameAndActive(username) {
 async function createUser(username, password) {
     const hashedPassword = await bcrypt.hash(password, 10);
     const res = await db.query(
-        'INSERT INTO usuarios (username, password, active) VALUES ($1, $2, $3) RETURNING *',
-        [username, hashedPassword, false]
+        'INSERT INTO usuarios (username, password, password_wrong_tries, active, admin) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        [username, hashedPassword, 0, false, false]
     );
     return res.rows[0];
 }
