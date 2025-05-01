@@ -18,48 +18,48 @@ router.post('/usuario/register', async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        if (!username || !password) {
-            return res.status(400).json({ ok: false, message: 'Username y password son requeridos' });
+        if (!username) {
+            return res.status(400).json({ ok: false, message: 'Username required' });
         }
 
-        // Simulación de la operación de registro
-        // Verifica si ya existe el usuario
+        if (!password) {
+            return res.status(400).json({ ok: false, message: 'Password required' });
+        }
+
         const existingUser = await usuarioService.getUserByUsername(username);
         if (existingUser) {
-            return res.status(400).json({ ok: false, message: 'El usuario ya existe' });
+            return res.status(400).json({ ok: false, message: 'Username already exists' });
         }
 
-        // Si todo es correcto, registramos el nuevo usuario
         const newUser = await usuarioService.signup(username, password);
         return res.json({ ok: true, user: newUser });
     } catch (err) {
-        console.error(err);  // Log para ver qué está fallando
-        return res.status(500).json({ ok: false, message: 'Error al registrar el usuario' });
+        console.error(err);
+        return res.status(500).json({ ok: false, message: 'Error signup' });
     }
 });
 
 router.get('/usuario/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) {
-            return res.status(500).json({ ok: false, message: 'Error al cerrar sesión' });
+            return res.status(500).json({ ok: false, message: 'Error closing session' });
         }
-        return res.json({ ok: true, message: 'Sesión cerrada' });
+        return res.json({ ok: true, message: 'Session closed' });
     });
 });
 
 router.get('/usuario/user', (req, res) => {
     if (!req.session.user) {
-        return res.status(401).json({ ok: false, message: 'No autenticado' });
+        return res.status(401).json({ ok: false, message: 'Not authenticated' });
     }
     return res.json({ ok: true, user: req.session.user });
 });
 
 router.get('/usuario/logged', (req, res) => {
     if (!req.session.user) {
-        return res.status(401).json({ ok: false, message: 'No autenticado' });
+        return res.status(401).json({ ok: false, message: 'Not authenticated' });
     }
-    return res.json({ ok: true, message: 'Autenticado' });
+    return res.json({ ok: true, message: 'Authenticated' });
 });
 
-// Exportamos el router
 module.exports = router;

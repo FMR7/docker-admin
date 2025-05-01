@@ -16,8 +16,22 @@ async function getUserByUsername(username) {
     }
 };
 
+async function getUserByUsernameAndActive(username) {
+    try {
+        const result = await usuarioRepo.findByUsernameAndActive(username);
+        if (!result) return undefined;  // Si no se encuentra el usuario, devuelve undefined
+
+        // Si se encuentra, devuelve el usuario sin la contraseña
+        delete result.password;
+        return result;
+    } catch (err) {
+        console.error('Error al obtener el usuario:', err);
+        throw err;
+    }
+};
+
 async function signin(username, password) {
-    const user = await usuarioRepo.findByUsername(username);
+    const user = await usuarioRepo.findByUsernameAndActive(username);
     if (!user) throw new Error('Usuario no encontrado o inactivo');
 
     const isValid = await bcrypt.compare(password, user.password);
@@ -35,4 +49,4 @@ async function signup(username, password) {
     return newUser;
 }
 
-module.exports = { getUserByUsername, signin: signin, signup: signup };
+module.exports = { getUserByUsername, getUserByUsernameAndActive, signin, signup };
