@@ -19,7 +19,7 @@ async function getUserByUsername(username) {
 // Función de login
 async function login(username, password) {
     const user = await usuarioRepo.findByUsername(username);
-    if (!user) throw new Error('Usuario no encontrado');
+    if (!user) throw new Error('Usuario no encontrado o inactivo');
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) throw new Error('Contraseña incorrecta');
