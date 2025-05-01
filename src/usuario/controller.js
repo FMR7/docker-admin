@@ -8,9 +8,9 @@ router.post('/usuario/login', async (req, res) => {
     try {
         const user = await usuarioService.login(username, password);
         req.session.user = user;
-        res.json({ ok: true, user });
+        return res.json({ ok: true, user });
     } catch (err) {
-        res.status(401).json({ ok: false, message: err.message });
+        return res.status(401).json({ ok: false, message: err.message });
     }
 });
 
@@ -31,10 +31,10 @@ router.post('/usuario/register', async (req, res) => {
 
         // Si todo es correcto, registramos el nuevo usuario
         const newUser = await usuarioService.register(username, password);
-        res.json({ ok: true, user: newUser });
+        return res.json({ ok: true, user: newUser });
     } catch (err) {
         console.error(err);  // Log para ver qué está fallando
-        res.status(500).json({ ok: false, message: 'Error al registrar el usuario' });
+        return res.status(500).json({ ok: false, message: 'Error al registrar el usuario' });
     }
 });
 
@@ -43,7 +43,7 @@ router.get('/usuario/logout', (req, res) => {
         if (err) {
             return res.status(500).json({ ok: false, message: 'Error al cerrar sesión' });
         }
-        res.json({ ok: true, message: 'Sesión cerrada' });
+        return res.json({ ok: true, message: 'Sesión cerrada' });
     });
 });
 
@@ -51,7 +51,14 @@ router.get('/usuario/user', (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ ok: false, message: 'No autenticado' });
     }
-    res.json({ ok: true, user: req.session.user });
+    return res.json({ ok: true, user: req.session.user });
+});
+
+router.get('/usuario/logged', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ ok: false, message: 'No autenticado' });
+    }
+    return res.json({ ok: true, message: 'Autenticado' });
 });
 
 // Exportamos el router
