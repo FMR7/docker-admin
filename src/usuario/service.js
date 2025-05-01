@@ -2,12 +2,24 @@ const bcrypt = require('bcrypt');
 const usuarioRepo = require('./repository');
 
 
+async function findAll() {
+    try {
+        const result = await usuarioRepo.findAll();
+        if (!result) return [];
+
+        result.forEach(user => { delete user.password; });
+        return result;
+    } catch (err) {
+        console.error('Error finding user:', err);
+        throw err;
+    }
+};
+
 async function getUserByUsername(username) {
     try {
         const result = await usuarioRepo.findByUsername(username);
-        if (!result) return undefined;  // Si no se encuentra el usuario, devuelve undefined
+        if (!result) return undefined; 
 
-        // Si se encuentra, devuelve el usuario sin la contraseña
         delete result.password;
         return result;
     } catch (err) {
@@ -19,9 +31,8 @@ async function getUserByUsername(username) {
 async function getUserByUsernameAndActive(username) {
     try {
         const result = await usuarioRepo.findByUsernameAndActive(username);
-        if (!result) return undefined;  // Si no se encuentra el usuario, devuelve undefined
+        if (!result) return undefined;
 
-        // Si se encuentra, devuelve el usuario sin la contraseña
         delete result.password;
         return result;
     } catch (err) {
@@ -49,4 +60,4 @@ async function signup(username, password) {
     return newUser;
 }
 
-module.exports = { getUserByUsername, getUserByUsernameAndActive, signin, signup };
+module.exports = { findAll, getUserByUsername, getUserByUsernameAndActive, signin, signup };

@@ -2,6 +2,20 @@ const express = require('express');
 const router = express.Router();
 const usuarioService = require('./service');
 
+
+router.get('/usuario', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ ok: false, message: 'Not authenticated' });
+    }
+
+    try {
+        const users = await usuarioService.findAll();
+        return res.json({ ok: true, users });
+    } catch (err) {
+        return res.status(401).json({ ok: false, message: err.message });
+    }
+});
+
 router.post('/usuario/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -47,7 +61,7 @@ router.post('/usuario/register', async (req, res) => {
     }
 });
 
-router.get('/usuario/logout', (req, res) => {
+router.get('/usuario/logout', async (req, res) => {
     req.session.destroy(err => {
         if (err) {
             return res.status(500).json({ ok: false, message: 'Error closing session' });
@@ -56,14 +70,14 @@ router.get('/usuario/logout', (req, res) => {
     });
 });
 
-router.get('/usuario/user', (req, res) => {
+router.get('/usuario/user', async (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ ok: false, message: 'Not authenticated' });
     }
     return res.json({ ok: true, user: req.session.user });
 });
 
-router.get('/usuario/logged', (req, res) => {
+router.get('/usuario/logged', async (req, res) => {
     if (!req.session.user) {
         return res.json({ ok: false, message: 'Not authenticated' });
     }

@@ -1,11 +1,15 @@
 const db = require('../config/db');
 const bcrypt = require('bcrypt');
 
+async function findAll() {
+    const res = await db.query('SELECT * FROM public.usuarios');
+    return res.rows;
+}
+
 async function findByUsername(username) {
     const res = await db.query('SELECT * FROM public.usuarios WHERE username = $1', [username]);
     return res.rows[0];
 }
-
 
 async function findByUsernameAndActive(username) {
     const res = await db.query('SELECT * FROM public.usuarios WHERE username = $1 and active = true', [username]);
@@ -21,4 +25,4 @@ async function createUser(username, password) {
     return res.rows[0];
 }
 
-module.exports = { findByUsername, findByUsernameAndActive, createUser };
+module.exports = { findAll, findByUsername, findByUsernameAndActive, createUser };

@@ -1,6 +1,16 @@
 
 
 
+const findAll = async () => {
+    const res = await fetch('/api/usuario', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+  
+    const result = await res.json();
+    console.log(result);
+  };
+
 const testCall = async () => {
   const res = await fetch('/api/usuario/user', {
     method: 'GET',
