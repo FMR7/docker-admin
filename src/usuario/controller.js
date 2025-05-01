@@ -65,7 +65,7 @@ router.get('/usuario/user', (req, res) => {
 
 router.get('/usuario/logged', (req, res) => {
     if (!req.session.user) {
-        return res.status(401).json({ ok: false, message: 'Not authenticated' });
+        return res.json({ ok: false, message: 'Not authenticated' });
     }
     return res.json({ ok: true, message: 'Authenticated' });
 });
