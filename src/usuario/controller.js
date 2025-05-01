@@ -6,7 +6,7 @@ router.post('/usuario/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const user = await usuarioService.login(username, password);
+        const user = await usuarioService.signin(username, password);
         req.session.user = user;
         return res.json({ ok: true, user });
     } catch (err) {
@@ -30,7 +30,7 @@ router.post('/usuario/register', async (req, res) => {
         }
 
         // Si todo es correcto, registramos el nuevo usuario
-        const newUser = await usuarioService.register(username, password);
+        const newUser = await usuarioService.signup(username, password);
         return res.json({ ok: true, user: newUser });
     } catch (err) {
         console.error(err);  // Log para ver qué está fallando
