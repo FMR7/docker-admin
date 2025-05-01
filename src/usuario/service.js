@@ -11,7 +11,7 @@ async function getUserByUsername(username) {
         delete result.password;
         return result;
     } catch (err) {
-        console.error('Error al obtener el usuario:', err);
+        console.error('Error finding user:', err);
         throw err;
     }
 };
@@ -25,24 +25,24 @@ async function getUserByUsernameAndActive(username) {
         delete result.password;
         return result;
     } catch (err) {
-        console.error('Error al obtener el usuario:', err);
+        console.error('Error finding user:', err);
         throw err;
     }
 };
 
 async function signin(username, password) {
     const user = await usuarioRepo.findByUsernameAndActive(username);
-    if (!user) throw new Error('Usuario no encontrado o inactivo');
+    if (!user) throw new Error('User not found or inactive');
 
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) throw new Error('Contraseña incorrecta');
+    if (!isValid) throw new Error('Invalid password');
 
     return { username: user.username };
 }
 
 async function signup(username, password) {
     const existingUser = await usuarioRepo.findByUsername(username);
-    if (existingUser) throw new Error('El usuario ya existe');
+    if (existingUser) throw new Error('User already exists');
 
     const newUser = await usuarioRepo.createUser(username, password);
     delete newUser.password;

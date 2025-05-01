@@ -5,6 +5,14 @@ const usuarioService = require('./service');
 router.post('/usuario/login', async (req, res) => {
     const { username, password } = req.body;
 
+    if (!username) {
+        return res.status(400).json({ ok: false, message: 'Username required' });
+    }
+
+    if (!password) {
+        return res.status(400).json({ ok: false, message: 'Password required' });
+    }
+
     try {
         const user = await usuarioService.signin(username, password);
         req.session.user = user;

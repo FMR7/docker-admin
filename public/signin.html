@@ -35,6 +35,8 @@
   </header>
 
   <main class="custom-form position-absolute top-50 start-50 translate-middle w-100">
+    <div id="signUpDangerAlert" class="alert alert-danger" style="display: none;"></div>
+
     <form id="loginForm">
       <h1 class="h3 mb-3 fw-normal">Sign in</h1>
 
@@ -92,8 +94,13 @@
       });
 
       const result = await res.json();
-      console.log(result);
-      redirectIfLoggedIn();
+      document.getElementById('signUpDangerAlert').style.display = 'none';
+      if (result.ok) {
+        redirectIfLoggedIn();
+      } else {
+        document.getElementById('signUpDangerAlert').style.display = 'block';
+        document.getElementById('signUpDangerAlert').innerHTML = result.message;
+      }
     });
 
   </script>
