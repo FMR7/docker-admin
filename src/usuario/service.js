@@ -46,7 +46,14 @@ async function signin(username, password) {
     if (!user) throw new Error('User not found or inactive');
 
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) throw new Error('Invalid password');
+    if (!isValid) {
+        const updatedUser = await usuarioRepo.updatePasswordWrongTries(user.username);
+        if (updatedUser.password_wrong_tries >= 3) {
+            await usuarioRepo.disableUser(user.username);
+        }
+
+        throw new Error('Invalid password');
+    }
 
     return { username: user.username };
 }

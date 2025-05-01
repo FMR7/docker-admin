@@ -25,4 +25,14 @@ async function createUser(username, password) {
     return res.rows[0];
 }
 
-module.exports = { findAll, findByUsername, findByUsernameAndActive, createUser };
+async function updatePasswordWrongTries(username) {
+    const res = await db.query('UPDATE usuarios SET password_wrong_tries = password_wrong_tries + 1 WHERE username = $1 RETURNING *', [username]);
+    return res.rows[0];
+}
+
+async function disableUser(username) {
+    const res = await db.query('UPDATE usuarios SET active = false, password_wrong_tries = 0 WHERE username = $1 RETURNING *', [username]);
+    return res.rows[0];
+}
+
+module.exports = { findAll, findByUsername, findByUsernameAndActive, createUser, updatePasswordWrongTries, disableUser };
