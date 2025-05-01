@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const usuarioRepo = require('./repository');
+const usuarioRepo = require('./userRepository');
 
 
 async function findAll() {

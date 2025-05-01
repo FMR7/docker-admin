@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const usuarioRoutes = require('./src/usuario/controller');
+const usuarioRoutes = require('./src/user/userController');
 const db = require('./src/config/db');
 
 const app = express();
