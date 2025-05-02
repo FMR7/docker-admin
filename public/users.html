@@ -42,7 +42,7 @@
     </nav>
   </header>
 
-  <main class="custom-form position-absolute top-50 start-50 translate-middle w-100">
+  <main id="usuariosTable" class="custom-form position-absolute top-50 start-50 translate-middle w-100" style="display: none;">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -90,6 +90,8 @@
           `;
           tableBody.appendChild(row);
         });
+
+        document.getElementById('usuariosTable').style.display = 'block';
       });
     }
 
