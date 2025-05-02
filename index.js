@@ -1,5 +1,6 @@
 require('dotenv').config();
 const https = require('https');
+const http = require('http');
 const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
@@ -8,6 +9,7 @@ const usuarioRoutes = require('./src/user/userController');
 const containerRoutes = require('./src/container/containerController');
 
 const db = require('./src/config/db');
+const portHttps = process.env.SERVER_PORT || 443;
 
 const app = express();
 app.use(express.json());
@@ -38,6 +40,17 @@ const options = {
 };
 
 // RUN SERVER
-https.createServer(options, app).listen(process.env.SERVER_PORT, () => {
-    console.log('💻 Server running at: https://0.0.0.0:'.concat(process.env.SERVER_PORT));
+https.createServer(options, app).listen(portHttps, () => {
+    console.log(`💻 Server running at: https://localhost:${portHttps}`);
+});
+
+// Servidor HTTP que redirige a HTTPS
+http.createServer((req, res) => {
+    const host = req.headers.host?.split(':')[0] || 'localhost';
+    res.writeHead(301, {
+        Location: `https://${host}:${portHttps}${req.url}`
+    });
+    res.end();
+}).listen(80, () => {
+    console.log('🌐 HTTP redirector running on port 80');
 });
