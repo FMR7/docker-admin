@@ -1,4 +1,6 @@
 require('dotenv').config();
+const https = require('https');
+const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
@@ -29,7 +31,13 @@ app.use(express.static(path.join(__dirname, 'public')));
     console.log('🧩 Connected to:', res.rows[0]);
 })();
 
+// Certificates info
+const options = {
+    key: fs.readFileSync('../certs/key.pem'),
+    cert: fs.readFileSync('../certs/cert.pem'),
+};
+
 // RUN SERVER
-app.listen(process.env.SERVER_PORT, '0.0.0.0', () => {
-    console.log('💻 Server running at: http://0.0.0.0:'.concat(process.env.SERVER_PORT));
+https.createServer(options, app).listen(process.env.SERVER_PORT, () => {
+    console.log('💻 Server running at: https://0.0.0.0:'.concat(process.env.SERVER_PORT));
 });
