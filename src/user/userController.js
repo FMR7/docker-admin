@@ -61,7 +61,7 @@ router.post('/usuario/register', async (req, res) => {
     }
 });
 
-router.put('/usuario/disable/:username', async (req, res) => {
+router.put('/usuario/active/:active/:username', async (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ ok: false, message: 'Not authenticated' });
     }
@@ -71,36 +71,16 @@ router.put('/usuario/disable/:username', async (req, res) => {
         return res.status(401).json({ ok: false, message: 'Not admin' });
     }
 
-    const { username } = req.params;
+    const { username, active } = req.params;
     if (!username) {
         return res.status(400).json({ ok: false, message: 'Username required' });
     }
-
-    try {
-        const user = await usuarioService.setActive(username, false);
-        return res.json({ ok: true, user });
-    } catch (err) {
-        return res.status(401).json({ ok: false, message: err.message });
-    }
-});
-
-router.put('/usuario/enable/:username', async (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ ok: false, message: 'Not authenticated' });
-    }
-    
-    console.log(req.session.user);
-    if (!req.session.user.admin) {
-        return res.status(401).json({ ok: false, message: 'Not admin' });
-    }
-
-    const { username } = req.params;
-    if (!username) {
-        return res.status(400).json({ ok: false, message: 'Username required' });
+    if (active !== 'true' && active !== 'false') {
+        return res.status(400).json({ ok: false, message: 'Active must be true or false' });
     }
 
     try {
-        const user = await usuarioService.setActive(username, true);
+        const user = await usuarioService.setActive(username, active === 'true');
         return res.json({ ok: true, user });
     } catch (err) {
         return res.status(401).json({ ok: false, message: err.message });

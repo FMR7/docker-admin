@@ -77,4 +77,13 @@ async function setActive(username, active) {
     return updatedUser;
 }
 
-module.exports = { findAll, getUserByUsername, getUserByUsernameAndActive, signin, signup, setActive };
+async function setAdmin(username, admin) {
+    const user = await usuarioRepo.findByUsername(username);
+    if (!user) throw new Error('User not found');
+
+    const updatedUser = await usuarioRepo.setAdmin(user.username, admin);
+    delete updatedUser.password;
+    return updatedUser;
+}
+
+module.exports = { findAll, getUserByUsername, getUserByUsernameAndActive, signin, signup, setActive, setAdmin };
