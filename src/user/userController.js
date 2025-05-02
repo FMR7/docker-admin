@@ -80,7 +80,7 @@ router.put('/usuario/active/:active/:username', async (req, res) => {
 
     try {
         const user = await usuarioService.setActive(username, active === 'true');
-        const msg = 'User ' + username + ' ' + (active === 'true' ? 'activated' : 'deactivated');
+        const msg = 'User <strong>' + username + '</strong> ' + (active === 'true' ? 'activated' : 'deactivated');
         return res.json({ ok: true, user, message: msg });
     } catch (err) {
         return res.status(401).json({ ok: false, message: err.message });
@@ -105,7 +105,7 @@ router.put('/usuario/admin/:admin/:username', async (req, res) => {
 
     try {
         const user = await usuarioService.setAdmin(username, admin === 'true');
-        const msg = 'User ' + username + ' ' + (admin === 'true' ? ' promoted to admin' : 'demoted from admin');
+        const msg = 'User <strong>' + username + '</strong> ' + (admin === 'true' ? ' promoted to admin' : ' demoted from admin');
         return res.json({ ok: true, user, message: msg });
     } catch (err) {
         return res.status(401).json({ ok: false, message: err.message });
@@ -119,13 +119,6 @@ router.get('/usuario/logout', async (req, res) => {
         }
         return res.json({ ok: true, message: 'Session closed' });
     });
-});
-
-router.get('/usuario/user', async (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ ok: false, message: 'Not authenticated' });
-    }
-    return res.json({ ok: true, user: req.session.user });
 });
 
 router.get('/usuario/logged', async (req, res) => {

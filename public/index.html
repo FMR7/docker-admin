@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="css/sign-in.css" />
+  <link rel="stylesheet" href="css/sign-in.css" />
   <link rel="shortcut icon" href="resources/images/favicon.png" type="image/x-icon">
 </head>
 
@@ -43,15 +43,12 @@
   </header>
 
   <main class="custom-form position-absolute top-50 start-50 translate-middle w-100">
-    <form id="testForm" onsubmit="testCall(); return false;">
-      <button class="btn btn-primary w-100 py-2" type="submit">Test</button>
-    </form>
     <br>
-    <form id="usuariosForm" onsubmit="turnOn('266bb1d1af974856308a5d46a8e10b5468fba7f848215ff12637877a073c52cd'); return false;">
+    <form id="usuariosForm"
+      onsubmit="turnOn('266bb1d1af974856308a5d46a8e10b5468fba7f848215ff12637877a073c52cd'); return false;">
       <button class="btn btn-primary w-100 py-2" type="submit">turnOn</button>
     </form>
   </main>
-
 
   <script>
     onload = () => {
