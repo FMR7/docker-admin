@@ -53,6 +53,24 @@
     <form onsubmit="getStatus('266bb1d1af974856308a5d46a8e10b5468fba7f848215ff12637877a073c52cd'); return false;">
       <button class="btn btn-primary w-100 py-2 my-2" type="submit">getStatus</button>
     </form>
+
+
+    <div id="signUpSuccessAlert" class="alert alert-success" style="display: none;"></div>
+    <div id="signUpDangerAlert" class="alert alert-danger" style="display: none;"></div>
+    <div id="containerTable" style="display: none;">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Container</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody id="containerTableBody">
+          <!-- Data will be populated here -->
+        </tbody>
+      </table>
+    </div>
   </main>
 
   <script>
@@ -76,6 +94,26 @@
           document.documentElement.setAttribute('data-bs-theme', 'dark');
           document.getElementById('btnSwitch').innerHTML = '<i class="fa-solid fa-sun fa-xl"></i>';
         }
+      });
+
+      // Call the function to fetch and display containers
+      const data = findAllContainers();
+      data.then((result) => {
+        const tableBody = document.getElementById('containerTableBody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        result.forEach(container => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${container.name}</td>
+            <td>${container.status}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+
+        document.getElementById('containerTable').style.display = 'block';
+
+        showAlerts(result);
       });
     }
 

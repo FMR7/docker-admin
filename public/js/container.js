@@ -27,3 +27,13 @@ const getStatus = async (containerName) => {
     const result = await res.json();
     console.log(result);
 };
+
+const findAllContainers = async () => {
+    const res = await fetch('/api/container', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    const result = await res.json();
+    console.log(result);
+};
