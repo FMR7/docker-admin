@@ -44,9 +44,14 @@
 
   <main class="custom-form position-absolute top-50 start-50 translate-middle w-100">
     <br>
-    <form id="usuariosForm"
-      onsubmit="turnOn('266bb1d1af974856308a5d46a8e10b5468fba7f848215ff12637877a073c52cd'); return false;">
-      <button class="btn btn-primary w-100 py-2" type="submit">turnOn</button>
+    <form onsubmit="turnOn('266bb1d1af974856308a5d46a8e10b5468fba7f848215ff12637877a073c52cd'); return false;">
+      <button class="btn btn-primary w-100 py-2 my-2" type="submit">turnOn</button>
+    </form>
+    <form onsubmit="turnOff('266bb1d1af974856308a5d46a8e10b5468fba7f848215ff12637877a073c52cd'); return false;">
+      <button class="btn btn-primary w-100 py-2 my-2" type="submit">turnOff</button>
+    </form>
+    <form onsubmit="getStatus('266bb1d1af974856308a5d46a8e10b5468fba7f848215ff12637877a073c52cd'); return false;">
+      <button class="btn btn-primary w-100 py-2 my-2" type="submit">getStatus</button>
     </form>
   </main>
 
