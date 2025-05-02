@@ -78,11 +78,11 @@ router.get('/container/turn-off/:containerId', async (req, res) => {
         exec(`docker stop ${containerId}`, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error turning on container: ${error.message}`);
-                return res.status(500).json({ ok: false, message: 'Error turning on container' });
+                return res.status(500).json({ ok: false, message: 'Error turning off container' });
             }
             if (stderr) {
                 console.error(`Error turning on container: ${stderr}`);
-                return res.status(500).json({ ok: false, message: 'Error turning on container' });
+                return res.status(500).json({ ok: false, message: 'Error turning off container' });
             }
             console.log(`Container turned on: ${stdout}`);
             return res.json({ ok: true, message: 'Container turned off' });

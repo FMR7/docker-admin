@@ -43,20 +43,8 @@
   </header>
 
   <main class="custom-form position-absolute top-50 start-50 translate-middle w-100">
-    <br>
-    <form onsubmit="turnOn('266bb1d1af974856308a5d46a8e10b5468fba7f848215ff12637877a073c52cd'); return false;">
-      <button class="btn btn-primary w-100 py-2 my-2" type="submit">turnOn</button>
-    </form>
-    <form onsubmit="turnOff('266bb1d1af974856308a5d46a8e10b5468fba7f848215ff12637877a073c52cd'); return false;">
-      <button class="btn btn-primary w-100 py-2 my-2" type="submit">turnOff</button>
-    </form>
-    <form onsubmit="getStatus('266bb1d1af974856308a5d46a8e10b5468fba7f848215ff12637877a073c52cd'); return false;">
-      <button class="btn btn-primary w-100 py-2 my-2" type="submit">getStatus</button>
-    </form>
-
-
-    <div id="signUpSuccessAlert" class="alert alert-success" style="display: none;"></div>
-    <div id="signUpDangerAlert" class="alert alert-danger" style="display: none;"></div>
+    <div id="successAlert" class="alert alert-success" style="display: none;"></div>
+    <div id="dangerAlert" class="alert alert-danger" style="display: none;"></div>
     <div id="containerTable" style="display: none;">
       <table class="table table-striped">
         <thead>
@@ -102,19 +90,50 @@
         const tableBody = document.getElementById('containerTableBody');
         tableBody.innerHTML = ''; // Clear existing rows
 
-        result.forEach(container => {
+        Object.values(result).forEach(container => {
           const row = document.createElement('tr');
           row.innerHTML = `
             <td>${container.name}</td>
-            <td>${container.status}</td>
+            <td><span class="badge rounded-pill text-bg-${container.status.ok ? 'success' : 'danger'}">${container.status.ok ? 'Running' : 'Stopped'}</span></td>
+            <td>${'<div class="form-check form-switch"><input onchange="onSwitchChange(event,\'' + container.id + '\')" class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault" ' + (container.status.ok ? 'checked' : '') + '></div>'}</td>
           `;
           tableBody.appendChild(row);
+          showAlerts(container.status);
         });
 
         document.getElementById('containerTable').style.display = 'block';
-
-        showAlerts(result);
       });
+    }
+
+    function showAlerts(result) {
+      console.log(result);
+      document.getElementById('successAlert').style.display = 'none';
+      document.getElementById('dangerAlert').style.display = 'none';
+
+      if (result.message) {
+        if (result.ok) {
+          document.getElementById('successAlert').style.display = 'block';
+          document.getElementById('successAlert').innerHTML = result.message;
+        } else {
+          document.getElementById('dangerAlert').style.display = 'block';
+          document.getElementById('dangerAlert').innerHTML = result.message;
+        }
+      }
+    }
+
+    async function onSwitchChange(event, containerId) {
+      const isChecked = event.target.checked;
+      console.log('Set active', isChecked, 'for container:', containerId);
+      if (isChecked) {
+        const result = await turnOn(containerId);
+        showAlerts(result);
+      } else {
+        const result = await turnOff(containerId);
+        showAlerts(result);
+      }
+      
+
+      //showAlerts(await res.json());
     }
 
     function redirectIfLoggedOut() {

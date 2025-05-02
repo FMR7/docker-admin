@@ -5,7 +5,7 @@ const turnOn = async (containerName) => {
     });
 
     const result = await res.json();
-    console.log(result);
+    return result;
 };
 
 const turnOff = async (containerName) => {
@@ -15,7 +15,7 @@ const turnOff = async (containerName) => {
     });
 
     const result = await res.json();
-    console.log(result);
+    return result;
 };
 
 const getStatus = async (containerName) => {
@@ -25,7 +25,7 @@ const getStatus = async (containerName) => {
     });
 
     const result = await res.json();
-    console.log(result);
+    return result;
 };
 
 const findAllContainers = async () => {
@@ -35,5 +35,5 @@ const findAllContainers = async () => {
     });
 
     const result = await res.json();
-    console.log(result);
+    return result;
 };
