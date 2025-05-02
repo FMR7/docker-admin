@@ -27,7 +27,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav w-100 d-flex justify-content-between align-items-center px-3">
-            <li class="nav-item">
+            <li id="usersMenu" class="nav-item" style="display: none;">
               <a href="users.html" class="btn btn-primary py-2">Users</a>
             </li>
             <li class="nav-item">
@@ -52,6 +52,15 @@
 
   <script>
     onload = () => {
+      redirectIfLoggedOut();
+      isAdmin().then((result) => {
+        if (result) {
+          document.getElementById('usersMenu').style.display = 'block';
+        } else {
+          document.getElementById('usersMenu').style.display = 'none';
+        }
+      });
+
       // Dark mode switcher
       document.getElementById('btnSwitch').addEventListener('click', () => {
         if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
@@ -63,9 +72,6 @@
           document.getElementById('btnSwitch').innerHTML = '<i class="fa-solid fa-sun fa-xl"></i>';
         }
       });
-
-
-      redirectIfLoggedOut();
     }
 
     function redirectIfLoggedOut() {
