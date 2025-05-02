@@ -28,7 +28,7 @@ router.get('/container/status/:containerId', async (req, res) => {
                 return res.status(500).json({ ok: false, message: 'Error turning on container' });
             }
             console.log(`Container turned on: ${stdout}`);
-            return res.json({ ok: true, message: stdout.replace("\\n", "") });
+            return res.json({ ok: true, message: stdout.replace("\n", "") });
         });
     } catch (err) {
         return res.status(401).json({ ok: false, message: err.message });
