@@ -32,6 +32,16 @@ const isLoggedIn = async () => {
   return result.ok;
 };
 
+const isAdmin = async () => {
+  const res = await fetch('/api/usuario/admin', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  const result = await res.json();
+  return result.ok;
+};
+
 const logout = async () => {
   const res = await fetch('/api/usuario/logout', {
     method: 'GET',

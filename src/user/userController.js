@@ -7,6 +7,9 @@ router.get('/usuario', async (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ ok: false, message: 'Not authenticated' });
     }
+    if (!req.session.user.admin) {
+        return res.status(401).json({ ok: false, message: 'Not admin' });
+    }
 
     try {
         const users = await usuarioService.findAll();
@@ -22,7 +25,6 @@ router.post('/usuario/login', async (req, res) => {
     if (!username) {
         return res.status(400).json({ ok: false, message: 'Username required' });
     }
-
     if (!password) {
         return res.status(400).json({ ok: false, message: 'Password required' });
     }
@@ -43,7 +45,6 @@ router.post('/usuario/register', async (req, res) => {
         if (!username) {
             return res.status(400).json({ ok: false, message: 'Username required' });
         }
-
         if (!password) {
             return res.status(400).json({ ok: false, message: 'Password required' });
         }
@@ -79,7 +80,8 @@ router.put('/usuario/active/:active/:username', async (req, res) => {
 
     try {
         const user = await usuarioService.setActive(username, active === 'true');
-        return res.json({ ok: true, user });
+        const msg = 'User ' + username + ' ' + (active === 'true' ? 'activated' : 'deactivated');
+        return res.json({ ok: true, user, message: msg });
     } catch (err) {
         return res.status(401).json({ ok: false, message: err.message });
     }
@@ -103,7 +105,8 @@ router.put('/usuario/admin/:admin/:username', async (req, res) => {
 
     try {
         const user = await usuarioService.setAdmin(username, admin === 'true');
-        return res.json({ ok: true, user });
+        const msg = 'User ' + username + ' ' + (admin === 'true' ? ' promoted to admin' : 'demoted from admin');
+        return res.json({ ok: true, user, message: msg });
     } catch (err) {
         return res.status(401).json({ ok: false, message: err.message });
     }
@@ -130,6 +133,16 @@ router.get('/usuario/logged', async (req, res) => {
         return res.json({ ok: false, message: 'Not authenticated' });
     }
     return res.json({ ok: true, message: 'Authenticated' });
+});
+
+router.get('/usuario/admin', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ ok: false, message: 'Not authenticated' });
+    }
+    if (!req.session.user.admin) {
+        return res.status(401).json({ ok: false, message: 'Not admin' });
+    }
+    return res.json({ ok: true, message: 'Authenticated as admin' });
 });
 
 module.exports = router;
