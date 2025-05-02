@@ -84,6 +84,10 @@
         }
       });
 
+      loadContainers();
+    }
+
+    function loadContainers() {
       // Call the function to fetch and display containers
       const data = findAllContainers();
       data.then((result) => {
@@ -131,9 +135,8 @@
         const result = await turnOff(containerId);
         showAlerts(result);
       }
-      
 
-      //showAlerts(await res.json());
+      setTimeout(loadContainers, 2000);
     }
 
     function redirectIfLoggedOut() {
