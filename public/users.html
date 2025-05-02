@@ -93,9 +93,20 @@
       });
     }
 
-    function onActiveSwitchChange(event, username) {
+    async function onActiveSwitchChange(event, username) {
       const isChecked = event.target.checked;
       console.log('Set active', isChecked, 'for user:', username);
+      if(isChecked) {
+        const res = await fetch('/api/usuario/enable/' + username, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' }
+        });
+      } else {
+        const res = await fetch('/api/usuario/disable/' + username, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
     }
 
     function onAdminSwitchChange(event, username) {

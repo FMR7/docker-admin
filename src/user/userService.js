@@ -56,7 +56,7 @@ async function signin(username, password) {
         throw new Error('Invalid password');
     }
 
-    return { username: user.username };
+    return { username: user.username, active: user.active, admin: user.admin };
 }
 
 async function signup(username, password) {
@@ -68,4 +68,13 @@ async function signup(username, password) {
     return newUser;
 }
 
-module.exports = { findAll, getUserByUsername, getUserByUsernameAndActive, signin, signup };
+async function setActive(username, active) {
+    const user = await usuarioRepo.findByUsername(username);
+    if (!user) throw new Error('User not found');
+
+    const updatedUser = await usuarioRepo.setActive(user.username, active);
+    delete updatedUser.password;
+    return updatedUser;
+}
+
+module.exports = { findAll, getUserByUsername, getUserByUsernameAndActive, signin, signup, setActive };

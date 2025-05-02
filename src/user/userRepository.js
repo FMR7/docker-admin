@@ -2,7 +2,7 @@ const db = require('../config/db');
 const bcrypt = require('bcrypt');
 
 async function findAll() {
-    const res = await db.query('SELECT * FROM public.usuarios');
+    const res = await db.query('SELECT * FROM public.usuarios ORDER BY admin DESC, active DESC');
     return res.rows;
 }
 
@@ -30,9 +30,14 @@ async function updatePasswordWrongTries(username) {
     return res.rows[0];
 }
 
-async function disableUser(username) {
-    const res = await db.query('UPDATE usuarios SET active = false, password_wrong_tries = 0 WHERE username = $1 RETURNING *', [username]);
+async function setActive(username, active) {
+    const res = await db.query('UPDATE usuarios SET active = $1, password_wrong_tries = 0 WHERE username = $2 RETURNING *', [active, username]);
     return res.rows[0];
 }
 
-module.exports = { findAll, findByUsername, findByUsernameAndActive, createUser, updatePasswordWrongTries, disableUser };
+async function setAdmin(username, admin) {
+    const res = await db.query('UPDATE usuarios SET admin = $1 WHERE username = $2 RETURNING *', [admin, username]);
+    return res.rows[0];
+}
+
+module.exports = { findAll, findByUsername, findByUsernameAndActive, createUser, updatePasswordWrongTries, setActive, setAdmin };
