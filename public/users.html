@@ -42,7 +42,8 @@
     </nav>
   </header>
 
-  <main id="usuariosTable" class="custom-form position-absolute top-50 start-50 translate-middle w-100" style="display: none;">
+  <main id="usuariosTable" class="custom-form position-absolute top-50 start-50 translate-middle w-100"
+    style="display: none;">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -99,14 +100,25 @@
       const isChecked = event.target.checked;
       console.log('Set active', isChecked, 'for user:', username);
       const res = await fetch('/api/usuario/active/' + isChecked + '/' + username, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' }
-        });
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
-    function onAdminSwitchChange(event, username) {
+    async function onAdminSwitchChange(event, username) {
       const isChecked = event.target.checked;
       console.log('Set admin', isChecked, 'for user:', username);
+      const res = await fetch('/api/usuario/admin/' + isChecked + '/' + username, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      const data = await res.json();
+      if (data.ok) {
+        console.log('Admin status updated:', data.message);// TODO mostrar alerts
+      } else {
+        console.error('Error updating admin status:', data.message);
+      }
     }
 
     function redirectIfLoggedOut() {

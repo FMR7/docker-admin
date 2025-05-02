@@ -65,8 +65,6 @@ router.put('/usuario/active/:active/:username', async (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ ok: false, message: 'Not authenticated' });
     }
-    
-    console.log(req.session.user);
     if (!req.session.user.admin) {
         return res.status(401).json({ ok: false, message: 'Not admin' });
     }
@@ -81,6 +79,30 @@ router.put('/usuario/active/:active/:username', async (req, res) => {
 
     try {
         const user = await usuarioService.setActive(username, active === 'true');
+        return res.json({ ok: true, user });
+    } catch (err) {
+        return res.status(401).json({ ok: false, message: err.message });
+    }
+});
+
+router.put('/usuario/admin/:admin/:username', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ ok: false, message: 'Not authenticated' });
+    }
+    if (!req.session.user.admin) {
+        return res.status(401).json({ ok: false, message: 'Not admin' });
+    }
+
+    const { username, admin } = req.params;
+    if (!username) {
+        return res.status(400).json({ ok: false, message: 'Username required' });
+    }
+    if (admin !== 'true' && admin !== 'false') {
+        return res.status(400).json({ ok: false, message: 'Admin must be true or false' });
+    }
+
+    try {
+        const user = await usuarioService.setAdmin(username, admin === 'true');
         return res.json({ ok: true, user });
     } catch (err) {
         return res.status(401).json({ ok: false, message: err.message });

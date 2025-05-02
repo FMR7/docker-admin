@@ -18,7 +18,7 @@ async function findAll() {
 async function getUserByUsername(username) {
     try {
         const result = await usuarioRepo.findByUsername(username);
-        if (!result) return undefined; 
+        if (!result) return undefined;
 
         delete result.password;
         return result;
