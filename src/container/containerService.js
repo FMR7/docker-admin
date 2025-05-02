@@ -13,7 +13,7 @@ function getStatus(containerId) {
                     return resolve({ ok: false, message: 'Error checking container status' });
                 }
 
-                return resolve({ ok: true });
+                return resolve({ ok: stdout.trim().replace("\n", "") === 'true'});
             });
         } catch (err) {
             return resolve({ ok: false, message: 'Error checking container status' });
