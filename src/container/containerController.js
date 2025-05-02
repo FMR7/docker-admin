@@ -18,7 +18,7 @@ router.get('/container/status/:containerId', async (req, res) => {
 
     try {
         const { exec } = require('child_process');
-        exec(`docker status ${containerId}`, (error, stdout, stderr) => {
+        exec(` docker inspect -f '{{.State.Running}}' ${containerId}`, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error turning on container: ${error.message}`);
                 return res.status(500).json({ ok: false, message: 'Error turning on container' });
