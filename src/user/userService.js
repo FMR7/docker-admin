@@ -68,6 +68,15 @@ async function signup(username, password) {
     return newUser;
 }
 
+async function deleteUser(username) {
+    const user = await usuarioRepo.findByUsername(username);
+    if (!user) throw new Error('User not found');
+
+    const deletedUser = await usuarioRepo.deleteUser(user.username);
+    delete deletedUser.password;
+    return deletedUser;
+}
+
 async function setActive(username, active) {
     const user = await usuarioRepo.findByUsername(username);
     if (!user) throw new Error('User not found');
@@ -86,4 +95,4 @@ async function setAdmin(username, admin) {
     return updatedUser;
 }
 
-module.exports = { findAll, getUserByUsername, getUserByUsernameAndActive, signin, signup, setActive, setAdmin };
+module.exports = { findAll, getUserByUsername, getUserByUsernameAndActive, signin, signup, deleteUser, setActive, setAdmin };

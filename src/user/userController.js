@@ -62,6 +62,28 @@ router.post('/usuario/register', async (req, res) => {
     }
 });
 
+router.delete('/usuario/:username', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ ok: false, message: 'Not authenticated' });
+    }
+    if (!req.session.user.admin) {
+        return res.status(401).json({ ok: false, message: 'Not admin' });
+    }
+
+    const { username } = req.params;
+    if (!username) {
+        return res.status(400).json({ ok: false, message: 'Username required' });
+    }
+
+    try {
+        const user = await usuarioService.deleteUser(username);
+        return res.json({ ok: true, user });
+    } catch (err) {
+        return res.status(401).json({ ok: false, message: err.message });
+    }
+});
+
+
 router.put('/usuario/active/:active/:username', async (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ ok: false, message: 'Not authenticated' });

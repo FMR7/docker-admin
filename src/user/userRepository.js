@@ -25,6 +25,11 @@ async function createUser(username, password) {
     return res.rows[0];
 }
 
+async function deleteUser(username) {
+    const res = await db.query('DELETE FROM usuarios WHERE username = $1 RETURNING *', [username]);
+    return res.rows[0];
+}
+
 async function updatePasswordWrongTries(username) {
     const res = await db.query('UPDATE usuarios SET password_wrong_tries = password_wrong_tries + 1 WHERE username = $1 RETURNING *', [username]);
     return res.rows[0];
@@ -40,4 +45,4 @@ async function setAdmin(username, admin) {
     return res.rows[0];
 }
 
-module.exports = { findAll, findByUsername, findByUsernameAndActive, createUser, updatePasswordWrongTries, setActive, setAdmin };
+module.exports = { findAll, findByUsername, findByUsernameAndActive, createUser, deleteUser, updatePasswordWrongTries, setActive, setAdmin };
