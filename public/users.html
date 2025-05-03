@@ -80,7 +80,10 @@
         }
       });
 
-      // Call the function to fetch and display users
+      loadUsers();
+    }
+
+    function loadUsers() {
       const data = findAll();
       data.then((result) => {
         if (result.users) {
@@ -151,6 +154,7 @@
       });
 
       showAlerts(await res.json());
+      loadUsers();
     }
 
     function redirectIfLoggedOut() {
