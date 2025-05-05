@@ -106,7 +106,7 @@ router.get('/container', async (req, res) => {
             const name = await getName(containerId);
             result.containers.push = {
                 id: containerId,
-                name: name.ok ? name.name : 'Unknown',
+                name: name,
                 status: status
             };
         }        
@@ -116,7 +116,6 @@ router.get('/container', async (req, res) => {
     } catch (err) {
         return res.status(401).json({ ok: false, message: err.message });
     }
-}
-);
+});
 
 module.exports = router;
