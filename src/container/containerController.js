@@ -95,16 +95,18 @@ router.get('/container', async (req, res) => {
     }
 
     try {
-        let result = {};
-        for (const containerId of process.env.CONTAINERS) {
+        let result = {ok: true, containers: []};
+        const containerIds = process.env.CONTAINERS.split(',');
+        for (const containerId of containerIds) {
             if (!containerId) {
                 return res.status(400).json({ ok: false, message: 'Container ID required' });
             }
 
             const status = await getStatus(containerId);
             const name = await getName(containerId);
-            result[containerId] = {
-                name: name,
+            result.containers.push = {
+                id: containerId,
+                name: name.ok ? name.name : 'Unknown',
                 status: status
             };
         }        
