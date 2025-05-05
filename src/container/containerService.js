@@ -25,7 +25,7 @@ function getStatus(containerId) {
 function getName(containerId) {
     return new Promise((resolve) => {
         try {
-            exec(`docker inspect -f '{{.Name}}' ${containerId} | sed 's/^\/\+//'`, (error, stdout, stderr) => {
+            exec(`docker inspect -f '{{.Name}}' ${containerId}`, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`Error checking status: ${error.message}`);
                     throw new Error('Error checking container name');
