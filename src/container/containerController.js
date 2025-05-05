@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getStatus } = require('./containerService');
+const { getStatus, getName } = require('./containerService');
 
 router.get('/container/status/:containerId', async (req, res) => {
     if (!req.session.user) {
