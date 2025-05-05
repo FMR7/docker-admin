@@ -94,18 +94,21 @@
         const tableBody = document.getElementById('containerTableBody');
         tableBody.innerHTML = ''; // Clear existing rows
 
-        Object.values(result).forEach(container => {
+        if (result.ok) {
+          Object.values(result.containers).forEach(container => {
           const row = document.createElement('tr');
           row.innerHTML = `
             <td>${container.name}</td>
-            <td><span class="badge rounded-pill text-bg-${container.status.ok ? 'success' : 'danger'}">${container.status.ok ? 'Running' : 'Stopped'}</span></td>
-            <td>${'<div class="form-check form-switch"><input onchange="onSwitchChange(event,\'' + container.id + '\')" class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault" ' + (container.status.ok ? 'checked' : '') + '></div>'}</td>
+            <td><span class="badge rounded-pill text-bg-${container.status ? 'success' : 'danger'}">${container.status ? 'Running' : 'Stopped'}</span></td>
+            <td>${'<div class="form-check form-switch"><input onchange="onSwitchChange(event,\'' + container.id + '\')" class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault" ' + (container.status ? 'checked' : '') + '></div>'}</td>
           `;
           tableBody.appendChild(row);
-          showAlerts(container.status);
         });
 
         document.getElementById('containerTable').style.display = 'block';
+        } else {
+          showAlerts(result);
+        }
       });
     }
 
