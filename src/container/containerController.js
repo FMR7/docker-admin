@@ -12,8 +12,7 @@ router.get('/container/status/:containerId', async (req, res) => {
         return res.status(400).json({ ok: false, message: 'Container ID required' });
     }
 
-    const containerIds = [process.env.CONTAINER_ID_MINECRAFT, process.env.CONTAINER_ID_VINTAGESTORY];
-    if (!containerIds.includes(containerId)) {
+    if (!process.env.CONTAINERS.includes(containerId)) {
         return res.status(400).json({ ok: false, message: 'Invalid container ID' });
     }
 
@@ -34,8 +33,7 @@ router.get('/container/turn-on/:containerId', async (req, res) => {
         return res.status(400).json({ ok: false, message: 'Container ID required' });
     }
 
-    const containerIds = [process.env.CONTAINER_ID_MINECRAFT, process.env.CONTAINER_ID_VINTAGESTORY];
-    if (!containerIds.includes(containerId)) {
+    if (!process.env.CONTAINERS.includes(containerId)) {
         return res.status(400).json({ ok: false, message: 'Invalid container ID' });
     }
 
@@ -68,8 +66,7 @@ router.get('/container/turn-off/:containerId', async (req, res) => {
         return res.status(400).json({ ok: false, message: 'Container ID required' });
     }
 
-    const containerIds = [process.env.CONTAINER_ID_MINECRAFT, process.env.CONTAINER_ID_VINTAGESTORY];
-    if (!containerIds.includes(containerId)) {
+    if (!process.env.CONTAINERS.includes(containerId)) {
         return res.status(400).json({ ok: false, message: 'Invalid container ID' });
     }
 
@@ -98,21 +95,19 @@ router.get('/container', async (req, res) => {
     }
 
     try {
-        const minecraftStatus = await getStatus(process.env.CONTAINER_ID_MINECRAFT);
-        const vintageStoryStatus = await getStatus(process.env.CONTAINER_ID_VINTAGESTORY);
-
-        const result = {
-            minecraft: {
-                id: process.env.CONTAINER_ID_MINECRAFT,
-                name: 'Minecraft',
-                status: minecraftStatus
-            },
-            vintageStory: {
-                id: process.env.CONTAINER_ID_VINTAGESTORY,
-                name: 'Vintage Story',
-                status: vintageStoryStatus
+        let result = {};
+        for (const containerId of process.env.CONTAINERS) {
+            if (!containerId) {
+                return res.status(400).json({ ok: false, message: 'Container ID required' });
             }
-        };
+
+            const status = await getStatus(containerId);
+            const name = await getName(containerId);
+            result[containerId] = {
+                name: name,
+                status: status
+            };
+        }        
 
         console.log(result);
         return res.json(result);
