@@ -35,7 +35,7 @@ function getName(containerId) {
                     throw new Error('Error checking container name');
                 }
 
-                return resolve(stdout);
+                return resolve(stdout.trim().replace("\n", "").replace("/", ""));
             });
         } catch (err) {
             console.error(`Error checking name: ${err.message}`);

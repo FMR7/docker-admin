@@ -104,11 +104,11 @@ router.get('/container', async (req, res) => {
 
             const status = await getStatus(containerId);
             const name = await getName(containerId);
-            result.containers.push = {
+            result.containers.push({
                 id: containerId,
                 name: name,
                 status: status
-            };
+            });
         }        
 
         console.log(result);
