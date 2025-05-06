@@ -48,4 +48,25 @@ describe('getUserByUsername', () => {
   });
 });
 
+describe('getUserByUsernameAndActive', () => {
+  it('should return a user without password', async () => {
+    usuarioRepo.findByUsernameAndActive = jest.fn().mockResolvedValue({ username: 'test', active: true, admin: false });
+
+    const res = await userService.getUserByUsernameAndActive('test');
+    expect(res).toEqual({ username: 'test', active: true, admin: false });
+  });
+
+  it('should return undefined if no user is found', async () => {
+    usuarioRepo.findByUsernameAndActive = jest.fn().mockResolvedValue(undefined);
+
+    const res = await userService.getUserByUsernameAndActive('test');
+    expect(res).toBeUndefined();
+  });
+
+  it('should handle errors', async () => {
+    usuarioRepo.findByUsernameAndActive = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(userService.getUserByUsernameAndActive('test')).rejects.toThrow('Database error');
+  });
+});
 
