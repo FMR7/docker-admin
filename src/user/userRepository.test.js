@@ -28,3 +28,28 @@ describe('findAll', () => {
   });
 });
 
+describe('findByUsername', () => {
+  it('should return a user by username', async () => {
+    db.query = jest.fn().mockResolvedValue({
+      rows: [{ username: 'test', active: true, admin: false }]
+    });
+  
+    const res = await repo.findByUsername('test');
+  
+    expect(res).toEqual({ username: 'test', active: true, admin: false });
+  });
+  
+  it('should return undefined if no user is found', async () => {
+    db.query = jest.fn().mockResolvedValue({ rows: [] });
+  
+    const res = await repo.findByUsername('test');
+    expect(res).toBeUndefined();
+  });
+
+  it('should handle errors', async () => {
+    db.query = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(repo.findByUsername('test')).rejects.toThrow('Database error');
+  });
+});
+
