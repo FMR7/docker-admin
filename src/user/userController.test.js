@@ -350,6 +350,9 @@ describe('Activate/Deactivate admin role', () => {
 describe('Logout', () => {
   beforeEach(() => {
     mockSession.clearSession();
+
+    // Default: destroy does nothing (success)
+    mockSession.setDestroyMock((cb) => cb(null));
   });
 
   it('should return 200 on successful logout', async () => {
@@ -370,6 +373,18 @@ describe('Logout', () => {
     expect(res.statusCode).toBe(400);
     expect(res.body.ok).toBe(false);
     expect(res.body.message).toBe('No active session to destroy');
+  });
+
+  it('should return 500 if destroy fails', async () => {
+    mockSession.setSession({ user: { username: 'test', admin: false } });
+
+    mockSession.setDestroyMock((cb) => cb(new Error('Destroy failed')));
+
+    const res = await request(app).get('/usuario/logout');
+
+    expect(res.statusCode).toBe(500);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Error closing session');
   });
 });
 

@@ -1,17 +1,10 @@
 let sessionData = null;
+let destroyMock = jest.fn((cb) => cb(null)); // default to success
 
 const mockSession = jest.fn(() => (req, res, next) => {
   req.session = {
-    ...sessionData,  // Ensure sessionData is spread into req.session
-    destroy: jest.fn((callback) => {  // Mock the destroy method
-      // Simulate an asynchronous destroy operation
-      if (sessionData) {
-        sessionData = null;  // Destroy session data
-        callback(null);  // No error
-      } else {
-        callback(new Error("Failed to destroy session"));  // Simulate an error if no session exists
-      }
-    }),
+    ...sessionData,
+    destroy: (...args) => destroyMock(...args), // delegate to the mocked function
   };
   next();
 });
@@ -22,6 +15,10 @@ mockSession.setSession = (data) => {
 
 mockSession.clearSession = () => {
   sessionData = null;
+};
+
+mockSession.setDestroyMock = (fn) => {
+  destroyMock = fn;
 };
 
 module.exports = mockSession;
