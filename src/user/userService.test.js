@@ -156,3 +156,46 @@ describe('deleteUser', () => {
   });
 });
 
+describe('setActive', () => {
+  it('should return a user without password', async () => {
+    usuarioRepo.findByUsername = jest.fn().mockResolvedValue({ username: 'test', active: true, admin: false });
+    usuarioRepo.setActive = jest.fn().mockResolvedValue({ username: 'test', active: true, admin: false });
+
+    const res = await userService.setActive('test', true);
+    expect(res).toEqual({ username: 'test', active: true, admin: false });
+  });
+
+  it('should throw an error if user does not exist', async () => {
+    usuarioRepo.findByUsername = jest.fn().mockResolvedValue(undefined);
+
+    await expect(userService.setActive('test', true)).rejects.toThrow('User not found');
+  });
+
+  it('should handle errors', async () => {
+    usuarioRepo.findByUsername = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(userService.setActive('test', true)).rejects.toThrow('Database error');
+  });
+});
+
+describe('setAdmin', () => {
+  it('should return a user without password', async () => {
+    usuarioRepo.findByUsername = jest.fn().mockResolvedValue({ username: 'test', active: true, admin: false });
+    usuarioRepo.setAdmin = jest.fn().mockResolvedValue({ username: 'test', active: true, admin: true });
+
+    const res = await userService.setAdmin('test', true);
+    expect(res).toEqual({ username: 'test', active: true, admin: true });
+  });
+
+  it('should throw an error if user does not exist', async () => {
+    usuarioRepo.findByUsername = jest.fn().mockResolvedValue(undefined);
+
+    await expect(userService.setAdmin('test', true)).rejects.toThrow('User not found');
+  });
+
+  it('should handle errors', async () => {
+    usuarioRepo.findByUsername = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(userService.setAdmin('test', true)).rejects.toThrow('Database error');
+  });
+});
