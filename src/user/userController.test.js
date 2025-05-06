@@ -392,3 +392,32 @@ describe('Logged User', () => {
     expect(res.body.ok).toBe(false);
   });
 });
+
+describe('Logged Admin', () => {
+  it('should return 200 on successful get logged admin', async () => {
+    mockSession.setSession({ user: { username: 'test', admin: true } });
+
+    const res = await request(app).get('/usuario/admin');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.ok).toBe(true);
+  });
+
+  it('should return 401 if no session exists', async () => {
+    mockSession.setSession(null);
+
+    const res = await request(app).get('/usuario/admin');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+  });
+
+  it('should return 401 if not admin', async () => {
+    mockSession.setSession({ user: { username: 'test', admin: false } });
+
+    const res = await request(app).get('/usuario/admin');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+  });
+});
