@@ -95,3 +95,21 @@ describe('createUser', () => {
     await expect(repo.createUser('test', 'test')).rejects.toThrow('Database error');
   });
 });
+
+describe('deleteUser', () => {
+  it('should delete a user', async () => {
+    db.query = jest.fn().mockResolvedValue({
+      rows: [{ username: 'test', active: true, admin: false }]
+    });
+  
+    const res = await repo.deleteUser('test');
+  
+    expect(res).toEqual({ username: 'test', active: true, admin: false });
+  });
+
+  it('should handle errors', async () => {
+    db.query = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(repo.deleteUser('test')).rejects.toThrow('Database error');
+  });
+});
