@@ -72,9 +72,6 @@ router.delete('/usuario/:username', async (req, res) => {
     }
 
     const { username } = req.params;
-    if (!username) {
-        return res.status(400).json({ ok: false, message: 'Username required' });
-    }
 
     try {
         const user = await usuarioService.deleteUser(username);
