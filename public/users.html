@@ -93,10 +93,10 @@
           result.users.forEach(user => {
             const row = document.createElement('tr');
             row.innerHTML = `
-            <td>${user.username}</td>
-            <td>${'<div class="form-check form-switch"><input onchange="onActiveSwitchChange(event,\'' + user.username + '\')" class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault" ' + (user.active ? 'checked' : '') + '></div>'}</td>
-            <td>${'<div class="form-check form-switch"><input onchange="onAdminSwitchChange(event,\'' + user.username + '\')" class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault" ' + (user.admin ? 'checked' : '') + '></div>'}</td>
-            <td>${'<button class="btn" onclick="deleteUser(\'' + user.username + '\')"><i class="fa-solid fa-trash" style="color: #dc3545;"></i></button>'}</td>
+            <td class="align-middle">${user.username}</td>
+            <td class="align-middle">${'<div class="form-check form-switch"><input onchange="onActiveSwitchChange(event,\'' + user.username + '\')" class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault" ' + (user.active ? 'checked' : '') + '></div>'}</td>
+            <td class="align-middle">${'<div class="form-check form-switch"><input onchange="onAdminSwitchChange(event,\'' + user.username + '\')" class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault" ' + (user.admin ? 'checked' : '') + '></div>'}</td>
+            <td class="align-middle">${'<button class="btn" onclick="deleteUser(\'' + user.username + '\')"><i class="fa-solid fa-trash" style="color: #dc3545;"></i></button>'}</td>
           `;
             tableBody.appendChild(row);
           });
