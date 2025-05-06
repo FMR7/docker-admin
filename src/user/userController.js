@@ -2,23 +2,6 @@ const express = require('express');
 const router = express.Router();
 const usuarioService = require('./userService');
 
-
-router.get('/usuario', async (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ ok: false, message: 'Not authenticated' });
-    }
-    if (!req.session.user.admin) {
-        return res.status(401).json({ ok: false, message: 'Not admin' });
-    }
-
-    try {
-        const users = await usuarioService.findAll();
-        return res.json({ ok: true, users });
-    } catch (err) {
-        return res.status(401).json({ ok: false, message: err.message });
-    }
-});
-
 router.post('/usuario/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -81,6 +64,21 @@ router.delete('/usuario/:username', async (req, res) => {
     }
 });
 
+router.get('/usuario', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ ok: false, message: 'Not authenticated' });
+    }
+    if (!req.session.user.admin) {
+        return res.status(401).json({ ok: false, message: 'Not admin' });
+    }
+
+    try {
+        const users = await usuarioService.findAll();
+        return res.json({ ok: true, users });
+    } catch (err) {
+        return res.status(401).json({ ok: false, message: err.message });
+    }
+});
 
 router.put('/usuario/active/:active/:username', async (req, res) => {
     if (!req.session.user) {
@@ -91,9 +89,6 @@ router.put('/usuario/active/:active/:username', async (req, res) => {
     }
 
     const { username, active } = req.params;
-    if (!username) {
-        return res.status(400).json({ ok: false, message: 'Username required' });
-    }
     if (active !== 'true' && active !== 'false') {
         return res.status(400).json({ ok: false, message: 'Active must be true or false' });
     }

@@ -22,6 +22,8 @@ app.use(session({
 // ✅ Use route
 app.use('/', userRoutes);
 
+const testPassword = 'testPassword';
+
 describe('Login', () => {
   it('should return 200 on successful login', async () => {
     mockSession.setSession({});
@@ -29,7 +31,7 @@ describe('Login', () => {
 
     const res = await request(app).post('/usuario/login').send({
       username: 'test',
-      password: 'pass',
+      password: testPassword,
     });
 
     expect(res.statusCode).toBe(200);
@@ -41,7 +43,7 @@ describe('Login', () => {
 
     const res = await request(app).post('/usuario/login').send({
       username: 'wrong',
-      password: 'fail',
+      password: testPassword,
     });
 
     expect(res.statusCode).toBe(401);
@@ -50,7 +52,7 @@ describe('Login', () => {
 
   it('should return 400 if username is missing', async () => {
     const res = await request(app).post('/usuario/login').send({
-      password: 'pass',
+      password: testPassword,
     });
 
     expect(res.statusCode).toBe(400);
@@ -75,7 +77,7 @@ describe('Register', () => {
 
     const res = await request(app).post('/usuario/register').send({
       username: 'test',
-      password: 'pass',
+      password: testPassword,
     });
 
     expect(res.statusCode).toBe(200);
@@ -84,7 +86,7 @@ describe('Register', () => {
 
   it('should return 400 if username is missing', async () => {
     const res = await request(app).post('/usuario/register').send({
-      password: 'pass',
+      password: testPassword,
     });
 
     expect(res.statusCode).toBe(400);
@@ -107,7 +109,7 @@ describe('Register', () => {
 
     const res = await request(app).post('/usuario/register').send({
       username: 'test',
-      password: 'pass',
+      password: testPassword,
     });
 
     expect(res.statusCode).toBe(400);
@@ -119,7 +121,7 @@ describe('Register', () => {
 
     const res = await request(app).post('/usuario/register').send({
       username: 'test',
-      password: 'pass',
+      password: testPassword,
     });
 
     expect(res.statusCode).toBe(500);
@@ -168,5 +170,114 @@ describe('Delete User', () => {
     expect(res.statusCode).toBe(401);
     expect(res.body.ok).toBe(false);
     expect(res.body.message).toBe('Not admin');
+  });
+});
+
+describe('Users list', () => {
+  it('should return 200 on successful list', async () => {
+    userService.findAll.mockResolvedValue([{ username: 'test', active: true, admin: true }]);
+
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).get('/usuario');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.ok).toBe(true);
+  });
+
+  it('should return 401 if error', async () => {
+    userService.findAll.mockRejectedValue(new Error('Some error'));
+
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).get('/usuario');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+  });
+
+  it('should return 401 if not authenticated', async () => {
+    mockSession.setSession({});
+
+    const res = await request(app).get('/usuario');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Not authenticated');
+  });
+
+  it('should return 401 if not admin', async () => {
+    mockSession.setSession({ user: { username: 'test', admin: false } });
+
+    const res = await request(app).get('/usuario');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Not admin');
+  });
+});
+
+describe('Activate/Deactivate User', () => {
+  it('should return 200 on successful activation', async () => {
+    userService.setActive.mockResolvedValue({ username: 'test', active: true, admin: true });
+
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).put('/usuario/active/true/test');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.ok).toBe(true);
+  });
+  
+  it('should return 200 on successful deactivation', async () => {
+    userService.setActive.mockResolvedValue({ username: 'test', active: true, admin: true });
+
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).put('/usuario/active/false/test');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.ok).toBe(true);
+  });
+
+  it('should return 401 if error', async () => {
+    userService.setActive.mockRejectedValue(new Error('Some error'));
+
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).put('/usuario/active/true/test');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+  });
+
+  it('should return 401 if not authenticated', async () => {
+    mockSession.setSession({});
+
+    const res = await request(app).put('/usuario/active/true/test');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Not authenticated');
+  });
+
+  it('should return 401 if not admin', async () => {
+    mockSession.setSession({ user: { username: 'test', admin: false } });
+
+    const res = await request(app).put('/usuario/active/true/test');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Not admin');
+  });
+
+  it('should return 400 if active is not true or false', async () => {
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).put('/usuario/active/other/test');
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Active must be true or false');
   });
 });
