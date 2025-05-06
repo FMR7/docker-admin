@@ -77,3 +77,21 @@ describe('findByUsernameAndActive', () => {
     await expect(repo.findByUsernameAndActive('test')).rejects.toThrow('Database error');
   });
 });
+
+describe('createUser', () => {
+  it('should create a user', async () => {
+    db.query = jest.fn().mockResolvedValue({
+      rows: [{ username: 'test', active: true, admin: false }]
+    });
+  
+    const res = await repo.createUser('test', 'test');
+  
+    expect(res).toEqual({ username: 'test', active: true, admin: false });
+  });
+
+  it('should handle errors', async () => {
+    db.query = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(repo.createUser('test', 'test')).rejects.toThrow('Database error');
+  });
+});
