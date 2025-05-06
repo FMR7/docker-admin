@@ -5,7 +5,7 @@ A web administration panel designed to simplify the startup/shutdown of specific
 Built with **Node.js**, **Express**, **PostgreSQL**, and **Bootstrap**.
 
 ## Features
-- User management (registration, login, session)
+- User management (sign-up, sign-in, session)
 - Password encryption with `bcrypt`
 - Connection to PostgreSQL database
 
