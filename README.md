@@ -6,6 +6,7 @@ Built with **Node.js**, **Express**, **PostgreSQL**, and **Bootstrap**.
 
 ## Features
 - User management (sign-up, sign-in, session)
+- Users inactive until admin aproved
 - Password encryption with `bcrypt`
 - Connection to PostgreSQL database
 
