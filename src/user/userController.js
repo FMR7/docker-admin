@@ -111,9 +111,6 @@ router.put('/usuario/admin/:admin/:username', async (req, res) => {
     }
 
     const { username, admin } = req.params;
-    if (!username) {
-        return res.status(400).json({ ok: false, message: 'Username required' });
-    }
     if (admin !== 'true' && admin !== 'false') {
         return res.status(400).json({ ok: false, message: 'Admin must be true or false' });
     }

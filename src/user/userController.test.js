@@ -281,3 +281,68 @@ describe('Activate/Deactivate User', () => {
     expect(res.body.message).toBe('Active must be true or false');
   });
 });
+
+describe('Activate/Deactivate admin role', () => {
+  it('should return 200 on successful activation', async () => {
+    userService.setAdmin.mockResolvedValue({ username: 'test', active: true, admin: true });
+
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).put('/usuario/admin/true/test');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.ok).toBe(true);
+  });
+  
+  it('should return 200 on successful deactivation', async () => {
+    userService.setAdmin.mockResolvedValue({ username: 'test', active: true, admin: true });
+
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).put('/usuario/admin/false/test');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.ok).toBe(true);
+  });
+
+  it('should return 401 if error', async () => {
+    userService.setAdmin.mockRejectedValue(new Error('Some error'));
+
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).put('/usuario/admin/true/test');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+  });
+
+  it('should return 401 if not authenticated', async () => {
+    mockSession.setSession({});
+
+    const res = await request(app).put('/usuario/admin/true/test');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Not authenticated');
+  });
+
+  it('should return 401 if not admin', async () => {
+    mockSession.setSession({ user: { username: 'test', admin: false } });
+
+    const res = await request(app).put('/usuario/admin/true/test');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Not admin');
+  });
+
+  it('should return 400 if admin is not true or false', async () => {
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).put('/usuario/admin/other/test');
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Admin must be true or false');
+  });
+});
