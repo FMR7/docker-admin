@@ -47,3 +47,5 @@ describe('getUserByUsername', () => {
     await expect(userService.getUserByUsername('test')).rejects.toThrow('Database error');
   });
 });
+
+
