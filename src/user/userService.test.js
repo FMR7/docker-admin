@@ -134,3 +134,25 @@ describe('signup', () => {
   });
 });
 
+describe('deleteUser', () => {
+  it('should return a user without password', async () => {
+    usuarioRepo.deleteUser = jest.fn().mockResolvedValue({ username: 'test', active: true, admin: false });
+    usuarioRepo.findByUsername = jest.fn().mockResolvedValue({ username: 'test', active: true, admin: false });
+
+    const res = await userService.deleteUser('test');
+    expect(res).toEqual({ username: 'test', active: true, admin: false });
+  });
+
+  it('should throw an error if user does not exist', async () => {
+    usuarioRepo.findByUsername = jest.fn().mockResolvedValue(undefined);
+
+    await expect(userService.deleteUser('test')).rejects.toThrow('User not found');
+  });
+
+  it('should handle errors', async () => {
+    usuarioRepo.findByUsername = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(userService.deleteUser('test')).rejects.toThrow('Database error');
+  });
+});
+
