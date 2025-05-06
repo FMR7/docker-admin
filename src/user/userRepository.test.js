@@ -1,0 +1,30 @@
+const db = require('../config/db');
+const repo = require('./userRepository');
+
+jest.mock('../config/db');
+
+describe('findAll', () => {
+  it('should return all users without passwords', async () => {
+    db.query = jest.fn().mockResolvedValue({
+      rows: [{ username: 'test', active: true, admin: false }]
+    });
+  
+    const res = await repo.findAll();
+  
+    expect(res).toEqual([{ username: 'test', active: true, admin: false }]);
+  });
+  
+  it('should return an empty array if no users are found', async () => {
+    db.query = jest.fn().mockResolvedValue({ rows: [] });
+  
+    const res = await repo.findAll();
+    expect(res).toEqual([]);
+  });
+
+  it('should handle errors', async () => {
+    db.query = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(repo.findAll()).rejects.toThrow('Database error');
+  });
+});
+
