@@ -113,3 +113,21 @@ describe('deleteUser', () => {
     await expect(repo.deleteUser('test')).rejects.toThrow('Database error');
   });
 });
+
+describe('updatePasswordWrongTries', () => {
+  it('should update password wrong tries', async () => {
+    db.query = jest.fn().mockResolvedValue({
+      rows: [{ username: 'test', password_wrong_tries: 1 }]
+    });
+  
+    const res = await repo.updatePasswordWrongTries('test');
+  
+    expect(res).toEqual({ username: 'test', password_wrong_tries: 1 });
+  });
+
+  it('should handle errors', async () => {
+    db.query = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(repo.updatePasswordWrongTries('test')).rejects.toThrow('Database error');
+  });
+});
