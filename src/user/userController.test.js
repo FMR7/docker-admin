@@ -372,3 +372,23 @@ describe('Logout', () => {
     expect(res.body.message).toBe('No active session to destroy');
   });
 });
+
+describe('Logged User', () => {
+  it('should return 200 on successful get logged user', async () => {
+    mockSession.setSession({ user: { username: 'test', admin: false } });
+
+    const res = await request(app).get('/usuario/logged');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.ok).toBe(true);
+  });
+
+  it('should return 401 if no session exists', async () => {
+    mockSession.setSession(null);
+
+    const res = await request(app).get('/usuario/logged');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.ok).toBe(false);
+  });
+});
