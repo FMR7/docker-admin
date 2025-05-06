@@ -48,7 +48,7 @@ if (process.env.SSL === 'true') {
     http.createServer((req, res) => {
         const host = req.headers.host?.split(':')[0] || 'localhost';
         res.writeHead(301, {
-            Location: `https://${host}:${portHttps}${req.url}`
+            Location: `https://${host}${req.url}`
         });
         res.end();
     }).listen(80, () => {
