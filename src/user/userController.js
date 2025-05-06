@@ -63,6 +63,7 @@ router.post('/usuario/register', async (req, res) => {
 });
 
 router.delete('/usuario/:username', async (req, res) => {
+    console.log('Session test', req.session);
     if (!req.session.user) {
         return res.status(401).json({ ok: false, message: 'Not authenticated' });
     }

@@ -4,6 +4,9 @@ const session = require('express-session');
 const userRoutes = require('./userController');
 
 jest.mock('./userService');
+jest.mock('express-session');
+const mockSession = require('../testUtils/mockSessionMiddleware');
+require('express-session').mockImplementation(mockSession);
 const userService = require('./userService');
 
 const app = express();
@@ -19,8 +22,9 @@ app.use(session({
 // ✅ Use route
 app.use('/', userRoutes);
 
-describe('User Controller Login', () => {
+describe('Login', () => {
   it('should return 200 on successful login', async () => {
+    mockSession.setSession({});
     userService.signin.mockResolvedValue({ username: 'test', active: true, admin: false });
 
     const res = await request(app).post('/usuario/login').send({
@@ -65,7 +69,7 @@ describe('User Controller Login', () => {
   });
 });
 
-describe('User Controller Register', () => {
+describe('Register', () => {
   it('should return 200 on successful register', async () => {
     userService.signup.mockResolvedValue({ username: 'test', active: true, admin: false });
 
@@ -120,5 +124,49 @@ describe('User Controller Register', () => {
 
     expect(res.statusCode).toBe(500);
     expect(res.body.ok).toBe(false);
+  });
+});
+
+describe('Delete User', () => {
+  it('should return 200 on successful delete', async () => {
+    userService.deleteUser.mockResolvedValue({ username: 'test', active: true, admin: true });
+
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).delete('/usuario/test');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.ok).toBe(true);
+  });
+
+  it('should return 401 if error', async () => {
+    userService.deleteUser.mockRejectedValue(new Error('Some error'));
+
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).delete('/usuario/test');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+  });
+
+  it('should return 401 if not authenticated', async () => {
+    mockSession.setSession({});
+
+    const res = await request(app).delete('/usuario/test');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Not authenticated');
+  });
+
+  it('should return 401 if not admin', async () => {
+    mockSession.setSession({ user: { username: 'test', admin: false } });
+
+    const res = await request(app).delete('/usuario/test');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Not admin');
   });
 });
