@@ -100,7 +100,7 @@ describe('signin', () => {
 
     await expect(userService.signin('test', 'wrongPassword')).rejects.toThrow('Invalid password');
   });
-  
+
   it('should disable user after 3 failed attempts', async () => {
     const testPasswordHash = (await bcrypt.hash(testPassword, 10)).toString();
     usuarioRepo.findByUsernameAndActive = jest.fn().mockResolvedValue({ username: 'test', active: true, admin: false, password: testPasswordHash, password_wrong_tries: 3 });
@@ -108,6 +108,29 @@ describe('signin', () => {
     usuarioRepo.disableUser = jest.fn().mockResolvedValue({ username: 'test', active: false, admin: false });
 
     await expect(userService.signin('test', 'wrongPassword')).rejects.toThrow('User disabled due to too many failed login attempts. Contact admin.');
+  });
+});
+
+describe('signup', () => {
+  it('should return a user without password', async () => {
+    const testPasswordHash = (await bcrypt.hash(testPassword, 10)).toString();
+    usuarioRepo.findByUsername = jest.fn().mockResolvedValue(undefined);
+    usuarioRepo.createUser = jest.fn().mockResolvedValue({ username: 'test', active: true, admin: false, password: testPasswordHash, password_wrong_tries: 0 });
+
+    const res = await userService.signup('test', testPassword);
+    expect(res).toEqual({ username: 'test', active: true, admin: false, password_wrong_tries: 0 });
+  });
+
+  it('should throw an error if user already exists', async () => {
+    usuarioRepo.findByUsername = jest.fn().mockResolvedValue({ username: 'test', active: true, admin: false });
+
+    await expect(userService.signup('test', testPassword)).rejects.toThrow('User already exists');
+  });
+
+  it('should handle errors', async () => {
+    usuarioRepo.findByUsername = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(userService.signup('test', testPassword)).rejects.toThrow('Database error');
   });
 });
 
