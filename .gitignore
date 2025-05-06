@@ -3,3 +3,4 @@ node_modules
 sonar.sh
 .scannerwork
 coverage
+.vscode

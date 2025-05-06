@@ -346,3 +346,29 @@ describe('Activate/Deactivate admin role', () => {
     expect(res.body.message).toBe('Admin must be true or false');
   });
 });
+
+describe('Logout', () => {
+  beforeEach(() => {
+    mockSession.clearSession();
+  });
+
+  it('should return 200 on successful logout', async () => {
+    mockSession.setSession({ user: { username: 'test', admin: false } });
+
+    const res = await request(app).get('/usuario/logout');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.ok).toBe(true);
+    expect(res.body.message).toBe('Session closed');
+  });
+
+  it('should return 400 if no session exists', async () => {
+    mockSession.setSession(null);
+
+    const res = await request(app).get('/usuario/logout');
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('No active session to destroy');
+  });
+});

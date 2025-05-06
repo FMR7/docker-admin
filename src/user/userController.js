@@ -46,7 +46,6 @@ router.post('/usuario/register', async (req, res) => {
 });
 
 router.delete('/usuario/:username', async (req, res) => {
-    console.log('Session test', req.session);
     if (!req.session.user) {
         return res.status(401).json({ ok: false, message: 'Not authenticated' });
     }
@@ -125,6 +124,10 @@ router.put('/usuario/admin/:admin/:username', async (req, res) => {
 });
 
 router.get('/usuario/logout', async (req, res) => {
+    if (!req.session?.user) {
+        return res.status(400).json({ ok: false, message: 'No active session to destroy' });
+    }
+
     req.session.destroy(err => {
         if (err) {
             return res.status(500).json({ ok: false, message: 'Error closing session' });
