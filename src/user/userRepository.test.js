@@ -149,3 +149,21 @@ describe('setActive', () => {
     await expect(repo.setActive('test', true)).rejects.toThrow('Database error');
   });
 });
+
+describe('setAdmin', () => {
+  it('should set user admin', async () => {
+    db.query = jest.fn().mockResolvedValue({
+      rows: [{ username: 'test', active: true, admin: true }]
+    });
+  
+    const res = await repo.setAdmin('test', true);
+  
+    expect(res).toEqual({ username: 'test', active: true, admin: true });
+  });
+
+  it('should handle errors', async () => {
+    db.query = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(repo.setAdmin('test', true)).rejects.toThrow('Database error');
+  });
+});
