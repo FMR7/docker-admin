@@ -70,7 +70,8 @@ router.get('/container/turn-off/:containerId', async (req, res) => {
 
         return res.json(result);
     } catch (err) {
-        return res.status(401).json({ ok: false, message: err.message });
+        console.error(err);
+        return res.status(500).json({ ok: false, message: 'Internal server error' });
     }
 });
 
