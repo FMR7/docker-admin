@@ -93,17 +93,17 @@ function turnOffContainer(containerId) {
 function getContainers() {
     return new Promise((resolve, reject) => {
         const containerIds = process.env.CONTAINERS.split(',');
-        const result = { ok: true, containers: [] };
+        const containers = [];
 
         Promise.all(containerIds.map(async (containerId) => {
             if (!containerId) throw new Error('Container ID required');
             const status = await getStatus(containerId);
             const name = await getName(containerId);
-            result.containers.push({ id: containerId, name, status });
+            containers.push({ id: containerId, name, status });
         }))
             .then(() => {
-                console.log(result);
-                resolve(result);
+                console.log(containers);
+                resolve(containers);
             })
             .catch((err) => {
                 reject(new Error('Error getting containers'));
