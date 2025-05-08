@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getStatus, getName, turnOnContainer, turnOffContainer } = require('./containerService');
+const { getStatus, getName, turnOnContainer, turnOffContainer, getContainers } = require('./containerService');
 
 router.get('/container/status/:containerId', async (req, res) => {
     try {
@@ -81,26 +81,11 @@ router.get('/container', async (req, res) => {
     }
 
     try {
-        let result = { ok: true, containers: [] };
-        const containerIds = process.env.CONTAINERS.split(',');
-        for (const containerId of containerIds) {
-            if (!containerId) {
-                return res.status(400).json({ ok: false, message: 'Container ID required' });
-            }
-
-            const status = await getStatus(containerId);
-            const name = await getName(containerId);
-            result.containers.push({
-                id: containerId,
-                name: name,
-                status: status
-            });
-        }
-
-        console.log(result);
-        return res.json(result);
+        const containers = await getContainers();
+        return res.json({ ok: true, containers });
     } catch (err) {
-        return res.status(401).json({ ok: false, message: err.message });
+        console.error(err);
+        return res.status(500).json({ ok: false, message: 'Internal server error' });
     }
 });
 

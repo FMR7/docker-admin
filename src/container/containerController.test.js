@@ -187,3 +187,36 @@ describe('turnOffContainer', () => {
     expect(result.ok).toBe(false);
   });
 });
+
+describe('getContainers', () => {
+  beforeEach(() => {
+    process.env.CONTAINERS = 'containerId,anotherContainer';
+    jest.clearAllMocks();
+  });
+
+  it('should return the status of all containers', async () => {
+    containerService.getContainers.mockResolvedValue({ ok: true, containers: [] });
+
+    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
+    
+    const result = await request(app).get('/container');
+    expect(result.statusCode).toBe(200);
+    expect(result.ok).toBe(true);
+  });
+
+  it('should return 401 if not authenticated', async () => {
+    mockSession.setSession(null);
+    const result = await request(app).get('/container');
+    expect(result.statusCode).toBe(401);
+    expect(result.ok).toBe(false);
+  });
+
+  it('should return 500 if error', async () => {
+    containerService.getContainers.mockRejectedValue(new Error('Some error'));
+
+    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
+    const result = await request(app).get('/container');
+    expect(result.statusCode).toBe(500);
+    expect(result.ok).toBe(false);
+  });
+});
