@@ -13,15 +13,11 @@ Built with **Node.js**, **Express**, **PostgreSQL**, and **Bootstrap**.
 - Connection to PostgreSQL database
 
 ## 🐘 Database
-```sql
-CREATE TABLE public.usuarios (
-	username varchar(20) NOT NULL,
-	"password" varchar(512) NOT NULL,
-	active bool DEFAULT false NOT NULL,
-	password_wrong_tries int4 DEFAULT 0 NOT NULL,
-	"admin" bool DEFAULT false NOT NULL,
-	CONSTRAINT usuarios_pk PRIMARY KEY (username)
-);
+Run the script [initDB.sql](https://raw.githubusercontent.com/FMR7/docker-admin/refs/heads/master/src/config/initDB.sql) using your favorite DBMS.
+
+Or in the terminal, type:
+```bash
+psql -U postgres -h remote_host -p 5432 -d my_database -f ./src/config/initDB.sql
 ```
 
 ## 💻 Installation
@@ -45,6 +41,7 @@ SSL = true
 
 # IDs of the containers that will be managed
 CONTAINERS = '07ccf7644c771b5e59eadb37b7d1fb3cb50bc0d502893e0b1c7a47db1b4a0932,13891f9cd5204912f44f64d684849640725dd4f3a8638434f9467c566b304f05'
+ENABLE_DB_LOGS = true
 ```
 
 ## 🚀 Run
