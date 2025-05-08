@@ -14,9 +14,9 @@ const app = express();
 app.use(express.json());
 
 app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
 }));
 
 app.use('/api', usuarioRoutes);
@@ -28,34 +28,34 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // DB INFO
 (async () => {
-    const res = await db.query('SELECT current_database(), current_user');
-    console.log('🧩 Connected to:', res.rows[0]);
+  const res = await db.query('SELECT current_database(), current_user');
+  console.log('🧩 Connected to:', res.rows[0]);
 })();
 
 // Certificates info
 const options = {
-    key: fs.readFileSync('../certs/key.pem'),
-    cert: fs.readFileSync('../certs/cert.pem'),
+  key: fs.readFileSync('../certs/key.pem'),
+  cert: fs.readFileSync('../certs/cert.pem'),
 };
 
 // RUN SERVER
 if (process.env.SSL === 'true') {
-    https.createServer(options, app).listen(443, () => {
-        console.log(`💻 Server running at: https://localhost`);
+  https.createServer(options, app).listen(443, () => {
+    console.log(`💻 Server running at: https://localhost`);
+  });
+
+  // Servidor HTTP que redirige a HTTPS
+  http.createServer((req, res) => {
+    const host = req.headers.host?.split(':')[0] || 'localhost';
+    res.writeHead(301, {
+      Location: `https://${host}${req.url}`
     });
-    
-    // Servidor HTTP que redirige a HTTPS
-    http.createServer((req, res) => {
-        const host = req.headers.host?.split(':')[0] || 'localhost';
-        res.writeHead(301, {
-            Location: `https://${host}${req.url}`
-        });
-        res.end();
-    }).listen(80, () => {
-        console.log('🌐 HTTP redirector running on port 80');
-    });
+    res.end();
+  }).listen(80, () => {
+    console.log('🌐 HTTP redirector running on port 80');
+  });
 } else {
-    app.listen(80, () => {
-        console.log(`💻 Server running at: http://localhost`);
-    });
+  app.listen(80, () => {
+    console.log(`💻 Server running at: http://localhost`);
+  });
 }
