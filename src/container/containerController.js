@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getStatus, getName } = require('./containerService');
+const { getStatus, getName, turnOnContainer, turnOffContainer } = require('./containerService');
 
 router.get('/container/status/:containerId', async (req, res) => {
     try {
@@ -28,63 +28,47 @@ router.get('/container/status/:containerId', async (req, res) => {
 
 
 router.get('/container/turn-on/:containerId', async (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ ok: false, message: 'Not authenticated' });
-    }
-
-    const { containerId } = req.params;
-
-    if (!process.env.CONTAINERS.includes(containerId)) {
-        return res.status(400).json({ ok: false, message: 'Invalid container ID' });
-    }
-
     try {
-        const { exec } = require('child_process');
-        exec(`docker start ${containerId}`, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Error turning on container: ${error.message}`);
-                return res.status(500).json({ ok: false, message: 'Error turning on container' });
-            }
-            if (stderr) {
-                console.error(`Error turning on container: ${stderr}`);
-                return res.status(500).json({ ok: false, message: 'Error turning on container' });
-            }
-            console.log(`Container turned on: ${stdout}`);
-            return res.json({ ok: true, message: 'Container turned on' });
-        });
+        if (!req.session.user) {
+            return res.status(401).json({ ok: false, message: 'Not authenticated' });
+        }
+
+        const { containerId } = req.params;
+
+        if (!process.env.CONTAINERS.includes(containerId)) {
+            return res.status(400).json({ ok: false, message: 'Invalid container ID' });
+        }
+
+        const result = await turnOnContainer(containerId);
+        if (!result.ok) {
+            return res.status(500).json({ ok: false, message: result.message });
+        }
+
+        return res.json(result);
     } catch (err) {
-        return res.status(401).json({ ok: false, message: err.message });
+        console.error(err);
+        return res.status(500).json({ ok: false, message: 'Internal server error' });
     }
 });
 
 router.get('/container/turn-off/:containerId', async (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ ok: false, message: 'Not authenticated' });
-    }
-
-    const { containerId } = req.params;
-    if (!containerId) {
-        return res.status(400).json({ ok: false, message: 'Container ID required' });
-    }
-
-    if (!process.env.CONTAINERS.includes(containerId)) {
-        return res.status(400).json({ ok: false, message: 'Invalid container ID' });
-    }
-
     try {
-        const { exec } = require('child_process');
-        exec(`docker stop ${containerId}`, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Error turning on container: ${error.message}`);
-                return res.status(500).json({ ok: false, message: 'Error turning off container' });
-            }
-            if (stderr) {
-                console.error(`Error turning on container: ${stderr}`);
-                return res.status(500).json({ ok: false, message: 'Error turning off container' });
-            }
-            console.log(`Container turned on: ${stdout}`);
-            return res.json({ ok: true, message: 'Container turned off' });
-        });
+        if (!req.session.user) {
+            return res.status(401).json({ ok: false, message: 'Not authenticated' });
+        }
+
+        const { containerId } = req.params;
+
+        if (!process.env.CONTAINERS.includes(containerId)) {
+            return res.status(400).json({ ok: false, message: 'Invalid container ID' });
+        }
+
+        const result = await turnOffContainer(containerId);
+        if (!result.ok) {
+            return res.status(500).json({ ok: false, message: result.message });
+        }
+
+        return res.json(result);
     } catch (err) {
         return res.status(401).json({ ok: false, message: err.message });
     }
@@ -96,7 +80,7 @@ router.get('/container', async (req, res) => {
     }
 
     try {
-        let result = {ok: true, containers: []};
+        let result = { ok: true, containers: [] };
         const containerIds = process.env.CONTAINERS.split(',');
         for (const containerId of containerIds) {
             if (!containerId) {
@@ -110,7 +94,7 @@ router.get('/container', async (req, res) => {
                 name: name,
                 status: status
             });
-        }        
+        }
 
         console.log(result);
         return res.json(result);

@@ -77,3 +77,58 @@ describe('getStatus', () => {
     expect(result.ok).toBe(false);
   });
 });
+
+describe('turnOnContainer', () => {
+  beforeEach(() => {
+    process.env.CONTAINERS = 'containerId,anotherContainer';
+    jest.clearAllMocks();
+  });
+
+  it('should turn on the container, true', async () => {
+    containerService.turnOnContainer.mockResolvedValue({ ok: true, message: 'Container turned on' });
+
+    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
+    
+    const containerId = 'containerId';
+    const result = await request(app).get(`/container/turn-on/${containerId}`);
+    expect(result.statusCode).toBe(200);
+    expect(result.ok).toBe(true);
+  });
+
+  it('should turn on the container, false', async () => {
+    containerService.turnOnContainer.mockResolvedValue({ ok: false });
+
+    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
+    
+    const containerId = 'containerId';
+    const result = await request(app).get(`/container/turn-on/${containerId}`);
+    expect(result.statusCode).toBe(500);
+    expect(result.ok).toBe(false);
+  });
+
+  it('should return 401 if not authenticated', async () => {
+    mockSession.setSession(null);
+    const containerId = 'containerId';
+    const result = await request(app).get(`/container/turn-on/${containerId}`);
+    expect(result.statusCode).toBe(401);
+    expect(result.ok).toBe(false);
+  });
+
+  it('should return 400 if container ID is invalid', async () => {
+    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
+    const containerId = 'invalidContainerId';
+    const result = await request(app).get(`/container/turn-on/${containerId}`);
+    expect(result.statusCode).toBe(400);
+    expect(result.ok).toBe(false);
+  });
+
+  it('should return 500 if error', async () => {
+    containerService.turnOnContainer.mockRejectedValue(new Error('Some error'));
+
+    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
+    const containerId = 'containerId';
+    const result = await request(app).get(`/container/turn-on/${containerId}`);
+    expect(result.statusCode).toBe(500);
+    expect(result.ok).toBe(false);
+  });
+});
