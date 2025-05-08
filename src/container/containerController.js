@@ -3,25 +3,29 @@ const router = express.Router();
 const { getStatus, getName } = require('./containerService');
 
 router.get('/container/status/:containerId', async (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ ok: false, message: 'Not authenticated' });
-    }
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ ok: false, message: 'Not authenticated' });
+        }
 
-    const { containerId } = req.params;
-    if (!containerId) {
-        return res.status(400).json({ ok: false, message: 'Container ID required' });
-    }
+        const { containerId } = req.params;
 
-    if (!process.env.CONTAINERS.includes(containerId)) {
-        return res.status(400).json({ ok: false, message: 'Invalid container ID' });
-    }
+        if (!process.env.CONTAINERS.includes(containerId)) {
+            return res.status(400).json({ ok: false, message: 'Invalid container ID' });
+        }
 
-    const result = await getStatus(containerId);
-    if (!result.ok) {
-        return res.status(500).json({ ok: false, message: result.message });
+        const result = await getStatus(containerId);
+        if (!result.ok) {
+            return res.status(500).json({ ok: false, message: result.message });
+        }
+
+        return res.json(result);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ ok: false, message: 'Internal server error' });
     }
-    return res.json(result);
 });
+
 
 router.get('/container/turn-on/:containerId', async (req, res) => {
     if (!req.session.user) {
@@ -29,9 +33,6 @@ router.get('/container/turn-on/:containerId', async (req, res) => {
     }
 
     const { containerId } = req.params;
-    if (!containerId) {
-        return res.status(400).json({ ok: false, message: 'Container ID required' });
-    }
 
     if (!process.env.CONTAINERS.includes(containerId)) {
         return res.status(400).json({ ok: false, message: 'Invalid container ID' });
