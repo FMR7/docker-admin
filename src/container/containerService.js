@@ -44,50 +44,32 @@ function getName(containerId) {
   });
 }
 
-function turnOnContainer(containerId) {
+function controlContainer(action, containerId) {
   return new Promise((resolve, reject) => {
     try {
-      const { exec } = require('child_process');
-      exec(`docker start ${containerId}`, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error turning on container: ${error.message}`);
-          return reject(new Error('Error turning on container'));
+      exec(`docker ${action} ${containerId}`, (error, stdout, stderr) => {
+        if (error || stderr) {
+          const errorMsg = `Error ${action === 'start' ? 'turning on' : 'turning off'} container: ${error?.message || stderr}`;
+          console.error(errorMsg);
+          return reject(new Error(errorMsg));
         }
-        if (stderr) {
-          console.error(`Error turning on container: ${stderr}`);
-          return reject(new Error('Error turning on container'));
-        }
-        console.log(`Container turned on: ${stdout}`);
-        return resolve({ ok: true, message: 'Container turned on' });
+        console.log(`Container ${action === 'start' ? 'turned on' : 'turned off'}: ${stdout}`);
+        return resolve({ ok: true, message: `Container ${action === 'start' ? 'turned on' : 'turned off'}` });
       });
     } catch (err) {
-      console.error(`Error turning on container: ${err.message}`);
-      return reject(new Error('Error turning on container'));
+      const errorMsg = `Unexpected error when trying to ${action} container: ${err.message}`;
+      console.error(errorMsg);
+      return reject(new Error(errorMsg));
     }
   });
 }
 
+function turnOnContainer(containerId) {
+  return controlContainer('start', containerId);
+}
+
 function turnOffContainer(containerId) {
-  return new Promise((resolve, reject) => {
-    try {
-      const { exec } = require('child_process');
-      exec(`docker stop ${containerId}`, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error turning off container: ${error.message}`);
-          return reject(new Error('Error turning off container'));
-        }
-        if (stderr) {
-          console.error(`Error turning off container: ${stderr}`);
-          return reject(new Error('Error turning off container'));
-        }
-        console.log(`Container turned off: ${stdout}`);
-        return resolve({ ok: true, message: 'Container turned off' });
-      });
-    } catch (err) {
-      console.error(`Error turning off container: ${err.message}`);
-      return reject(new Error('Error turning off container'));
-    }
-  });
+  return controlContainer('stop', containerId);
 }
 
 function getContainers() {
