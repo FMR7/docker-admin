@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const logService = require('../log/logService');
 const usuarioService = require('./userService');
 
 router.post('/usuario/login', async (req, res) => {
@@ -15,6 +16,7 @@ router.post('/usuario/login', async (req, res) => {
   try {
     const user = await usuarioService.signin(username, password);
     req.session.user = user;
+    await logService.insert(user.username, logService.ACTIONS.USER_LOGIN, 'User logged in');
     return res.json({ ok: true, user });
   } catch (err) {
     return res.status(401).json({ ok: false, message: err.message });
@@ -94,6 +96,7 @@ router.put('/usuario/active/:active/:username', async (req, res) => {
 
   try {
     const user = await usuarioService.setActive(username, active === 'true');
+    await logService.insert(req.session.user.username, active === 'true' ? logService.ACTIONS.USER_ACTIVATE_TRUE : logService.ACTIONS.USER_ACTIVATE_FALSE, 'User ' + username + ' ' + (active === 'true' ? 'activated' : 'deactivated'));
     const msg = 'User <strong>' + username + '</strong> ' + (active === 'true' ? 'activated' : 'deactivated');
     return res.json({ ok: true, user, message: msg });
   } catch (err) {
@@ -116,6 +119,7 @@ router.put('/usuario/admin/:admin/:username', async (req, res) => {
 
   try {
     const user = await usuarioService.setAdmin(username, admin === 'true');
+    await logService.insert(req.session.user.username, admin === 'true' ? logService.ACTIONS.USER_ADMIN_TRUE : logService.ACTIONS.USER_ADMIN_FALSE, 'User ' + username + ' ' + (admin === 'true' ? 'promoted to admin' : 'demoted from admin'));
     const msg = 'User <strong>' + username + '</strong> ' + (admin === 'true' ? ' promoted to admin' : ' demoted from admin');
     return res.json({ ok: true, user, message: msg });
   } catch (err) {

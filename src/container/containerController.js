@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const logService = require('../log/logService');
 const {
   getStatus,
   turnOnContainer,
@@ -25,14 +26,21 @@ function validateContainerId(req, res, next) {
 }
 
 // Generic async handler wrapper
-function handleRequest(action) {
+function handleRequest(action, logConfig) {
   return async (req, res) => {
     try {
       const { containerId } = req.params;
       const result = await action(containerId);
+
       if (!result.ok) {
         return res.status(500).json({ ok: false, message: result.message });
       }
+
+      if (logConfig) {
+        const { username, action: logAction, detail } = logConfig(req, result);
+        await logService.insert(username, logAction, detail);
+      }
+
       return res.json(result);
     } catch (err) {
       console.error(err);
@@ -51,14 +59,23 @@ router.get('/container/status/:containerId',
 router.get('/container/turn-on/:containerId',
   isAuthenticated,
   validateContainerId,
-  handleRequest(turnOnContainer)
+  handleRequest(turnOnContainer, (req, result) => ({
+    username: req.session.user.username,
+    action: logService.ACTIONS.CONTAINER_TURN_ON,
+    detail: `Container ${req.params.containerId} turned on`
+  }))
 );
 
 router.get('/container/turn-off/:containerId',
   isAuthenticated,
   validateContainerId,
-  handleRequest(turnOffContainer)
+  handleRequest(turnOffContainer, (req, result) => ({
+    username: req.session.user.username,
+    action: logService.ACTIONS.CONTAINER_TURN_OFF,
+    detail: `Container ${req.params.containerId} turned off`
+  }))
 );
+
 
 router.get('/container', isAuthenticated, async (req, res) => {
   try {
