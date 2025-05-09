@@ -16,3 +16,9 @@ CREATE TABLE public.log (
 	CONSTRAINT log_pkey PRIMARY KEY (log_key),
 	CONSTRAINT log_usuarios_fk FOREIGN KEY (username) REFERENCES public.usuarios(username)
 );
+
+CREATE TABLE public.container_config (
+	container_key varchar(256) NOT NULL,
+	"name" varchar(50) NOT NULL,
+	CONSTRAINT containers_pk PRIMARY KEY (container_key)
+);
