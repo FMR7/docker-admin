@@ -3,6 +3,7 @@ let destroyMock = jest.fn((cb) => cb(null)); // default to success
 
 const mockSession = jest.fn(() => (req, res, next) => {
   req.session = {
+    cookie: {},
     ...sessionData,
     destroy: (...args) => destroyMock(...args), // delegate to the mocked function
   };
