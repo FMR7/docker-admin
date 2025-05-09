@@ -15,6 +15,7 @@ router.post('/usuario/login', async (req, res) => {
 
   try {
     const user = await usuarioService.signin(username, password);
+    req.session.cookie.maxAge = 24 * 60 * 60 * 1000; // 1 day
     req.session.user = user;
     await logService.insert(user.username, logService.ACTIONS.USER_LOGIN, 'User logged in');
     return res.json({ ok: true, user });
