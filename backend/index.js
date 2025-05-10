@@ -34,28 +34,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Certificates info
 const options = {
-  key: fs.readFileSync('../certs/key.pem'),
-  cert: fs.readFileSync('../certs/cert.pem'),
+  key: fs.readFileSync('../../certs/key.pem'),
+  cert: fs.readFileSync('../../certs/cert.pem'),
 };
+
+const PORT = process.env.PORT || 3000;
 
 // RUN SERVER
 if (process.env.SSL === 'true') {
-  https.createServer(options, app).listen(443, () => {
-    console.log(`💻 Server running at: https://localhost`);
-  });
-
-  // Servidor HTTP que redirige a HTTPS
-  http.createServer((req, res) => {
-    const host = req.headers.host?.split(':')[0] || 'localhost';
-    res.writeHead(301, {
-      Location: `https://${host}${req.url}`
-    });
-    res.end();
-  }).listen(80, () => {
-    console.log('🌐 HTTP redirector running on port 80');
+  https.createServer(options, app).listen(PORT, () => {
+    console.log(`💻 Server running at: https://localhost:${PORT}`);
   });
 } else {
-  app.listen(80, () => {
-    console.log(`💻 Server running at: http://localhost`);
+  app.listen(PORT, () => {
+    console.log(`💻 Server running at: http://localhost:${PORT}`);
   });
 }
