@@ -132,6 +132,24 @@ describe('updatePasswordWrongTries', () => {
   });
 });
 
+describe('resetPasswordWrongTries', () => {
+  it('should update password wrong tries reset', async () => {
+    db.query = jest.fn().mockResolvedValue({
+      rows: [{ username: 'test', password_wrong_tries: 0 }]
+    });
+  
+    const res = await repo.resetPasswordWrongTries('test');
+  
+    expect(res).toEqual({ username: 'test', password_wrong_tries: 0 });
+  });
+
+  it('should handle errors', async () => {
+    db.query = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(repo.resetPasswordWrongTries('test')).rejects.toThrow('Database error');
+  });
+});
+
 describe('setActive', () => {
   it('should set user active', async () => {
     db.query = jest.fn().mockResolvedValue({

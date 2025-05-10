@@ -35,6 +35,11 @@ async function updatePasswordWrongTries(username) {
   return res.rows[0];
 }
 
+async function resetPasswordWrongTries(username) {
+  const res = await db.query('UPDATE usuarios SET password_wrong_tries = 0 WHERE username = $1 RETURNING *', [username]);
+  return res.rows[0];
+}
+
 async function setActive(username, active) {
   const res = await db.query('UPDATE usuarios SET active = $1, password_wrong_tries = 0 WHERE username = $2 RETURNING *', [active, username]);
   return res.rows[0];
@@ -45,4 +50,4 @@ async function setAdmin(username, admin) {
   return res.rows[0];
 }
 
-module.exports = { findAll, findByUsername, findByUsernameAndActive, createUser, deleteUser, updatePasswordWrongTries, setActive, setAdmin };
+module.exports = { findAll, findByUsername, findByUsernameAndActive, createUser, deleteUser, updatePasswordWrongTries, resetPasswordWrongTries, setActive, setAdmin };

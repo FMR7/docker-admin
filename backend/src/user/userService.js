@@ -49,14 +49,17 @@ async function signin(username, password) {
   if (!isValid) {
     const updatedUser = await usuarioRepo.updatePasswordWrongTries(user.username);
     if (updatedUser.password_wrong_tries >= 3) {
-      await usuarioRepo.disableUser(user.username);
+      await usuarioRepo.setActive(user.username, false);
       throw new Error('User disabled due to too many failed login attempts. Contact admin.');
     }
 
     throw new Error('Invalid password');
+  } else {
+    await usuarioRepo.resetPasswordWrongTries(user.username);
+    return { username: user.username, active: user.active, admin: user.admin };
   }
 
-  return { username: user.username, active: user.active, admin: user.admin };
+  
 }
 
 async function signup(username, password) {
