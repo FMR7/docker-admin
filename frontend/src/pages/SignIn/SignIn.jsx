@@ -44,7 +44,7 @@ const SignIn = () => {
       <p className="text-center mt-4 text-sm">
         Not registered?{' '}
         <a
-          href="signup.html"
+          href="/signup"
           className="text-blue-600 hover:underline dark:text-blue-400"
         >
           Sign up
