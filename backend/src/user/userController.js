@@ -40,8 +40,8 @@ router.post('/usuario/register', async (req, res) => {
       return res.status(400).json({ ok: false, message: 'Username already exists' });
     }
 
-    const newUser = await usuarioService.signup(username, password);
-    return res.json({ ok: true, user: newUser });
+    await usuarioService.signup(username, password);
+    return res.json({ ok: true, message: 'User created successfully! Wait until approval by an admin.' });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ ok: false, message: 'Error signup' });
