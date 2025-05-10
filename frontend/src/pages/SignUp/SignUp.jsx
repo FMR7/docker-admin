@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import TextInput from '../../components/TextInput';
 
-const SignIn = () => {
+const SignUp = () => {
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -9,7 +9,7 @@ const SignIn = () => {
     const data = new FormData(e.target);
     const userData = Object.fromEntries(data.entries());
 
-    const res = await fetch('/api/usuario/login', {
+    const res = await fetch('/api/usuario/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData),
@@ -54,4 +54,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;
