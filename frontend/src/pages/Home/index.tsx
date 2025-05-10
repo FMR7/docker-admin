@@ -1,13 +1,30 @@
+import { useState } from 'preact/hooks';
 import preactLogo from '../../assets/preact.svg';
 import './style.css';
 
 export function Home() {
+
+	const [message, setMessage] = useState(null);
+
+  const getLogged = async () => {
+    const res = await fetch('/api/usuario/logged', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    const result = await res.json();
+		setMessage(result.message);
+  };
+
+	getLogged();
+
 	return (
 		<div class="home">
 			<a href="https://preactjs.com" target="_blank">
 				<img src={preactLogo} alt="Preact logo" height="160" width="160" />
 			</a>
 			<h1>Get Started building Vite-powered Preact Apps </h1>
+			<h2>{message}</h2>
 			<section>
 				<Resource
 					title="Learn Preact"
