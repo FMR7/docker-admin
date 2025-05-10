@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'preact/hooks';
+import TextInput from '../../components/TextInput';
 
 const SignIn = () => {
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
   const [error, setError] = useState(null);
 
-  // Switch theme function
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
@@ -12,7 +12,8 @@ const SignIn = () => {
   };
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-bs-theme', theme);
+    document.documentElement.classList.remove('dark', 'light');
+    document.documentElement.classList.add(theme);
   }, [theme]);
 
   const handleSubmit = async (e) => {
@@ -36,58 +37,43 @@ const SignIn = () => {
   };
 
   return (
-    <div class="bg-body-tertiary">
-      <header class="d-flex flex-wrap justify-content-center p-3 mb-4 border-bottom bg-body sticky-top">
-        <nav class="navbar navbar-expand-sm">
-          <div class="container-fluid">
-            <button
-              id="btnSwitch"
-              class="navbar-toggler btn"
-              type="button"
-              onClick={toggleTheme}
-            >
-              <i class={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'} fa-xl`}></i>
-            </button>
-          </div>
-        </nav>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+      <header className="sticky top-0 bg-white dark:bg-gray-800 shadow p-4 flex justify-end">
+        <button
+          onClick={toggleTheme}
+          className="text-gray-700 dark:text-gray-200 hover:text-yellow-500 dark:hover:text-yellow-300"
+        >
+          <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'} fa-xl`}></i>asdf
+        </button>
       </header>
 
-      <main class="custom-form position-absolute top-50 start-50 translate-middle w-100">
-        {error && <div id="signUpDangerAlert" class="alert alert-danger">{error}</div>}
+      <main className="flex items-center justify-center h-[calc(100vh-4rem)]">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md"
+        >
+          <h1 className="text-2xl font-semibold mb-6 text-center">Sign in</h1>
 
-        <form id="loginForm" onSubmit={handleSubmit}>
-          <h1 class="h3 mb-3 fw-normal">Sign in</h1>
+          {error && (
+            <div className="bg-red-100 text-red-800 px-4 py-2 mb-4 rounded border border-red-300">
+              {error}
+            </div>
+          )}
 
-          <div class="form-floating">
-            <input
-              type="text"
-              class="form-control"
-              id="username"
-              placeholder="name@example.com"
-              name="username"
-              maxlength={50}
-            />
-            <label for="username">Username</label>
-          </div>
-          <div class="form-floating">
-            <input
-              type="password"
-              class="form-control"
-              id="password"
-              placeholder="Password"
-              name="password"
-              maxlength={50}
-            />
-            <label for="password">Password</label>
-          </div>
+          <TextInput id="username" label="Username" maxLength={50} required />
+          <TextInput id="password" label="Password" type="password" required />
+          <button type="submit" className="btn">Sign in</button>
+          <button class="btn btn-primary">Primary Button</button>
 
-          <button class="btn btn-primary w-100 py-2" type="submit">
-            Sign in
-          </button>
-
-          <label for="signupLink" class="mt-3">
-            Not registered? <a id="signupLink" href="signup.html">Sign up</a>
-          </label>
+          <p className="text-center mt-4 text-sm">
+            Not registered?{' '}
+            <a
+              href="signup.html"
+              className="text-blue-600 hover:underline dark:text-blue-400"
+            >
+              Sign up
+            </a>
+          </p>
         </form>
       </main>
     </div>
