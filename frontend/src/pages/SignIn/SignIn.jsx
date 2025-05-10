@@ -1,8 +1,25 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import TextInput from '../../components/TextInput';
 
 const SignIn = () => {
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Simula la lógica de redirección si ya estás logueado
+    const checkLogin = async () => {
+      const res = await fetch('/api/usuario/logged', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const result = await res.json();
+      if (result.ok) {
+        window.location.href = '/';
+      }
+    };
+
+    checkLogin();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
