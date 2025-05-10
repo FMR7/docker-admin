@@ -5,6 +5,7 @@ import { Header } from './components/Header.jsx';
 import { Home } from './pages/Home/index.jsx';
 import { NotFound } from './pages/_404.jsx';
 import './style.css';
+import SignIn from './pages/SignIn/SignIn.jsx';
 
 export function App() {
 	return (
@@ -13,6 +14,7 @@ export function App() {
 			<main>
 				<Router>
 					<Route path="/" component={Home} />
+					<Route path="/signin" component={SignIn} />
 					<Route default component={NotFound} />
 				</Router>
 			</main>
