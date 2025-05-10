@@ -7,7 +7,7 @@ const TextInput = ({ id, label, type = 'text', ...props }) => {
       id={id}
       name={id}
       placeholder={label}
-      className="text-center w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-black dark:text-white"
+      className="text-center w-full px-3 py-2 my-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-black dark:text-white"
       {...props}
     />
   );
