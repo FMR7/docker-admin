@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { Trash2 } from 'lucide-preact';
+import Toogle from '../../components/Toogle';
 
 const Users = () => {
   const [message, setMessage] = useState(null);
@@ -51,8 +52,8 @@ const Users = () => {
           {users.map((user) => (
             <tr>
               <td>{user.username}</td>
-              <td><input type="checkbox" checked={user.active} class="toggle" /></td>
-              <td><input type="checkbox" checked={user.admin} class="toggle" /></td>
+              <td><Toogle active={user.active} /></td>
+              <td><Toogle active={user.admin} /></td>
               <td>
                 <button className="btn btn-error"
                   onClick={async () => {
