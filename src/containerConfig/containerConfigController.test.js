@@ -26,7 +26,7 @@ const testPassword = 'testPassword';
 
 describe('Container config list', () => {
   it('should return 200 on successful list', async () => {
-    service.findAll.mockResolvedValue([{ container_key: 'test', name: 'test' }]);
+    service.findAll.mockResolvedValue([{ container_key: 'test', name: 'test', description: 'test' }]);
 
     mockSession.setSession({ user: { username: 'admin', admin: true } });
 
@@ -69,11 +69,11 @@ describe('Container config list', () => {
 
 describe('Container config insert', () => {
   it('should return 200 on successful insert', async () => {
-    service.insert.mockResolvedValue({ container_key: 'test', name: 'test' });
+    service.insert.mockResolvedValue({ container_key: 'test', name: 'test', description: 'test' });
 
     mockSession.setSession({ user: { username: 'admin', admin: true } });
 
-    const res = await request(app).post('/container-config').send({ container_key: 'test', name: 'test' });
+    const res = await request(app).post('/container-config').send({ container_key: 'test', name: 'test', description: 'test' });
 
     expect(res.statusCode).toBe(200);
     expect(res.body.ok).toBe(true);
@@ -82,7 +82,7 @@ describe('Container config insert', () => {
   it('should return 401 if not authenticated', async () => {
     mockSession.setSession({});
 
-    const res = await request(app).post('/container-config').send({ container_key: 'test', name: 'test' });
+    const res = await request(app).post('/container-config').send({ container_key: 'test', name: 'test', description: 'test' });
 
     expect(res.statusCode).toBe(401);
     expect(res.body.ok).toBe(false);
@@ -92,7 +92,7 @@ describe('Container config insert', () => {
   it('should return 401 if not admin', async () => {
     mockSession.setSession({ user: { username: 'test', admin: false } });
 
-    const res = await request(app).post('/container-config').send({ container_key: 'test', name: 'test' });
+    const res = await request(app).post('/container-config').send({ container_key: 'test', name: 'test', description: 'test' });
 
     expect(res.statusCode).toBe(401);
     expect(res.body.ok).toBe(false);
@@ -102,7 +102,7 @@ describe('Container config insert', () => {
   it('should return 400 if container_key is missing', async () => {
     mockSession.setSession({ user: { username: 'admin', admin: true } });
 
-    const res = await request(app).post('/container-config').send({ name: 'test' });
+    const res = await request(app).post('/container-config').send({ name: 'test', description: 'test' });
 
     expect(res.statusCode).toBe(400);
     expect(res.body.ok).toBe(false);
@@ -112,7 +112,7 @@ describe('Container config insert', () => {
   it('should return 400 if name is missing', async () => {
     mockSession.setSession({ user: { username: 'admin', admin: true } });
 
-    const res = await request(app).post('/container-config').send({ container_key: 'test' });
+    const res = await request(app).post('/container-config').send({ container_key: 'test', description: 'test' });
 
     expect(res.statusCode).toBe(400);
     expect(res.body.ok).toBe(false);
@@ -124,7 +124,7 @@ describe('Container config insert', () => {
 
     mockSession.setSession({ user: { username: 'admin', admin: true } });
 
-    const res = await request(app).post('/container-config').send({ container_key: 'test', name: 'test' });
+    const res = await request(app).post('/container-config').send({ container_key: 'test', name: 'test', description: 'test' });
 
     expect(res.statusCode).toBe(401);
     expect(res.body.ok).toBe(false);
@@ -133,11 +133,11 @@ describe('Container config insert', () => {
 
 describe('Container config update', () => {
   it('should return 200 on successful update', async () => {
-    service.update.mockResolvedValue({ container_key: 'test', name: 'test' });
+    service.update.mockResolvedValue({ container_key: 'test', name: 'test', description: 'test' });
 
     mockSession.setSession({ user: { username: 'admin', admin: true } });
 
-    const res = await request(app).put('/container-config').send({ container_key: 'test', name: 'test' });
+    const res = await request(app).put('/container-config').send({ container_key: 'test', name: 'test', description: 'test' });
 
     expect(res.statusCode).toBe(200);
     expect(res.body.ok).toBe(true);
@@ -146,7 +146,7 @@ describe('Container config update', () => {
   it('should return 401 if not authenticated', async () => {
     mockSession.setSession({});
 
-    const res = await request(app).put('/container-config').send({ container_key: 'test', name: 'test' });
+    const res = await request(app).put('/container-config').send({ container_key: 'test', name: 'test', description: 'test' });
 
     expect(res.statusCode).toBe(401);
     expect(res.body.ok).toBe(false);
@@ -156,7 +156,7 @@ describe('Container config update', () => {
   it('should return 401 if not admin', async () => {
     mockSession.setSession({ user: { username: 'test', admin: false } });
 
-    const res = await request(app).put('/container-config').send({ container_key: 'test', name: 'test' });
+    const res = await request(app).put('/container-config').send({ container_key: 'test', name: 'test', description: 'test' });
 
     expect(res.statusCode).toBe(401);
     expect(res.body.ok).toBe(false);
@@ -166,7 +166,7 @@ describe('Container config update', () => {
   it('should return 400 if container_key is missing', async () => {
     mockSession.setSession({ user: { username: 'admin', admin: true } });
 
-    const res = await request(app).put('/container-config').send({ name: 'test' });
+    const res = await request(app).put('/container-config').send({ name: 'test', description: 'test' });
 
     expect(res.statusCode).toBe(400);
     expect(res.body.ok).toBe(false);
@@ -176,7 +176,7 @@ describe('Container config update', () => {
   it('should return 400 if name is missing', async () => {
     mockSession.setSession({ user: { username: 'admin', admin: true } });
 
-    const res = await request(app).put('/container-config').send({ container_key: 'test' });
+    const res = await request(app).put('/container-config').send({ container_key: 'test', description: 'test' });
 
     expect(res.statusCode).toBe(400);
     expect(res.body.ok).toBe(false);
@@ -188,7 +188,7 @@ describe('Container config update', () => {
 
     mockSession.setSession({ user: { username: 'admin', admin: true } });
 
-    const res = await request(app).put('/container-config').send({ container_key: 'test', name: 'test' });
+    const res = await request(app).put('/container-config').send({ container_key: 'test', name: 'test', description: 'test' });
 
     expect(res.statusCode).toBe(401);
     expect(res.body.ok).toBe(false);
@@ -197,7 +197,7 @@ describe('Container config update', () => {
 
 describe('Container config delete', () => {
   it('should return 200 on successful delete', async () => {
-    service.deleteContainer.mockResolvedValue({ container_key: 'test', name: 'test' });
+    service.deleteContainer.mockResolvedValue({ container_key: 'test', name: 'test', description: 'test' });
 
     mockSession.setSession({ user: { username: 'admin', admin: true } });
 

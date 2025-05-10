@@ -31,11 +31,11 @@ describe('findAll', () => {
 describe('insert', () => {
   it('should insert a container config', async () => {
     db.query = jest.fn().mockResolvedValue({
-      rows: [{ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test' }]
+      rows: [{ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' }]
     });
 
     const res = await repo.insert('iuh23497iufg98q2irhas98df134', 'test');
-    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test' });
+    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' });
   });
 
   it('should handle errors', async () => {
@@ -48,11 +48,11 @@ describe('insert', () => {
 describe('update', () => {
   it('should update a container config', async () => {
     db.query = jest.fn().mockResolvedValue({
-      rows: [{ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test' }]
+      rows: [{ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' }]
     });
 
     const res = await repo.update('iuh23497iufg98q2irhas98df134', 'test');
-    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test' });
+    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' });
   });
 
   it('should handle errors', async () => {
@@ -65,11 +65,11 @@ describe('update', () => {
 describe('delete', () => {
   it('should delete a container config', async () => {
     db.query = jest.fn().mockResolvedValue({
-      rows: [{ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test' }]
+      rows: [{ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' }]
     });
 
     const res = await repo.deleteContainer('iuh23497iufg98q2irhas98df134');
-    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test' });
+    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' });
   });
 
   it('should handle errors', async () => {
