@@ -31,15 +31,10 @@ export function Header() {
 	return (
 		<header>
 			<nav>
-				<a href="/" class={url == '/' && 'active'}>
-					Home
-				</a>
-				<a href="/signin" class={url == '/signin' && 'active'}>
-					Sign In
-				</a>
-				<a href="/signup" class={url == '/signup' && 'active'}>
-					Sign Up
-				</a>
+				<a href="/" class={url == '/' && 'active'}>Home</a>
+				<a href="/signin" class={url == '/signin' && 'active'}>Sign In</a>
+				<a href="/signup" class={url == '/signup' && 'active'}>Sign Up</a>
+				<a href="/users" class={url == '/users' && 'active'}>Users</a>
 				<button onClick={logout}>Logout</button>
 
 

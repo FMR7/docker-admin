@@ -7,6 +7,7 @@ import { NotFound } from './pages/_404.jsx';
 import './style.css';
 import SignIn from './pages/SignIn/SignIn.jsx';
 import SignUp from './pages/SignUp/SignUp.jsx';
+import Users from './pages/Users/Users.jsx';
 
 export function App() {
 	return (
@@ -17,6 +18,7 @@ export function App() {
 					<Route path="/" component={Home} />
 					<Route path="/signin" component={SignIn} />
 					<Route path="/signup" component={SignUp} />
+					<Route path="/users" component={Users} />
 					<Route default component={NotFound} />
 				</Router>
 			</main>
