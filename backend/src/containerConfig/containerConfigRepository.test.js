@@ -31,11 +31,11 @@ describe('findAll', () => {
 describe('insert', () => {
   it('should insert a container config', async () => {
     db.query = jest.fn().mockResolvedValue({
-      rows: [{ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' }]
+      rows: [{ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true }]
     });
 
     const res = await repo.insert('iuh23497iufg98q2irhas98df134', 'test');
-    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' });
+    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
   });
 
   it('should handle errors', async () => {
@@ -48,17 +48,34 @@ describe('insert', () => {
 describe('update', () => {
   it('should update a container config', async () => {
     db.query = jest.fn().mockResolvedValue({
-      rows: [{ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' }]
+      rows: [{ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true }]
     });
 
     const res = await repo.update('iuh23497iufg98q2irhas98df134', 'test');
-    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' });
+    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
   });
 
   it('should handle errors', async () => {
     db.query = jest.fn().mockRejectedValue(new Error('Database error'));
 
     await expect(repo.update('iuh23497iufg98q2irhas98df134', 'test')).rejects.toThrow('Database error');
+  });
+});
+
+describe('setActive', () => {
+  it('should set the active status of a container config', async () => {
+    db.query = jest.fn().mockResolvedValue({
+      rows: [{ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true }]
+    });
+
+    const res = await repo.setActive('iuh23497iufg98q2irhas98df134', true);
+    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
+  });
+
+  it('should handle errors', async () => {
+    db.query = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(repo.setActive('iuh23497iufg98q2irhas98df134', true)).rejects.toThrow('Database error');
   });
 });
 

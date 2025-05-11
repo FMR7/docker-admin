@@ -11,11 +11,11 @@ async function findAll() {
   }
 };
 
-async function insert(container_key, name, description) {
+async function insert(container_key, name, description, active) {
   try {
     if (!container_key || !name) throw new Error('Container key and name are required');
 
-    const result = await repo.insert(container_key, name, description);
+    const result = await repo.insert(container_key, name, description, active);
     return !result ? undefined : result;
   } catch (err) {
     console.error('Error inserting container config:', err);
@@ -23,11 +23,23 @@ async function insert(container_key, name, description) {
   }
 };
 
-async function update(container_key, name, description) {
+async function update(container_key, name, description, active) {
   try {
     if (!container_key || !name) throw new Error('Container key and name are required');
 
-    const result = await repo.update(container_key, name, description);
+    const result = await repo.update(container_key, name, description, active);
+    return !result ? undefined : result;
+  } catch (err) {
+    console.error('Error updating container config:', err);
+    throw err;
+  }
+};
+
+async function setActive(container_key, active) {
+  try {
+    if (!container_key) throw new Error('Container key is required');
+
+    const result = await repo.setActive(container_key, active);
     return !result ? undefined : result;
   } catch (err) {
     console.error('Error updating container config:', err);
@@ -47,4 +59,4 @@ async function deleteContainer(container_key) {
   }
 };
 
-module.exports = { findAll, insert, update, deleteContainer };
+module.exports = { findAll, insert, update, setActive, deleteContainer };

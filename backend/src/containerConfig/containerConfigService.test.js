@@ -26,10 +26,10 @@ describe('findAll', () => {
 
 describe('insert', () => {
   it('should insert a container config', async () => {
-    repo.insert = jest.fn().mockResolvedValue({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' });
+    repo.insert = jest.fn().mockResolvedValue({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
 
     const res = await service.insert('iuh23497iufg98q2irhas98df134', 'test');
-    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' });
+    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
   });
 
   it('should throw an error if no container_key or name is provided', async () => {
@@ -52,10 +52,10 @@ describe('insert', () => {
 
 describe('update', () => {
   it('should update a container config', async () => {
-    repo.update = jest.fn().mockResolvedValue({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' });
+    repo.update = jest.fn().mockResolvedValue({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
 
     const res = await service.update('iuh23497iufg98q2irhas98df134', 'test');
-    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' });
+    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
   });
 
   it('should throw an error if no container_key or name is provided', async () => {
@@ -76,12 +76,38 @@ describe('update', () => {
   });
 });
 
+describe('setActive', () => {
+  it('should set active for a container config', async () => {
+    repo.setActive = jest.fn().mockResolvedValue({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
+
+    const res = await service.setActive('iuh23497iufg98q2irhas98df134', true);
+    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
+  });
+
+  it('should throw an error if no container_key is provided', async () => {
+    await expect(service.setActive(null, true)).rejects.toThrow('Container key is required');
+  });
+
+  it('should return undefined if no container config is updated', async () => {
+    repo.setActive = jest.fn().mockResolvedValue(undefined);
+
+    const res = await service.setActive('iuh23497iufg98q2irhas98df134', true);
+    expect(res).toEqual(undefined);
+  });
+
+  it('should handle errors', async () => {
+    repo.setActive = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(service.setActive('iuh23497iufg98q2irhas98df134', true)).rejects.toThrow('Database error');
+  });
+});
+
 describe('delete', () => {
   it('should delete a container config', async () => {
-    repo.deleteContainer = jest.fn().mockResolvedValue({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' });
+    repo.deleteContainer = jest.fn().mockResolvedValue({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
 
     const res = await service.deleteContainer('iuh23497iufg98q2irhas98df134');
-    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' });
+    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
   });
 
   it('should throw an error if no container_key is provided', async () => {

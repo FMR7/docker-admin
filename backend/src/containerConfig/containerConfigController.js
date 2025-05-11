@@ -68,6 +68,27 @@ router.put('/container-config', async (req, res) => {
   }
 });
 
+router.put('/container-config/active/:active/:container_key', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ ok: false, message: 'Not authenticated' });
+  }
+  if (!req.session.user.admin) {
+    return res.status(401).json({ ok: false, message: 'Not admin' });
+  }
+
+  const { container_key, active } = req.params;
+  if (active !== 'true' && active !== 'false') {
+    return res.status(400).json({ ok: false, message: 'Active must be true or false' });
+  }
+
+  try {
+    const containerConfig = await service.setActive(container_key, active === 'true');
+    return res.json({ ok: true, containerConfig });
+  } catch (err) {
+    return res.status(401).json({ ok: false, message: err.message });
+  }
+});
+
 router.delete('/container-config/:container_key', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({ ok: false, message: 'Not authenticated' });

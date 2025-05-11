@@ -195,6 +195,60 @@ describe('Container config update', () => {
   });
 });
 
+describe('Container set active', () => {
+  it('should return 200 on successful set active', async () => {
+    service.setActive.mockResolvedValue({ container_key: 'test', name: 'test', description: 'test' });
+
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).put('/container-config/active/true/test');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.ok).toBe(true);
+  });
+
+  it('should return 401 if not authenticated', async () => {
+    mockSession.setSession({});
+
+    const res = await request(app).put('/container-config/active/true/test');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Not authenticated');
+  });
+
+  it('should return 401 if not admin', async () => {
+    mockSession.setSession({ user: { username: 'test', admin: false } });
+
+    const res = await request(app).put('/container-config/active/true/test');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Not admin');
+  });
+
+  it('should return 400 if active is not true or false', async () => {
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).put('/container-config/active/other/test');
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.ok).toBe(false);
+    expect(res.body.message).toBe('Active must be true or false');
+  });
+
+  it('should return 401 if error', async () => {
+    service.setActive.mockRejectedValue(new Error('Some error'));
+
+    mockSession.setSession({ user: { username: 'admin', admin: true } });
+
+    const res = await request(app).put('/container-config/active/true/test');
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.ok).toBe(false);
+  });
+});
+
 describe('Container config delete', () => {
   it('should return 200 on successful delete', async () => {
     service.deleteContainer.mockResolvedValue({ container_key: 'test', name: 'test', description: 'test' });
