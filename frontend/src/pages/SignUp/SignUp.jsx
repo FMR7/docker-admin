@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import TextInput from '../../components/TextInput';
+import AlertMessage from '../../components/AlertMessage';
 
 const SignUp = () => {
   const [message, setMessage] = useState(null);
@@ -48,12 +49,7 @@ const SignUp = () => {
     >
       <h1 className="text-2xl font-semibold mb-6 text-center">Sign up</h1>
 
-      {message && (
-        <div className={`alert ${isSuccess ? 'alert-success' : 'alert-error'} mb-4`}>
-          {message}
-        </div>
-      )}
-
+      <AlertMessage message={message} isSuccess={isSuccess} />
       <TextInput id="username" label="Username" maxLength={50} required />
       <TextInput id="password" label="Password" type="password" required />
       <button type="submit" className="btn btn-primary w-full px-3 py-2 my-1">Sign up</button>

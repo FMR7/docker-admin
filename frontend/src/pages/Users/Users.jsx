@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { Trash2 } from 'lucide-preact';
 import Toogle from '../../components/Toogle';
+import AlertMessage from '../../components/AlertMessage';
 
 const Users = () => {
   const [message, setMessage] = useState(null);
@@ -37,8 +38,40 @@ const Users = () => {
     findAll();
   }, []);
 
+  async function onActiveSwitchChange(event, username) {
+    const isChecked = event.target.checked;
+    console.log('Set active', isChecked, 'for user:', username);
+    const res = await fetch('/api/usuario/active/' + isChecked + '/' + username, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    const result = await res.json();
+    setMessage(result.message);
+    setIsSuccess(result.ok);
+
+    findAll();
+  }
+
+  async function onAdminSwitchChange(event, username) {
+    const isChecked = event.target.checked;
+    console.log('Set admin', isChecked, 'for user:', username);
+    const res = await fetch('/api/usuario/admin/' + isChecked + '/' + username, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    const result = await res.json();
+    setMessage(result.message);
+    setIsSuccess(result.ok);
+
+    findAll();
+  }
+
   return (
     <div class="overflow-x-auto">
+      <AlertMessage message={message} isSuccess={isSuccess} />
+
       <table class="table table-zebra">
         <thead>
           <tr>
@@ -52,8 +85,8 @@ const Users = () => {
           {users.map((user) => (
             <tr>
               <td>{user.username}</td>
-              <td><Toogle active={user.active} /></td>
-              <td><Toogle active={user.admin} /></td>
+              <td><Toogle active={user.active} onChange={(event) => onActiveSwitchChange(event, user.username)} /></td>
+              <td><Toogle active={user.admin} onChange={(event) => onAdminSwitchChange(event, user.username)} /></td>
               <td>
                 <button className="btn btn-error"
                   onClick={async () => {
@@ -65,7 +98,7 @@ const Users = () => {
                     findAll();
                   }}
                 >
-                  <Trash2/>
+                  <Trash2 />
                 </button>
               </td>
             </tr>
