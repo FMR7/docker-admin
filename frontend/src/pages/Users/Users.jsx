@@ -30,7 +30,7 @@ const Users = () => {
 
       const result = await res.json();
       if (!result.ok) {
-        //window.location.href = '/';
+        window.location.href = '/';
       }
     };
 

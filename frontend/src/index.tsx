@@ -8,6 +8,7 @@ import './style.css';
 import SignIn from './pages/SignIn/SignIn.jsx';
 import SignUp from './pages/SignUp/SignUp.jsx';
 import Users from './pages/Users/Users.jsx';
+import ContainerConfig from './pages/ContainerConfig/ContainerConfig.jsx';
 
 export function App() {
 	return (
@@ -19,6 +20,7 @@ export function App() {
 					<Route path="/signin" component={SignIn} />
 					<Route path="/signup" component={SignUp} />
 					<Route path="/users" component={Users} />
+					<Route path="/container-config" component={ContainerConfig} />
 					<Route default component={NotFound} />
 				</Router>
 			</main>

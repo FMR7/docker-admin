@@ -8,6 +8,7 @@ const express = require('express');
 const session = require('express-session');
 const usuarioRoutes = require('./src/user/userController');
 const containerRoutes = require('./src/container/containerController');
+const containerConfigRoutes = require('./src/containerConfig/containerConfigController');
 
 const db = require('./src/config/db');
 
@@ -22,6 +23,7 @@ app.use(session({
 
 app.use('/api', usuarioRoutes);
 app.use('/api', containerRoutes);
+app.use('/api', containerConfigRoutes);
 
 
 // Serve static files (HTML, CSS, JS)

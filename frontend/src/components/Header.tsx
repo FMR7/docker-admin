@@ -35,6 +35,7 @@ export function Header() {
 				<a href="/signin" class={url == '/signin' && 'active'}>Sign In</a>
 				<a href="/signup" class={url == '/signup' && 'active'}>Sign Up</a>
 				<a href="/users" class={url == '/users' && 'active'}>Users</a>
+				<a href="/container-config" class={url == '/container-config' && 'active'}>Container Config</a>
 				<button onClick={logout}>Logout</button>
 
 
