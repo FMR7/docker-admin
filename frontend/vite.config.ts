@@ -8,7 +8,13 @@ export default defineConfig(({ mode }) => {
   const isSSL = env.VITE_SSL === 'true';
   const apiPort = env.VITE_API_PORT || 3000;
 
-  console.log('isSSL:', isSSL, 'apiPort:', apiPort);
+
+  console.log('🌐 API PORT:', apiPort);
+  if (isSSL) {
+    console.log('✅ API SSL is enabled');
+  } else {
+    console.warn('⚠️  API SSL is disabled');
+  }
 
   return {
     plugins: [preact(), tailwindcss()],
