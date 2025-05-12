@@ -125,6 +125,8 @@ const ContainerConfig = () => {
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900/50">
           <div className="w-lg p-6 rounded border border-primary shadow-xl bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+            <AlertMessage message={message} isSuccess={isSuccess} />
+            
             <h2 className="text-lg font-bold mb-4">Create Container Config</h2>
             <form onSubmit={handleSubmit}>
               <label class="floating-label">
