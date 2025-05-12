@@ -11,7 +11,7 @@ async function findAll() {
   }
 };
 
-async function insert(container_key, name, description, active) {
+async function insert(container_key, name, description, active, admin_only) {
   try {
     if (!container_key) {
       throw new Error('Container key required');
@@ -26,7 +26,7 @@ async function insert(container_key, name, description, active) {
       throw new Error('Admin only required');
     }
 
-    const result = await repo.insert(container_key, name, description, active);
+    const result = await repo.insert(container_key, name, description, active, admin_only);
     return !result ? undefined : result;
   } catch (err) {
     console.error('Error inserting container config:', err);

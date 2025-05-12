@@ -137,7 +137,7 @@ const ContainerConfig = () => {
               </label>
               <label class="floating-label">
                 <span>Description</span>
-                <TextArea id="description" label="Description" defaultValue={editingItem?.description} maxLength={100} required />
+                <TextArea id="description" label="Description" defaultValue={editingItem?.description} maxLength={100} />
               </label>
               <Toogle id="active" label="Active" active={editingItem?.active ?? true} />
               <Toogle id="admin_only" label="Admin only" active={editingItem?.admin_only ?? false} />
