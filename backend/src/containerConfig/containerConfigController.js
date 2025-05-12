@@ -19,73 +19,34 @@ router.get('/container-config', async (req, res) => {
 });
 
 router.post('/container-config', async (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).json({ ok: false, message: 'Not authenticated' });
-  }
-  if (!req.session.user.admin) {
-    return res.status(401).json({ ok: false, message: 'Not admin' });
-  }
-
-  const { container_key, name, description, active} = req.body;
-
-  if (!container_key) {
-    return res.status(400).json({ ok: false, message: 'Container key required' });
-  }
-  if (!name) {
-    return res.status(400).json({ ok: false, message: 'Name required' });
-  }
-  if (active == null || active == undefined) {
-    return res.status(400).json({ ok: false, message: 'Active required' });
-  }
-
   try {
-    const containerConfig = await service.insert(container_key, name, description, active);
+    if (!req.session.user) {
+      return res.status(401).json({ ok: false, message: 'Not authenticated' });
+    }
+    if (!req.session.user.admin) {
+      return res.status(401).json({ ok: false, message: 'Not admin' });
+    }
+
+    const { container_key, name, description, active, adminOnly } = req.body;
+    const containerConfig = await service.insert(container_key, name, description, active, adminOnly);
     return res.json({ ok: true, containerConfig });
   } catch (err) {
     return res.status(401).json({ ok: false, message: err.message });
   }
 });
 
-router.put('/container-config', async (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).json({ ok: false, message: 'Not authenticated' });
-  }
-  if (!req.session.user.admin) {
-    return res.status(401).json({ ok: false, message: 'Not admin' });
-  }
-
-  const { container_key, name, description } = req.body;
-
-  if (!container_key) {
-    return res.status(400).json({ ok: false, message: 'Container key required' });
-  }
-  if (!name) {
-    return res.status(400).json({ ok: false, message: 'Name required' });
-  }
-
+router.put('/container-config/:container_key', async (req, res) => {
   try {
-    const containerConfig = await service.update(container_key, name, description);
-    return res.json({ ok: true, containerConfig });
-  } catch (err) {
-    return res.status(401).json({ ok: false, message: err.message });
-  }
-});
+    if (!req.session.user) {
+      return res.status(401).json({ ok: false, message: 'Not authenticated' });
+    }
+    if (!req.session.user.admin) {
+      return res.status(401).json({ ok: false, message: 'Not admin' });
+    }
 
-router.put('/container-config/active/:active/:container_key', async (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).json({ ok: false, message: 'Not authenticated' });
-  }
-  if (!req.session.user.admin) {
-    return res.status(401).json({ ok: false, message: 'Not admin' });
-  }
-
-  const { container_key, active } = req.params;
-  if (active !== 'true' && active !== 'false') {
-    return res.status(400).json({ ok: false, message: 'Active must be true or false' });
-  }
-
-  try {
-    const containerConfig = await service.setActive(container_key, active === 'true');
+    const { container_key } = req.params;
+    const { name, description, active, adminOnly } = req.body;
+    const containerConfig = await service.update(container_key, name, description, active, adminOnly);
     return res.json({ ok: true, containerConfig });
   } catch (err) {
     return res.status(401).json({ ok: false, message: err.message });

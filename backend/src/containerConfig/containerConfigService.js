@@ -13,7 +13,18 @@ async function findAll() {
 
 async function insert(container_key, name, description, active) {
   try {
-    if (!container_key || !name) throw new Error('Container key and name are required');
+    if (!container_key) {
+      throw new Error('Container key required');
+    }
+    if (!name) {
+      throw new Error('Name required');
+    }
+    if (active == null || active == undefined) {
+      throw new Error('Container key required');
+    }
+    if (adminOnly == null || adminOnly == undefined) {
+      throw new Error('Admin only required');
+    }
 
     const result = await repo.insert(container_key, name, description, active);
     return !result ? undefined : result;
@@ -25,10 +36,17 @@ async function insert(container_key, name, description, active) {
 
 async function update(container_key, name, description, active, adminOnly) {
   try {
-    if (!container_key || !name ||
-      (active == null || active == undefined) ||
-      (adminOnly == null || adminOnly == undefined)) {
-      throw new Error('Container ID, Name, Active and Admin Only are required');
+    if (!container_key) {
+      throw new Error('Container key required');
+    }
+    if (!name) {
+      throw new Error('Name required');
+    }
+    if (active == null || active == undefined) {
+      throw new Error('Container key required');
+    }
+    if (adminOnly == null || adminOnly == undefined) {
+      throw new Error('Admin only required');
     }
 
     const result = await repo.update(container_key, name, description, active, adminOnly);
