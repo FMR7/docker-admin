@@ -27,8 +27,8 @@ router.post('/container-config', async (req, res) => {
       return res.status(401).json({ ok: false, message: 'Not admin' });
     }
 
-    const { container_key, name, description, active, adminOnly } = req.body;
-    const containerConfig = await service.insert(container_key, name, description, active, adminOnly);
+    const { container_key, name, description, active, admin_only } = req.body;
+    const containerConfig = await service.insert(container_key, name, description, active, admin_only);
     return res.json({ ok: true, containerConfig });
   } catch (err) {
     return res.status(401).json({ ok: false, message: err.message });
@@ -45,8 +45,8 @@ router.put('/container-config/:container_key', async (req, res) => {
     }
 
     const { container_key } = req.params;
-    const { name, description, active, adminOnly } = req.body;
-    const containerConfig = await service.update(container_key, name, description, active, adminOnly);
+    const { name, description, active, admin_only } = req.body;
+    const containerConfig = await service.update(container_key, name, description, active, admin_only);
     return res.json({ ok: true, containerConfig });
   } catch (err) {
     return res.status(401).json({ ok: false, message: err.message });

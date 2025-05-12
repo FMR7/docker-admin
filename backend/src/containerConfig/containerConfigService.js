@@ -22,7 +22,7 @@ async function insert(container_key, name, description, active) {
     if (active == null || active == undefined) {
       throw new Error('Container key required');
     }
-    if (adminOnly == null || adminOnly == undefined) {
+    if (admin_only == null || admin_only == undefined) {
       throw new Error('Admin only required');
     }
 
@@ -34,7 +34,7 @@ async function insert(container_key, name, description, active) {
   }
 };
 
-async function update(container_key, name, description, active, adminOnly) {
+async function update(container_key, name, description, active, admin_only) {
   try {
     if (!container_key) {
       throw new Error('Container key required');
@@ -45,11 +45,11 @@ async function update(container_key, name, description, active, adminOnly) {
     if (active == null || active == undefined) {
       throw new Error('Container key required');
     }
-    if (adminOnly == null || adminOnly == undefined) {
+    if (admin_only == null || admin_only == undefined) {
       throw new Error('Admin only required');
     }
 
-    const result = await repo.update(container_key, name, description, active, adminOnly);
+    const result = await repo.update(container_key, name, description, active, admin_only);
     return !result ? undefined : result;
   } catch (err) {
     console.error('Error updating container config:', err);

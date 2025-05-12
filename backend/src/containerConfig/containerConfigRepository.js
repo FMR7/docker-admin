@@ -5,18 +5,18 @@ async function findAll() {
   return res.rows;
 }
 
-async function insert(container_key, name, description, active, adminOnly) {
+async function insert(container_key, name, description, active, admin_only) {
   const res = await db.query(
     'INSERT INTO container_config (container_key, name, description, active, admin_only) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-    [container_key, name, description, active, adminOnly]
+    [container_key, name, description, active, admin_only]
   );
   return res.rows[0];
 }
 
-async function update(container_key, name, description, active, adminOnly) {
+async function update(container_key, name, description, active, admin_only) {
   const res = await db.query(
     'UPDATE container_config SET name = $2, description = $3, active = $4, admin_only = $5 WHERE container_key = $1 RETURNING *',
-    [container_key, name, description, active, adminOnly]
+    [container_key, name, description, active, admin_only]
   );
   return res.rows[0];
 }

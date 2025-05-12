@@ -52,10 +52,10 @@ describe('insert', () => {
 
 describe('update', () => {
   it('should update a container config', async () => {
-    repo.update = jest.fn().mockResolvedValue({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true, adminOnly: true });
+    repo.update = jest.fn().mockResolvedValue({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true, admin_only: true });
 
     const res = await service.update('iuh23497iufg98q2irhas98df134', 'test', "deescription", true, true);
-    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true, adminOnly: true });
+    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true, admin_only: true });
   });
 
   it('should throw an error if no container_key or name is provided', async () => {
