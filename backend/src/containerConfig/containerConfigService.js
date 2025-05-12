@@ -23,23 +23,15 @@ async function insert(container_key, name, description, active) {
   }
 };
 
-async function update(container_key, name, description, active) {
+async function update(container_key, name, description, active, adminOnly) {
   try {
-    if (!container_key || !name) throw new Error('Container key and name are required');
+    if (!container_key || !name ||
+      (active == null || active == undefined) ||
+      (adminOnly == null || adminOnly == undefined)) {
+      throw new Error('Container ID, Name, Active and Admin Only are required');
+    }
 
-    const result = await repo.update(container_key, name, description, active);
-    return !result ? undefined : result;
-  } catch (err) {
-    console.error('Error updating container config:', err);
-    throw err;
-  }
-};
-
-async function setActive(container_key, active) {
-  try {
-    if (!container_key) throw new Error('Container key is required');
-
-    const result = await repo.setActive(container_key, active);
+    const result = await repo.update(container_key, name, description, active, adminOnly);
     return !result ? undefined : result;
   } catch (err) {
     console.error('Error updating container config:', err);
@@ -59,4 +51,4 @@ async function deleteContainer(container_key) {
   }
 };
 
-module.exports = { findAll, insert, update, setActive, deleteContainer };
+module.exports = { findAll, insert, update, deleteContainer };

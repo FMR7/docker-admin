@@ -85,8 +85,8 @@ const Users = () => {
           {users.map((user) => (
             <tr>
               <td>{user.username}</td>
-              <td><Toogle active={user.active} onChange={(event) => onActiveSwitchChange(event, user.username)} /></td>
-              <td><Toogle active={user.admin} onChange={(event) => onAdminSwitchChange(event, user.username)} /></td>
+              <td><Toogle id={'active' + user.username} active={user.active} label="" onChange={(event) => onActiveSwitchChange(event, user.username)} /></td>
+              <td><Toogle id={'admin' + user.username} active={user.admin} label="" onChange={(event) => onAdminSwitchChange(event, user.username)} /></td>
               <td>
                 <button className="btn btn-error"
                   onClick={async () => {

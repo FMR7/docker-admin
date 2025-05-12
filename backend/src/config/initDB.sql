@@ -20,5 +20,8 @@ CREATE TABLE public.log (
 CREATE TABLE public.container_config (
 	container_key varchar(256) NOT NULL,
 	"name" varchar(50) NOT NULL,
+	description varchar(256) NULL,
+	active bool DEFAULT true NOT NULL,
+	admin_only bool DEFAULT false NOT NULL,
 	CONSTRAINT containers_pk PRIMARY KEY (container_key)
 );
