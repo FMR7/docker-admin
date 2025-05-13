@@ -31,4 +31,4 @@ async function deleteContainer(container_key) {
   return res.rows[0];
 }
 
-module.exports = { findAll, insert, update, deleteContainer };
+module.exports = { findAll, findById, insert, update, deleteContainer };
