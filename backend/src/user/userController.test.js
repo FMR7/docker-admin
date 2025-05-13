@@ -427,12 +427,12 @@ describe('Logged Admin', () => {
     expect(res.body.ok).toBe(false);
   });
 
-  it('should return 401 if not admin', async () => {
+  it('should return 200 if not admin', async () => {
     mockSession.setSession({ user: { username: 'test', admin: false } });
 
     const res = await request(app).get('/usuario/admin');
 
-    expect(res.statusCode).toBe(401);
+    expect(res.statusCode).toBe(200);
     expect(res.body.ok).toBe(false);
   });
 });

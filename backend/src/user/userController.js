@@ -153,17 +153,7 @@ router.get('/usuario/admin', async (req, res) => {
     return res.status(401).json({ ok: false, message: 'Not authenticated' });
   }
   if (!req.session.user.admin) {
-    return res.status(401).json({ ok: false, message: 'Not admin' });
-  }
-  return res.json({ ok: true, message: 'Authenticated as admin' });
-});
-
-router.get('/usuario/admin', async (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).json({ ok: false, message: 'Not authenticated' });
-  }
-  if (!req.session.user.admin) {
-    return res.status(401).json({ ok: false, message: 'Not admin' });
+    return res.json({ ok: false, message: 'Not admin' });
   }
   return res.json({ ok: true, message: 'Authenticated as admin' });
 });
