@@ -5,6 +5,11 @@ async function findAll() {
   return res.rows;
 }
 
+async function findById(id) {
+  const res = await db.query('SELECT * FROM public.container_config WHERE container_key = $1', [id]);
+  return res.rows[0];
+}
+
 async function insert(container_key, name, description, active, admin_only) {
   const res = await db.query(
     'INSERT INTO container_config (container_key, name, description, active, admin_only) VALUES ($1, $2, $3, $4, $5) RETURNING *',
