@@ -28,6 +28,30 @@ describe('findAll', () => {
   });
 });
 
+describe('findById', () => {
+  it('should return a container config', async () => {
+    db.query = jest.fn().mockResolvedValue({
+      rows: [{ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test' }]
+    });
+
+    const res = await repo.findById('iuh23497iufg98q2irhas98df134');
+    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test' });
+  });
+
+  it('should return undefined if no container config is found', async () => {
+    db.query = jest.fn().mockResolvedValue({ rows: [] });
+
+    const res = await repo.findById('iuh23497iufg98q2irhas98df134');
+    expect(res).toEqual(undefined);
+  });
+
+  it('should handle errors', async () => {
+    db.query = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(repo.findById('iuh23497iufg98q2irhas98df134')).rejects.toThrow('Database error');
+  });
+});
+
 describe('insert', () => {
   it('should insert a container config', async () => {
     db.query = jest.fn().mockResolvedValue({

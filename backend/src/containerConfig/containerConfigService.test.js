@@ -24,6 +24,28 @@ describe('findAll', () => {
   });
 });
 
+describe('findById', () => {
+  it('should return a container config', async () => {
+    repo.findById = jest.fn().mockResolvedValue({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' });
+
+    const res = await service.findById('iuh23497iufg98q2irhas98df134');
+    expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test' });
+  });
+
+  it('should return undefined if no container config is found', async () => {
+    repo.findById = jest.fn().mockResolvedValue(undefined);
+
+    const res = await service.findById('iuh23497iufg98q2irhas98df134');
+    expect(res).toEqual(undefined);
+  });
+
+  it('should handle errors', async () => {
+    repo.findById = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    await expect(service.findById('iuh23497iufg98q2irhas98df134')).rejects.toThrow('Database error');
+  });
+});
+
 describe('insert', () => {
   it('should insert a container config', async () => {
     repo.insert = jest.fn().mockResolvedValue({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
