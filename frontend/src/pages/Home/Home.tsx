@@ -78,6 +78,7 @@ export function Home() {
 				<thead>
 					<tr>
 						<th>Name</th>
+						<th>Description</th>
 						<th>Active</th>
 					</tr>
 				</thead>
@@ -85,6 +86,7 @@ export function Home() {
 					{containers.map((container) => (
 						<tr>
 							<td>{container.name}</td>
+							<td dangerouslySetInnerHTML={{ __html: container.description }}></td>
 							<td>
 								<Toogle
 									id={'active' + container.container_key}
