@@ -1,4 +1,5 @@
 const { exec } = require('child_process');
+const containerConfigService = require('../containerConfig/containerConfigService');
 
 function getStatus(containerId) {
   return new Promise((resolve, reject) => {
@@ -72,26 +73,29 @@ function turnOffContainer(containerId) {
   return controlContainer('stop', containerId);
 }
 
-function getContainers() {
-  return new Promise((resolve, reject) => {
-    const containerIds = process.env.CONTAINERS.split(',');
+async function getContainers(isAdmin) {
+  try {
+    const containerConfigsAll = await containerConfigService.findAll();
     const containers = [];
 
-    Promise.all(containerIds.map(async (containerId) => {
-      if (!containerId) throw new Error('Container ID required');
-      const status = await getStatus(containerId);
-      const name = await getName(containerId);
-      containers.push({ id: containerId, name, status });
-    }))
-      .then(() => {
-        console.log(containers);
-        resolve(containers);
-      })
-      .catch((err) => {
-        reject(new Error('Error getting containers'));
-      });
-  });
-}
+    await Promise.all(containerConfigsAll.map(async (containerConfig) => {
+      if (!containerConfig.container_key) throw new Error('Container ID required');
 
+      if (!isAdmin && containerConfig.admin_only) return;
+
+      const status = await getStatus(containerConfig.container_key);
+      containers.push({
+        container_key: containerConfig.container_key,
+        name: containerConfig.name,
+        status
+      });
+    }));
+
+    return containers;
+  } catch (err) {
+    console.error(err);
+    throw new Error('Error getting containers');
+  }
+}
 
 module.exports = { getStatus, getName, turnOnContainer, turnOffContainer, getContainers };

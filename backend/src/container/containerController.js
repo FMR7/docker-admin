@@ -79,7 +79,7 @@ router.get('/container/turn-off/:containerId',
 
 router.get('/container', isAuthenticated, async (req, res) => {
   try {
-    const containers = await getContainers();
+    const containers = await getContainers(req.session.user.admin);
     return res.json({ ok: true, containers });
   } catch (err) {
     console.error(err);

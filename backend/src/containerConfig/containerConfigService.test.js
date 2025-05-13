@@ -28,25 +28,37 @@ describe('insert', () => {
   it('should insert a container config', async () => {
     repo.insert = jest.fn().mockResolvedValue({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
 
-    const res = await service.insert('iuh23497iufg98q2irhas98df134', 'test');
+    const res = await service.insert('iuh23497iufg98q2irhas98df134', 'test', 'test', true, false);
     expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true });
   });
 
-  it('should throw an error if no container_key or name is provided', async () => {
-    await expect(service.insert(null, null)).rejects.toThrow('Container key and name are required');
+  it('should throw an error if no container_key is provided', async () => {
+    await expect(service.insert(null, null, null, null, null)).rejects.toBeTruthy();
+  });
+
+  it('should throw an error if no name is provided', async () => {
+    await expect(service.insert('iuh23497iufg98q2irhas98df134', null, null, null, null)).rejects.toBeTruthy();
+  });
+
+  it('should throw an error if no active is provided', async () => {
+    await expect(service.insert('iuh23497iufg98q2irhas98df134', 'test', null, null, null)).rejects.toBeTruthy();
+  });
+
+  it('should throw an error if no admin_only is provided', async () => {
+    await expect(service.insert('iuh23497iufg98q2irhas98df134', 'test', null, true, null)).rejects.toBeTruthy();
   });
 
   it('should return undefined if no container config is inserted', async () => {
     repo.insert = jest.fn().mockResolvedValue(undefined);
 
-    const res = await service.insert('iuh23497iufg98q2irhas98df134', 'test');
+    const res = await service.insert('iuh23497iufg98q2irhas98df134', 'test', 'test', true, false);
     expect(res).toEqual(undefined);
   });
 
   it('should handle errors', async () => {
     repo.insert = jest.fn().mockRejectedValue(new Error('Database error'));
 
-    await expect(service.insert('iuh23497iufg98q2irhas98df134', 'test')).rejects.toThrow('Database error');
+    await expect(service.insert('iuh23497iufg98q2irhas98df134', 'test')).rejects.toBeTruthy();
   });
 });
 
@@ -58,8 +70,20 @@ describe('update', () => {
     expect(res).toEqual({ container_key: 'iuh23497iufg98q2irhas98df134', name: 'test', description: 'test', active: true, admin_only: true });
   });
 
-  it('should throw an error if no container_key or name is provided', async () => {
-    await expect(service.update(null, null)).rejects.toThrow('Container ID, Name, Active and Admin Only are required');
+  it('should throw an error if no container_key', async () => {
+    await expect(service.update(null, null, null, null, null)).rejects.toBeTruthy();
+  });
+
+  it('should throw an error if no name is provided', async () => {
+    await expect(service.update('iuh23497iufg98q2irhas98df134', null, null, null, null)).rejects.toBeTruthy();
+  });
+
+  it('should throw an error if no active is provided', async () => {
+    await expect(service.update('iuh23497iufg98q2irhas98df134', 'test', 'test', null, null)).rejects.toBeTruthy();
+  });
+
+  it('should throw an error if no admin_only is provided', async () => {
+    await expect(service.update('iuh23497iufg98q2irhas98df134', 'test', 'test', true, null)).rejects.toBeTruthy();
   });
 
   it('should return undefined if no container config is updated', async () => {

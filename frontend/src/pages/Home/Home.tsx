@@ -1,56 +1,102 @@
-import { useState } from 'preact/hooks';
-import preactLogo from '../../assets/preact.svg';
-import './style.css';
+import { useState, useEffect } from 'preact/hooks';
+import AlertMessage from '../../components/AlertMessage';
+import Toogle from '../../components/Toogle';
 
 export function Home() {
-
 	const [message, setMessage] = useState(null);
+	const [isSuccess, setIsSuccess] = useState(false);
+	const [containers, setContainers] = useState([]);
 
-  const getLogged = async () => {
-    const res = await fetch('/api/usuario/logged', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
+	const getLogged = async () => {
+		const res = await fetch('/api/usuario/logged', {
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' },
+		});
 
-    const result = await res.json();
+		const result = await res.json();
 		setMessage(result.message);
-  };
+	};
 
-	getLogged();
+	const findAll = async () => {
+		const res = await fetch('/api/container', {
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' }
+		});
+
+		const result = await res.json();
+		console.log('Fetched containers:', result.containers);
+
+		if (result) {
+			setContainers(result.containers);
+		}
+	};
+	
+	const turnOn = async (containerName) => {
+		const res = await fetch('/api/container/turn-on/' + containerName, {
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' }
+		});
+	
+		return await res.json();
+	};
+	
+	const turnOff = async (containerName) => {
+		const res = await fetch('/api/container/turn-off/' + containerName, {
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' }
+		});
+	
+		return await res.json();
+	};
+	
+	async function onActiveSwitchChange(event, id) {
+		const isChecked = event.target.checked;
+		console.log('Set active', isChecked, 'for container:', id);
+	
+		const result = isChecked
+			? await turnOn(id)
+			: await turnOff(id);
+	
+		setMessage(result.message);
+		setIsSuccess(result.ok);
+	
+		findAll();
+	}
+	
+
+	// ✅ Solo se ejecuta una vez cuando se monta el componente
+	useEffect(() => {
+		getLogged();
+		findAll();
+	}, []);
 
 	return (
-		<div class="home">
-			<a href="https://preactjs.com" target="_blank">
-				<img src={preactLogo} alt="Preact logo" height="160" width="160" />
-			</a>
-			<h1>Get Started building Vite-powered Preact Apps </h1>
-			<h2>{message}</h2>
-			<section>
-				<Resource
-					title="Learn Preact"
-					description="If you're new to Preact, try the interactive tutorial to learn important concepts"
-					href="https://preactjs.com/tutorial"
-				/>
-				<Resource
-					title="Differences to React"
-					description="If you're coming from React, you may want to check out our docs to see where Preact differs"
-					href="https://preactjs.com/guide/v10/differences-to-react"
-				/>
-				<Resource
-					title="Learn Vite"
-					description="To learn more about Vite and how you can customize it to fit your needs, take a look at their excellent documentation"
-					href="https://vitejs.dev"
-				/>
-			</section>
+		<div class="overflow-x-auto">
+			<AlertMessage message={message} isSuccess={isSuccess} />
+
+			<table class="table table-zebra">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Active</th>
+					</tr>
+				</thead>
+				<tbody>
+					{containers.map((container) => (
+						<tr>
+							<td>{container.name}</td>
+							<td>
+								<Toogle
+									id={'active' + container.id}
+									active={container.status}
+									label=""
+									onChange={(event) => onActiveSwitchChange(event, container.id)}
+								/>
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
 		</div>
-	);
-}
-
-function Resource(props) {
-	return (
-		<a href={props.href} target="_blank" class="resource">
-			<h2>{props.title}</h2>
-			<p>{props.description}</p>
-		</a>
 	);
 }
