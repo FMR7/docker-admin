@@ -12,9 +12,9 @@ CREATE TABLE public.log (
 	username varchar(20) NOT NULL,
 	"action" varchar NOT NULL,
 	detail varchar NULL,
-	log_date date DEFAULT now() NOT NULL,
+	log_date timestamptz DEFAULT now() NOT NULL,
 	CONSTRAINT log_pkey PRIMARY KEY (log_key),
-	CONSTRAINT log_usuarios_fk FOREIGN KEY (username) REFERENCES public.usuarios(username)
+	CONSTRAINT log_usuarios_fk FOREIGN KEY (username) REFERENCES public.usuarios(username) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE public.container_config (
