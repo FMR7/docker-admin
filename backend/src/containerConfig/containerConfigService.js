@@ -6,7 +6,17 @@ async function findAll() {
     const result = await repo.findAll();
     return !result ? [] : result;
   } catch (err) {
-    console.error('Error finding user:', err);
+    console.error('Error finding container configs:', err);
+    throw err;
+  }
+};
+
+async function findById(id) {
+  try {
+    const result = await repo.findById(id);
+    return !result ? undefined : result;
+  } catch (err) {
+    console.error('Error finding container config:', err);
     throw err;
   }
 };
@@ -69,4 +79,4 @@ async function deleteContainer(container_key) {
   }
 };
 
-module.exports = { findAll, insert, update, deleteContainer };
+module.exports = { findAll, findById, insert, update, deleteContainer };
