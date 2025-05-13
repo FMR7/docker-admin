@@ -58,8 +58,6 @@ async function signin(username, password) {
     await usuarioRepo.resetPasswordWrongTries(user.username);
     return { username: user.username, active: user.active, admin: user.admin };
   }
-
-  
 }
 
 async function signup(username, password) {

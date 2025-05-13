@@ -14,55 +14,58 @@ export function Home() {
 		});
 
 		const result = await res.json();
-		setMessage(result.message);
+		if (!result.ok) {
+			//window.location.href = '/signin';
+		}
 	};
 
 	const findAll = async () => {
 		const res = await fetch('/api/container', {
 			method: 'GET',
 			headers: { 'Content-Type': 'application/json' }
-		});
+		}).then((res) => res.json()).catch((err) => console.log(err));
 
-		const result = await res.json();
-		console.log('Fetched containers:', result.containers);
-
-		if (result) {
-			setContainers(result.containers);
+		if (res.ok) {
+			console.log('Fetched containers:', res.containers);
+			setContainers(res.containers);
+		} else {
+			setIsSuccess(false);
+			setMessage(res.message);
 		}
 	};
-	
+
 	const turnOn = async (container_key) => {
 		const res = await fetch('/api/container/turn-on/' + container_key, {
 			method: 'GET',
 			headers: { 'Content-Type': 'application/json' }
 		});
-	
+
 		return await res.json();
 	};
-	
+
 	const turnOff = async (container_key) => {
 		const res = await fetch('/api/container/turn-off/' + container_key, {
 			method: 'GET',
 			headers: { 'Content-Type': 'application/json' }
 		});
-	
+
 		return await res.json();
 	};
-	
+
 	async function onActiveSwitchChange(event, container_key) {
 		const isChecked = event.target.checked;
 		console.log('Set active', isChecked, 'for container:', container_key);
-	
+
 		const result = isChecked
 			? await turnOn(container_key)
 			: await turnOff(container_key);
-	
+
 		setMessage(result.message);
 		setIsSuccess(result.ok);
-	
+
 		findAll();
 	}
-	
+
 
 	// ✅ Solo se ejecuta una vez cuando se monta el componente
 	useEffect(() => {

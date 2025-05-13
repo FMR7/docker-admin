@@ -15,7 +15,7 @@ const SignIn = () => {
 
       const result = await res.json();
       if (result.ok) {
-        window.location.href = '/';
+        window.location.href = '/home';
       }
     };
 
@@ -36,7 +36,7 @@ const SignIn = () => {
     const result = await res.json();
 
     if (result.ok) {
-      window.location.href = '/';
+      window.location.href = '/home';
     } else {
       setError(result.message);
     }
