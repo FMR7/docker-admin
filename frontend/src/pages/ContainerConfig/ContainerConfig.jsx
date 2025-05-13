@@ -74,6 +74,8 @@ const ContainerConfig = () => {
 
   return (
     <div class="overflow-x-auto">
+      <button className="btn btn-primary mb-4" onClick={open}><Plus /></button>
+
       <AlertMessage message={message} isSuccess={isSuccess} />
 
       <table class="table table-zebra">
@@ -117,10 +119,6 @@ const ContainerConfig = () => {
           ))}
         </tbody>
       </table>
-
-
-
-      <button className="btn btn-primary mb-4" onClick={open}><Plus /></button>
 
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900/50">
