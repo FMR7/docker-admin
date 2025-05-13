@@ -7,6 +7,7 @@ const {
   turnOffContainer,
   getContainers,
 } = require('./containerService');
+const e = require('express');
 
 // Middleware to check authentication
 function isAuthenticated(req, res, next) {
@@ -44,7 +45,7 @@ function handleRequest(action, logConfig) {
       return res.json(result);
     } catch (err) {
       console.error(err);
-      return res.status(500).json({ ok: false, message: 'Internal server error' });
+      return res.status(500).json({ ok: false, message: err.message });
     }
   };
 }
