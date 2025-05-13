@@ -31,8 +31,8 @@ export function Home() {
 		}
 	};
 	
-	const turnOn = async (containerName) => {
-		const res = await fetch('/api/container/turn-on/' + containerName, {
+	const turnOn = async (container_key) => {
+		const res = await fetch('/api/container/turn-on/' + container_key, {
 			method: 'GET',
 			headers: { 'Content-Type': 'application/json' }
 		});
@@ -40,8 +40,8 @@ export function Home() {
 		return await res.json();
 	};
 	
-	const turnOff = async (containerName) => {
-		const res = await fetch('/api/container/turn-off/' + containerName, {
+	const turnOff = async (container_key) => {
+		const res = await fetch('/api/container/turn-off/' + container_key, {
 			method: 'GET',
 			headers: { 'Content-Type': 'application/json' }
 		});
@@ -49,13 +49,13 @@ export function Home() {
 		return await res.json();
 	};
 	
-	async function onActiveSwitchChange(event, id) {
+	async function onActiveSwitchChange(event, container_key) {
 		const isChecked = event.target.checked;
-		console.log('Set active', isChecked, 'for container:', id);
+		console.log('Set active', isChecked, 'for container:', container_key);
 	
 		const result = isChecked
-			? await turnOn(id)
-			: await turnOff(id);
+			? await turnOn(container_key)
+			: await turnOff(container_key);
 	
 		setMessage(result.message);
 		setIsSuccess(result.ok);
@@ -87,10 +87,10 @@ export function Home() {
 							<td>{container.name}</td>
 							<td>
 								<Toogle
-									id={'active' + container.id}
+									id={'active' + container.container_key}
 									active={container.status}
 									label=""
-									onChange={(event) => onActiveSwitchChange(event, container.id)}
+									onChange={(event) => onActiveSwitchChange(event, container.container_key)}
 								/>
 							</td>
 						</tr>

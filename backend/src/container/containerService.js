@@ -87,6 +87,7 @@ async function getContainers(isAdmin) {
       containers.push({
         container_key: containerConfig.container_key,
         name: containerConfig.name,
+        description: containerConfig.description,
         status
       });
     }));

@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) => {
 
   const isSSL = env.VITE_SSL === 'true';
   const apiPort = env.VITE_API_PORT || 3000;
+  const apiHost = env.VITE_API_HOST || 'localhost';
 
 
   console.log('🌐 API PORT:', apiPort);
@@ -21,7 +22,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: isSSL ? `https://localhost:${apiPort}` : `http://localhost:${apiPort}`,
+          target: isSSL ? `https://${apiHost}:${apiPort}` : `http://${apiHost}:${apiPort}`,
           changeOrigin: true,
           secure: false,
         }
