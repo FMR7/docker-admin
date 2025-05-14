@@ -5,8 +5,11 @@ import Toogle from '../../components/Toogle';
 import useModal from '../../hooks/useModal';
 import TextInput from '../../components/TextInput';
 import TextArea from '../../components/TextArea';
+import { requireLogin } from '../../hooks/useRequireLogin';
 
 const ContainerConfig = () => {
+  requireLogin();
+
   const [message, setMessage] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [containerConfigs, setContainerConfigs] = useState([]);
@@ -74,11 +77,11 @@ const ContainerConfig = () => {
 
   return (
     <div class="overflow-x-auto">
-      <button className="btn btn-primary mb-4" onClick={open}><Plus /></button>
+      <button className="btn btn-primary mb-4" onClick={() => openEditModal(null)}><Plus /></button>
 
       <AlertMessage message={message} isSuccess={isSuccess} />
 
-      <table class="table table-zebra">
+      <table class="table table-zebra bg-base-100">
         <thead>
           <tr>
             <th>Container ID</th>
@@ -121,10 +124,10 @@ const ContainerConfig = () => {
       </table>
 
       {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900/50">
-          <div className="w-lg p-6 rounded border border-primary shadow-xl bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-base-300/50">
+          <div className="w-lg p-6 rounded-lg shadow-md bg-base-100 dark:bg-base-100 text-base-content-100 dark:text-base-content">
             <AlertMessage message={message} isSuccess={isSuccess} />
-            
+
             <h2 className="text-lg font-bold mb-4">Create Container Config</h2>
             <form onSubmit={handleSubmit}>
               <label class="floating-label">

@@ -1,5 +1,8 @@
+import { Moon, Sun } from 'lucide-preact';
 import { useLocation } from 'preact-iso';
 import { useEffect, useState } from 'preact/hooks';
+import ThemeSelector from './ThemeSelector';
+
 
 export function Header() {
 	const { url } = useLocation();
@@ -11,6 +14,7 @@ export function Header() {
 		const newTheme = theme === 'dark' ? 'light' : 'dark';
 		setTheme(newTheme);
 		localStorage.setItem('theme', newTheme);
+		document.documentElement.setAttribute('data-theme', newTheme);
 	};
 
 	const checkLogin = async () => {
@@ -32,13 +36,10 @@ export function Header() {
 	};
 
 	useEffect(() => {
-		document.documentElement.classList.remove('dark', 'light');
-		document.documentElement.classList.add(theme);
-
+		document.documentElement.setAttribute('data-theme', theme);
 		checkLogin();
 		checkAdmin();
 	}, [theme]);
-
 
 	// Logout
 	const logout = async () => {
@@ -53,18 +54,27 @@ export function Header() {
 
 	return (
 		<header>
-			<nav>
-				<a href="/" class={url == '/home' && 'active'} hidden={!loggedIn}>Home</a>
-				<a href="/signin" class={(url == '/signin' || url == '/') && 'active'} hidden={loggedIn}>Sign In</a>
-				<a href="/signup" class={url == '/signup' && 'active'} hidden={loggedIn}>Sign Up</a>
-				<a href="/users" class={url == '/users' && 'active'} hidden={!loggedIn || !admin}>Users</a>
-				<a href="/container-config" class={url == '/container-config' && 'active'} hidden={!loggedIn || !admin}>Container Config</a>
-				<button onClick={logout} hidden={!loggedIn}>Logout</button>
+			<nav class="navbar bg-primary text-primary-content">
+				<div class="navbar-start">
+					<a href="/home" class={`btn btn-ghost ${url == '/home' && 'active'}`} hidden={!loggedIn}>Home</a>
+				</div>
 
+				<div class="navbar-center">
+					<a href="/signin" class={`btn btn-ghost ${(url == '/signin' || url == '/') && 'active'}`} hidden={loggedIn}>Sign In</a>
+					<a href="/signup" class={`btn btn-ghost ${url == '/signup' && 'active'}`} hidden={loggedIn}>Sign Up</a>
+					<a href="/users" class={`btn btn-ghost ${url == '/users' && 'active'}`} hidden={!loggedIn || !admin}>Users</a>
+					<a href="/container-config" class={`btn btn-ghost ${url == '/container-config' && 'active'}`} hidden={!loggedIn || !admin}>Container Config</a>
+				</div>
 
-				<button onClick={toggleTheme}>
-					<i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'} fa-xl`}></i>{theme}
-				</button>
+				<div class="navbar-end">
+					<button onClick={logout} class="btn btn-ghost" hidden={!loggedIn}>Logout</button>
+
+					<button onClick={toggleTheme} class="btn btn-ghost btn-circle">
+						<Sun hidden={theme !== 'dark'} />
+						<Moon hidden={theme === 'dark'} />
+					</button>
+					<ThemeSelector />
+				</div>
 			</nav>
 		</header>
 	);

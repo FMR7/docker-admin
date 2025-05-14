@@ -6,7 +6,7 @@ const TextArea = ({ id, label, type = 'text', ...props }) => {
       id={id}
       name={id}
       placeholder={label}
-      className="textarea input-lg text-center w-full px-3 py-2 my-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-black dark:text-white"
+      className="textarea input-lg text-center w-full px-3 py-2 my-1 rounded border border-base-300 dark:border-base-700 bg-base-100 dark:bg-base-700 text-base-content dark:text-base-content"
       {...props}
     />
   );

@@ -1,6 +1,7 @@
 @import "tailwindcss";
-@plugin "daisyui";
-
+@plugin "daisyui" {
+	themes: all;
+}
 
 #app {
 	display: flex;
@@ -8,30 +9,7 @@
 	min-height: 100vh;
 }
 
-header {
-	display: flex;
-	justify-content: flex-end;
-	background-color: #673ab8;
-}
-
-header nav {
-	display: flex;
-}
-
-header a, header button {
-	color: #fff;
-	padding: 0.75rem;
-	text-decoration: none;
-}
-
-header a.active, header button.active {
+header a.active,
+header button.active {
 	background-color: #0005;
-}
-
-header a:hover, header button:hover {
-	background-color: #0008;
-}
-
-header button {
-	cursor: pointer;
 }

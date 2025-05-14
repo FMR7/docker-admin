@@ -7,18 +7,6 @@ export function Home() {
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [containers, setContainers] = useState([]);
 
-	const getLogged = async () => {
-		const res = await fetch('/api/usuario/logged', {
-			method: 'GET',
-			headers: { 'Content-Type': 'application/json' },
-		});
-
-		const result = await res.json();
-		if (!result.ok) {
-			//window.location.href = '/signin';
-		}
-	};
-
 	const findAll = async () => {
 		const res = await fetch('/api/container', {
 			method: 'GET',
@@ -69,7 +57,6 @@ export function Home() {
 
 	// ✅ Solo se ejecuta una vez cuando se monta el componente
 	useEffect(() => {
-		getLogged();
 		findAll();
 	}, []);
 

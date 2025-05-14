@@ -2,8 +2,11 @@ import { useState, useEffect } from 'preact/hooks';
 import { Trash2 } from 'lucide-preact';
 import Toogle from '../../components/Toogle';
 import AlertMessage from '../../components/AlertMessage';
+import { requireLogin } from '../../hooks/useRequireLogin';
 
 const Users = () => {
+  requireLogin();
+  
   const [message, setMessage] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [users, setUsers] = useState([]);
@@ -21,20 +24,6 @@ const Users = () => {
   };
 
   useEffect(() => {
-    // Simula la lógica de redirección si ya estás logueado
-    const checkLogin = async () => {
-      const res = await fetch('/api/usuario/logged', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      const result = await res.json();
-      if (!result.ok) {
-        window.location.href = '/';
-      }
-    };
-
-    checkLogin();
     findAll();
   }, []);
 
@@ -72,7 +61,7 @@ const Users = () => {
     <div class="overflow-x-auto">
       <AlertMessage message={message} isSuccess={isSuccess} />
 
-      <table class="table table-zebra">
+      <table class="table table-zebra bg-base-100">
         <thead>
           <tr>
             <th>Username</th>
