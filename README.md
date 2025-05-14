@@ -13,7 +13,7 @@ Built with **Node.js**, **Express**, **PostgreSQL**, and **Bootstrap**.
 - Connection to PostgreSQL database
 
 ## 🐘 Database
-Run the script [initDB.sql](https://raw.githubusercontent.com/FMR7/docker-admin/refs/heads/master/src/config/initDB.sql) using your favorite DBMS.
+Run the script [initDB.sql](https://raw.githubusercontent.com/FMR7/docker-admin/refs/heads/master/backend/src/config/initDB.sql) using your favorite DBMS.
 
 Or in the terminal, type:
 ```bash
