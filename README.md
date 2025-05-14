@@ -36,11 +36,12 @@ DB_PASSWORD=changeme
 DB_NAME=public
 DB_PORT=5432
 
-SESSION_SECRET = 1234567890
+SESSION_SECRET = 12378948467
 SSL = true
+SSL_KEY = './certs/key.pem'
+SSL_CERT = './certs/cert.pem'
+PORT = 443
 
-# IDs of the containers that will be managed
-CONTAINERS = '07ccf7644c771b5e59eadb37b7d1fb3cb50bc0d502893e0b1c7a47db1b4a0932,13891f9cd5204912f44f64d684849640725dd4f3a8638434f9467c566b304f05'
 ENABLE_DB_LOGS = true
 ```
 
