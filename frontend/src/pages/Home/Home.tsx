@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'preact/hooks';
 import AlertMessage from '../../components/AlertMessage';
 import Toogle from '../../components/Toogle';
+import { requireLogin } from '../../hooks/useRequireLogin';
 
 export function Home() {
+	requireLogin();
+	
 	const [message, setMessage] = useState(null);
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [containers, setContainers] = useState([]);
