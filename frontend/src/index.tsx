@@ -14,7 +14,7 @@ export function App() {
 	return (
 		<LocationProvider>
 			<Header />
-			<main className="flex items-center justify-center h-[calc(100vh-3rem)] bg-base-300 text-base-content-300">
+			<main className="flex items-center justify-center h-[calc(100vh-3rem)] bg-base-300 text-base-content">
 				<Router>
 					<Route path="/" component={SignIn} />
 					<Route path="/home" component={Home} />
