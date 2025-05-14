@@ -28,7 +28,7 @@ cd docker-admin
 ```
 
 ## 🔧 Configuration
-Create the .env file, add the database config and containers IDs:
+Create the .env file, add the database config, certs and port:
 ```env
 DB_HOST=localhost
 DB_USER=postgres
@@ -45,9 +45,17 @@ PORT = 443
 ENABLE_DB_LOGS = true
 ```
 
+## 🛠 Build
+```bash
+cd frontend
+npm i
+npm run build
+cd ..
+```
+
 ## 🚀 Run
 ```bash
-node index.js
+node backend/index.js
 ```
 
 ## 🟢 Ready
