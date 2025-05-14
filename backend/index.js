@@ -26,8 +26,15 @@ app.use('/api', containerRoutes);
 app.use('/api', containerConfigRoutes);
 
 
-// Serve static files (HTML, CSS, JS)
-app.use(express.static(path.join(__dirname, 'public')));
+// FRONTEND
+const frontendPath = path.join(__dirname, '../frontend/dist');
+app.use(express.static(frontendPath));
+
+// Redirect all requests, except for API requests
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.join(frontendPath, 'index.html'));
+});
+
 
 // DB INFO
 (async () => {
