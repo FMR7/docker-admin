@@ -28,15 +28,15 @@ cd docker-admin
 ```
 
 ## 🔧 Configuration
-Create the .env file, add the database config and containers IDs:
+Create the .env file, add the database config, certs and port:
 ```env
 DB_HOST=localhost
 DB_USER=postgres
 DB_PASSWORD=changeme
-DB_NAME=public
+DB_NAME=my_database
 DB_PORT=5432
 
-SESSION_SECRET = 12378948467
+SESSION_SECRET = 1234567890
 SSL = true
 SSL_KEY = './certs/key.pem'
 SSL_CERT = './certs/cert.pem'
@@ -45,9 +45,17 @@ PORT = 443
 ENABLE_DB_LOGS = true
 ```
 
+## 🛠 Build
+```bash
+cd frontend
+npm i
+npm run build
+cd ..
+```
+
 ## 🚀 Run
 ```bash
-node index.js
+node backend/index.js
 ```
 
 ## 🟢 Ready
