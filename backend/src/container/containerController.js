@@ -35,7 +35,8 @@ function handleRequest(action, logConfig) {
       const { containerId } = req.params;
       const result = await action(containerId, req.session.user.admin);
 
-      if (!result.ok) {
+      console.log(result);
+      if (result.ok === null || result.ok === undefined) {
         return res.status(500).json({ ok: false, message: result.message });
       }
 

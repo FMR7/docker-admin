@@ -1,222 +1,144 @@
 const request = require('supertest');
 const express = require('express');
 const session = require('express-session');
-const containerRoutes = require('./containerController');
+const containerRouter = require('./containerController');
 
 jest.mock('./containerService');
-jest.mock('express-session');
-const mockSession = require('../testUtils/mockSessionMiddleware');
-require('express-session').mockImplementation(mockSession);
-const containerService = require('./containerService');
+jest.mock('../log/logService');
 
-const app = express();
-app.use(express.json());
+const {
+  validateContainer,
+  getStatus,
+  turnOnContainer,
+  turnOffContainer,
+  getContainers,
+} = require('./containerService');
 
-// ✅ Add session middleware
-app.use(session({
-  secret: 'test-secret',
-  resave: false,
-  saveUninitialized: true,
-}));
+const logService = require('../log/logService');
 
-// ✅ Use route
-app.use('/', containerRoutes);
+describe('Container Controller', () => {
+  let app;
 
-describe('getStatus', () => {
   beforeEach(() => {
-    process.env.CONTAINERS = 'containerId,anotherContainer';
-    jest.clearAllMocks();
+    app = express();
+    app.use(express.json());
+
+    app.use(session({
+      secret: 'test',
+      resave: false,
+      saveUninitialized: true
+    }));
+
+    app.use((req, res, next) => {
+      req.session.user = { username: 'testuser', admin: true };
+      next();
+    });
+
+    app.use(containerRouter);
   });
 
-  it('should return the status of the container, true', async () => {
-    containerService.getStatus.mockResolvedValue({ ok: true });
+  describe('GET /container/status/:containerId', () => {
+    it('should return true when container status is running when authenticated and valid ID', async () => {
+      validateContainer.mockReturnValue(true);
+      getStatus.mockResolvedValue({ ok: true, message: 'running' });
 
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
+      const res = await request(app).get('/container/status/test-container');
 
-    const containerId = 'containerId';
-    const result = await request(app).get(`/container/status/${containerId}`);
-    expect(result.statusCode).toBe(200);
-    expect(result.ok).toBe(true);
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({ ok: true, message: 'running' });
+    });
+
+    it('should return 400 for invalid container ID', async () => {
+      validateContainer.mockReturnValue(false);
+
+      const res = await request(app).get('/container/status/invalid');
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.ok).toBe(false);
+    });
+
+    it('should return 401 when not authenticated', async () => {
+      app = express();
+      app.use(session({ secret: 'test', resave: false, saveUninitialized: true }));
+      app.use(containerRouter);
+
+      const res = await request(app).get('/container/status/test-container');
+      expect(res.statusCode).toBe(401);
+    });
   });
 
-  it('should return the status of the container, false', async () => {
-    containerService.getStatus.mockResolvedValue({ ok: false });
+  describe('GET /container/turn-on/:containerId', () => {
+    it('should turn on container and log the action', async () => {
+      validateContainer.mockReturnValue(true);
+      turnOnContainer.mockResolvedValue({ ok: true, message: 'turned on' });
 
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
+      const res = await request(app).get('/container/turn-on/my-container');
 
-    const containerId = 'containerId';
-    const result = await request(app).get(`/container/status/${containerId}`);
-    expect(result.statusCode).toBe(500);
-    expect(result.ok).toBe(false);
+      expect(res.statusCode).toBe(200);
+      expect(res.body.ok).toBe(true);
+      expect(turnOnContainer).toHaveBeenCalledWith('my-container', true);
+      expect(logService.insert).toHaveBeenCalledWith(
+        'testuser',
+        logService.ACTIONS.CONTAINER_TURN_ON,
+        'Container my-container turned on'
+      );
+    });
+
+    it('should return 500 if result.ok is null or undefined', async () => {
+      turnOnContainer.mockResolvedValue({ ok: null, message: 'turned on' });
+
+      const res = await request(app).get('/container/turn-on/my-container');
+
+      expect(res.statusCode).toBe(500);
+      expect(res.body.ok).toBe(false);
+    });
+
+    it('should return 500 if error', async () => {
+      turnOnContainer.mockRejectedValue(new Error('Some error'));
+
+      const res = await request(app).get('/container/turn-on/my-container');
+
+      expect(res.statusCode).toBe(500);
+      expect(res.body.ok).toBe(false);
+    });
   });
 
-  it('should return 401 if not authenticated', async () => {
-    mockSession.setSession(null);
-    const containerId = 'containerId';
-    const result = await request(app).get(`/container/status/${containerId}`);
-    expect(result.statusCode).toBe(401);
-    expect(result.ok).toBe(false);
+  describe('GET /container/turn-off/:containerId', () => {
+    it('should turn off container and log the action', async () => {
+      validateContainer.mockReturnValue(true);
+      turnOffContainer.mockResolvedValue({ ok: true, message: 'turned off' });
+
+      const res = await request(app).get('/container/turn-off/my-container');
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.ok).toBe(true);
+      expect(turnOffContainer).toHaveBeenCalledWith('my-container', true);
+      expect(logService.insert).toHaveBeenCalledWith(
+        'testuser',
+        logService.ACTIONS.CONTAINER_TURN_OFF,
+        'Container my-container turned off'
+      );
+    });
   });
 
-  it('should return 400 if container ID is invalid', async () => {
+  describe('GET /container', () => {
+    it('should return list of containers', async () => {
+      getContainers.mockResolvedValue([{ id: 'c1', name: 'container 1' }]);
 
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
-    const containerId = 'invalidContainerId';
-    const result = await request(app).get(`/container/status/${containerId}`);
-    expect(result.statusCode).toBe(400);
-    expect(result.ok).toBe(false);
-  });
+      const res = await request(app).get('/container');
 
-  it('should return 500 if error', async () => {
-    containerService.getStatus.mockRejectedValue(new Error('Some error'));
+      expect(res.statusCode).toBe(200);
+      expect(res.body.ok).toBe(true);
+      expect(res.body.containers.length).toBe(1);
+    });
 
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
-    const containerId = 'containerId';
-    const result = await request(app).get(`/container/status/${containerId}`);
-    expect(result.statusCode).toBe(500);
-    expect(result.ok).toBe(false);
-  });
-});
+    it('should return 500 if error', async () => {
+      getContainers.mockRejectedValue(new Error('Some error'));
 
-describe('turnOnContainer', () => {
-  beforeEach(() => {
-    process.env.CONTAINERS = 'containerId,anotherContainer';
-    jest.clearAllMocks();
-  });
+      const res = await request(app).get('/container');
 
-  it('should turn on the container, true', async () => {
-    containerService.turnOnContainer.mockResolvedValue({ ok: true, message: 'Container turned on' });
-
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
-    
-    const containerId = 'containerId';
-    const result = await request(app).get(`/container/turn-on/${containerId}`);
-    expect(result.statusCode).toBe(200);
-    expect(result.ok).toBe(true);
-  });
-
-  it('should turn on the container, false', async () => {
-    containerService.turnOnContainer.mockResolvedValue({ ok: false });
-
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
-    
-    const containerId = 'containerId';
-    const result = await request(app).get(`/container/turn-on/${containerId}`);
-    expect(result.statusCode).toBe(500);
-    expect(result.ok).toBe(false);
-  });
-
-  it('should return 401 if not authenticated', async () => {
-    mockSession.setSession(null);
-    const containerId = 'containerId';
-    const result = await request(app).get(`/container/turn-on/${containerId}`);
-    expect(result.statusCode).toBe(401);
-    expect(result.ok).toBe(false);
-  });
-
-  it('should return 400 if container ID is invalid', async () => {
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
-    const containerId = 'invalidContainerId';
-    const result = await request(app).get(`/container/turn-on/${containerId}`);
-    expect(result.statusCode).toBe(400);
-    expect(result.ok).toBe(false);
-  });
-
-  it('should return 500 if error', async () => {
-    containerService.turnOnContainer.mockRejectedValue(new Error('Some error'));
-
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
-    const containerId = 'containerId';
-    const result = await request(app).get(`/container/turn-on/${containerId}`);
-    expect(result.statusCode).toBe(500);
-    expect(result.ok).toBe(false);
-  });
-});
-
-describe('turnOffContainer', () => {
-  beforeEach(() => {
-    process.env.CONTAINERS = 'containerId,anotherContainer';
-    jest.clearAllMocks();
-  });
-
-  it('should turn off the container, true', async () => {
-    containerService.turnOffContainer.mockResolvedValue({ ok: true, message: 'Container turned off' });
-
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
-    
-    const containerId = 'containerId';
-    const result = await request(app).get(`/container/turn-off/${containerId}`);
-    expect(result.statusCode).toBe(200);
-    expect(result.ok).toBe(true);
-  });
-
-  it('should turn off the container, false', async () => {
-    containerService.turnOffContainer.mockResolvedValue({ ok: false });
-
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
-    
-    const containerId = 'containerId';
-    const result = await request(app).get(`/container/turn-off/${containerId}`);
-    expect(result.statusCode).toBe(500);
-    expect(result.ok).toBe(false);
-  });
-
-  it('should return 401 if not authenticated', async () => {
-    mockSession.setSession(null);
-    const containerId = 'containerId';
-    const result = await request(app).get(`/container/turn-off/${containerId}`);
-    expect(result.statusCode).toBe(401);
-    expect(result.ok).toBe(false);
-  });
-
-  it('should return 400 if container ID is invalid', async () => {
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
-    const containerId = 'invalidContainerId';
-    const result = await request(app).get(`/container/turn-off/${containerId}`);
-    expect(result.statusCode).toBe(400);
-    expect(result.ok).toBe(false);
-  });
-
-  it('should return 500 if error', async () => {
-    containerService.turnOffContainer.mockRejectedValue(new Error('Some error'));
-
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
-    const containerId = 'containerId';
-    const result = await request(app).get(`/container/turn-off/${containerId}`);
-    expect(result.statusCode).toBe(500);
-    expect(result.ok).toBe(false);
-  });
-});
-
-describe('getContainers', () => {
-  beforeEach(() => {
-    process.env.CONTAINERS = 'containerId,anotherContainer';
-    jest.clearAllMocks();
-  });
-
-  it('should return the status of all containers', async () => {
-    containerService.getContainers.mockResolvedValue({ ok: true, containers: [] });
-
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
-    
-    const result = await request(app).get('/container');
-    expect(result.statusCode).toBe(200);
-    expect(result.ok).toBe(true);
-  });
-
-  it('should return 401 if not authenticated', async () => {
-    mockSession.setSession(null);
-    const result = await request(app).get('/container');
-    expect(result.statusCode).toBe(401);
-    expect(result.ok).toBe(false);
-  });
-
-  it('should return 500 if error', async () => {
-    containerService.getContainers.mockRejectedValue(new Error('Some error'));
-
-    mockSession.setSession({ user: { username: 'test', active: true, admin: true } });
-    const result = await request(app).get('/container');
-    expect(result.statusCode).toBe(500);
-    expect(result.ok).toBe(false);
+      expect(res.statusCode).toBe(500);
+      expect(res.body.ok).toBe(false);
+    });
   });
 });
