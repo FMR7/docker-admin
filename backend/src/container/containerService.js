@@ -1,6 +1,28 @@
 const { exec } = require('child_process');
 const containerConfigService = require('../containerConfig/containerConfigService');
 
+function validateContainer(containerId) {
+  return new Promise((resolve, reject) => {
+    try {
+      const containerConfigs = containerConfigService.findAll();
+
+      if (!containerConfigs) {
+        return reject(new Error(`Container ${containerId} not found`));
+      }
+
+      if (containerConfigs.some((containerConfig) => containerConfig.container_key === containerId)) {
+        return resolve(true);
+      }
+
+      return reject(new Error(`Container ${containerId} not found`));
+
+    } catch (err) {
+      console.error(`Error checking status: ${err.message}`);
+      return reject(new Error('Error checking container status'));
+    }
+  });
+}
+
 function getStatus(containerId) {
   return new Promise((resolve, reject) => {
     try {
@@ -113,4 +135,4 @@ async function getContainers(isAdmin) {
   }
 }
 
-module.exports = { getStatus, getName, turnOnContainer, turnOffContainer, getContainers };
+module.exports = { validateContainer, getStatus, getName, turnOnContainer, turnOffContainer, getContainers };

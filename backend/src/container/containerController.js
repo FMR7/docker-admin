@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const logService = require('../log/logService');
 const {
+  validateContainer,
   getStatus,
   turnOnContainer,
   turnOffContainer,
@@ -20,7 +21,8 @@ function isAuthenticated(req, res, next) {
 // Middleware to validate container ID
 function validateContainerId(req, res, next) {
   const { containerId } = req.params;
-  if (!process.env.CONTAINERS.includes(containerId)) {
+  const containerValid = validateContainer(containerId);
+  if (!containerValid) {
     return res.status(400).json({ ok: false, message: 'Invalid container ID' });
   }
   next();
