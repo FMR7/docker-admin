@@ -1,4 +1,4 @@
-CREATE TABLE public.usuarios (
+CREATE TABLE usuarios (
 	username varchar(20) NOT NULL,
 	"password" varchar(512) NOT NULL,
 	active bool DEFAULT false NOT NULL,
@@ -7,17 +7,17 @@ CREATE TABLE public.usuarios (
 	CONSTRAINT usuarios_pk PRIMARY KEY (username)
 );
 
-CREATE TABLE public.log (
+CREATE TABLE log (
 	log_key bigserial NOT NULL,
 	username varchar(20) NOT NULL,
 	"action" varchar NOT NULL,
 	detail varchar NULL,
 	log_date timestamptz DEFAULT now() NOT NULL,
 	CONSTRAINT log_pkey PRIMARY KEY (log_key),
-	CONSTRAINT log_usuarios_fk FOREIGN KEY (username) REFERENCES public.usuarios(username) ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT log_usuarios_fk FOREIGN KEY (username) REFERENCES usuarios(username) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE public.container_config (
+CREATE TABLE container_config (
 	container_key varchar(256) NOT NULL,
 	"name" varchar(50) NOT NULL,
 	description varchar(256) NULL,

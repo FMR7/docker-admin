@@ -1,7 +1,7 @@
 const db = require('../config/db');
 
 async function findAll() {
-  const res = await db.query('SELECT * FROM public.log ORDER BY fecha DESC');
+  const res = await db.query('SELECT * FROM log ORDER BY fecha DESC');
   return res.rows;
 }
 

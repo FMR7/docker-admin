@@ -1,12 +1,12 @@
 const db = require('../config/db');
 
 async function findAll() {
-  const res = await db.query('SELECT * FROM public.container_config ORDER BY name');
+  const res = await db.query('SELECT * FROM container_config ORDER BY name');
   return res.rows;
 }
 
 async function findById(id) {
-  const res = await db.query('SELECT * FROM public.container_config WHERE container_key = $1', [id]);
+  const res = await db.query('SELECT * FROM container_config WHERE container_key = $1', [id]);
   return res.rows[0];
 }
 

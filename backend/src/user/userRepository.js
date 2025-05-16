@@ -2,17 +2,17 @@ const db = require('../config/db');
 const bcrypt = require('bcrypt');
 
 async function findAll() {
-  const res = await db.query('SELECT * FROM public.usuarios ORDER BY admin DESC, active DESC');
+  const res = await db.query('SELECT * FROM usuarios ORDER BY admin DESC, active DESC');
   return res.rows;
 }
 
 async function findByUsername(username) {
-  const res = await db.query('SELECT * FROM public.usuarios WHERE username = $1', [username]);
+  const res = await db.query('SELECT * FROM usuarios WHERE username = $1', [username]);
   return res.rows[0];
 }
 
 async function findByUsernameAndActive(username) {
-  const res = await db.query('SELECT * FROM public.usuarios WHERE username = $1 and active = true', [username]);
+  const res = await db.query('SELECT * FROM usuarios WHERE username = $1 and active = true', [username]);
   return res.rows[0];
 }
 
