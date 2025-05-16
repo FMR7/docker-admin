@@ -83,8 +83,8 @@ router.get('/container/turn-off/:containerId',
 
 router.get('/container', isAuthenticated, async (req, res) => {
   try {
-    const containers = await getContainers(req.session.user.admin);
-    return res.json({ ok: true, containers });
+    const { containers, messages } = await getContainers(req.session.user.admin);
+    return res.json({ ok: true, containers, messages });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ ok: false, message: 'Internal server error' });
