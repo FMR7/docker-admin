@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'preact/hooks';
 import AlertMessage from '../../components/AlertMessage';
 import Toogle from '../../components/Toogle';
 import { requireLogin } from '../../hooks/useRequireLogin';
-import { LoaderCircle } from 'lucide-preact';
 import Spinner from '../../components/Spinner';
 
 export function Home() {
