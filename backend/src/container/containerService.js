@@ -109,9 +109,21 @@ async function getContainers(isAdmin) {
           status
         });
       } catch (err) {
-        messages.push(`${err.message}. Container ID: ${containerConfig.container_key}`);
+        messages.push(`${err.message} for <strong>${containerConfig.name}</strong>`);
       }
     }));
+
+    // Sort by status and name
+    containers.sort((a, b) => {
+      if (a.status && !b.status) return -1;
+      if (!a.status && b.status) return 1;
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    })
+
+    // Sort messages
+    messages.sort();
 
     return { containers, messages };
   } catch (err) {
