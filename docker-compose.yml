@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: .
+    image: docker-admin
+    ports:
+      - "443:3000"
+    environment:
+      NODE_ENV: production
+      DB_HOST: db.example.local
+      DB_PORT: 5432
+      DB_NAME: mydatabase
+      DB_SCHEMA: public
+      DB_USER: dbuser
+      DB_PASSWORD: securepassword
+      SESSION_SECRET: changeme-session-secret
+      SSL: "true"
+      SSL_KEY: /certs/key.pem
+      SSL_CERT: /certs/cert.pem
+      PORT: 3000
+      ENABLE_DB_LOGS: "true"
+    volumes:
+      - ./certs:/certs:ro

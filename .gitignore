@@ -4,3 +4,4 @@ sonar.sh
 .scannerwork
 coverage
 .vscode
+docker-compose_PRO.yml
