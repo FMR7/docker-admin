@@ -1,11 +1,12 @@
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '.env') });
-
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: path.join(__dirname, '.env') });
+}
 const https = require('https');
-const http = require('http');
 const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
 const usuarioRoutes = require('./src/user/userController');
 const containerRoutes = require('./src/container/containerController');
 const containerConfigRoutes = require('./src/containerConfig/containerConfigController');
@@ -15,7 +16,13 @@ const db = require('./src/config/db');
 const app = express();
 app.use(express.json());
 
+
 app.use(session({
+  store: new pgSession({
+    pool: db,
+    tableName: 'session',
+    createTableIfMissing: true
+  }),
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
