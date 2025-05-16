@@ -29,7 +29,6 @@ cd docker-admin
 
 <details open>
 <summary><h2>📦 Docker Deployment</h2></summary>
-<br/>
 
 ### ⚙️ 1. Configure Environment Variables
 
