@@ -1,0 +1,14 @@
+.spinner-container {
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-rotate {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}

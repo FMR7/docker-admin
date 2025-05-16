@@ -4,7 +4,7 @@ const AlertMessage = ({ message, isSuccess }) => {
   if (!message) return null;
 
   return (
-    <div className={`alert ${isSuccess ? 'alert-success' : 'alert-error'} mb-4`}>
+    <div className={`alert ${isSuccess ? 'alert-success' : 'alert-error'} mb-4`} style={{ whiteSpace: 'pre-line' }}>
       <p dangerouslySetInnerHTML={{ __html: message }}></p>
     </div>
   );
