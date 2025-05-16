@@ -32,7 +32,8 @@ cd docker-admin
 
 ### ⚙️ 1. Configure Environment Variables
 
-Edit the `docker-compose.yml` file and replace the placeholder values with your actual environment configuration:
+Edit the `docker-compose.yml` file and replace the placeholder values with your actual environment configuration.
+Only `DB` values and `SESSION_SECRET` should be changed:
 ```yaml
 environment:
   NODE_ENV: production
