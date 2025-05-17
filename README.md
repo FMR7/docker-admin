@@ -1,5 +1,5 @@
-[![Quality Gate Status](http://82.165.142.21:9000/api/project_badges/measure?project=docker-admin&metric=alert_status&token=sqb_6715fe38e59635b1d4ad3f4d5f8c53502582f8d6)](http://82.165.142.21:9000/dashboard?id=docker-admin)
-[![Coverage](http://82.165.142.21:9000/api/project_badges/measure?project=docker-admin&metric=coverage&token=sqb_6715fe38e59635b1d4ad3f4d5f8c53502582f8d6)](http://82.165.142.21:9000/dashboard?id=docker-admin)
+[![Quality Gate Status](http://82.165.142.21:9000/api/project_badges/measure?project=docker-admin&metric=alert_status&token=sqb_e04ec433f5a129e833409c5da38cfafd0b122b97)](http://82.165.142.21:9000/dashboard?id=docker-admin)
+[![Coverage](http://82.165.142.21:9000/api/project_badges/measure?project=docker-admin&metric=coverage&token=sqb_e04ec433f5a129e833409c5da38cfafd0b122b97)](http://82.165.142.21:9000/dashboard?id=docker-admin)
 # 🛠️ Docker Admin
 
 A web administration panel designed to simplify the startup/shutdown of specific containers.
