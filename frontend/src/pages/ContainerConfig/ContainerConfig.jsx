@@ -132,7 +132,7 @@ const ContainerConfig = () => {
             <form onSubmit={handleSubmit}>
               <label class="floating-label">
                 <span>Container ID</span>
-                <TextInput id="container_key" label="Container ID" defaultValue={editingItem?.container_key} required />
+                <TextInput id="container_key" label="Container ID" defaultValue={editingItem?.container_key} readOnly={!!editingItem} required />
               </label>
               <label class="floating-label">
                 <span>Name</span>
@@ -140,7 +140,7 @@ const ContainerConfig = () => {
               </label>
               <label class="floating-label">
                 <span>Description</span>
-                <TextArea id="description" label="Description" defaultValue={editingItem?.description} maxLength={100} />
+                <TextArea id="description" label="Description" defaultValue={editingItem?.description} maxLength={1024} />
               </label>
               <Toogle id="active" label="Active" active={editingItem?.active ?? true} />
               <Toogle id="admin_only" label="Admin only" active={editingItem?.admin_only ?? false} />
