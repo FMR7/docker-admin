@@ -100,7 +100,7 @@ const ContainerConfig = () => {
               <td>{contConfig.description}</td>
               <td>{contConfig.active ? <div class="badge badge-success">Yes</div> : <div class="badge badge-error">No</div>}</td>
               <td>{contConfig.admin_only ? <div class="badge badge-success">Yes</div> : <div class="badge badge-error">No</div>}</td>
-              <td>
+              <td className="flex space-x-2">
                 <button className="btn btn-primary mr-1" onClick={() => openEditModal(contConfig)}>
                   <Edit2 />
                 </button>
