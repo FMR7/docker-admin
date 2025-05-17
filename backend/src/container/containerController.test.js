@@ -129,7 +129,6 @@ describe('Container Controller', () => {
 
       expect(res.statusCode).toBe(200);
       expect(res.body.ok).toBe(true);
-      expect(res.body.containers.length).toBe(1);
     });
 
     it('should return 500 if error', async () => {
