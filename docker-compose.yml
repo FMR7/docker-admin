@@ -1,7 +1,6 @@
 services:
   backend:
-    build: .
-    image: docker-admin
+    image: fmr0/docker-admin
     ports:
       - "443:3000"
     environment:
