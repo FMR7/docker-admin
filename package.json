@@ -15,7 +15,7 @@
     "dockerode": "^4.0.6",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "express-session": "^1.18.1",
+    "express-session": "^1.18.2",
     "pg": "^8.15.6"
   },
   "devDependencies": {
