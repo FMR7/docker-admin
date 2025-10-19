@@ -16,12 +16,7 @@ app.use(express.json());
 app.use(session({
   secret: 'test-secret',
   resave: false,
-  saveUninitialized: true,
-  cookie: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-  },
+  saveUninitialized: true
 }));
 
 // ✅ Use route
