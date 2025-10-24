@@ -1,5 +1,5 @@
 # BUILD FRONTEND
-FROM node:22-alpine AS build-frontend
+FROM node:22-slim AS build-frontend
 
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
@@ -9,7 +9,7 @@ RUN npm run build
 
 
 # BUILD BACKEND
-FROM node:22-alpine AS build-backend
+FROM node:22-slim AS build-backend
 
 WORKDIR /app/backend
 COPY package*.json ./
@@ -17,7 +17,7 @@ RUN npm install --production
 COPY backend/ .
 
 # FINAL IMAGE
-FROM node:22-alpine
+FROM node:22-slim
 
 WORKDIR /app
 COPY --from=build-backend /app/backend ./backend
