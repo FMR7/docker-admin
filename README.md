@@ -1,5 +1,5 @@
-[![Quality Gate Status](https://sonar.fmr-labs.es/api/project_badges/measure?project=docker-admin&metric=alert_status&token=sqb_6c8e6a80f24e5fc5190732ec1b2bd391618b9672)](https://sonar.fmr-labs.es/dashboard?id=docker-admin)
-[![Coverage](https://sonar.fmr-labs.es/api/project_badges/measure?project=docker-admin&metric=coverage&token=sqb_6c8e6a80f24e5fc5190732ec1b2bd391618b9672)](https://sonar.fmr-labs.es/dashboard?id=docker-admin)
+[![Quality Gate Status](https://sonar.fmr-labs.es/api/project_badges/measure?project=docker-admin&metric=alert_status&token=sqb_e90ad2606e8f522583a4d2a1e6f55e803b28a2ea)](https://sonar.fmr-labs.es/dashboard?id=docker-admin)
+[![Coverage](https://sonar.fmr-labs.es/api/project_badges/measure?project=docker-admin&metric=coverage&token=sqb_e90ad2606e8f522583a4d2a1e6f55e803b28a2ea)](https://sonar.fmr-labs.es/dashboard?id=docker-admin)
 # 🛠️ Docker Admin
 
 A web administration panel designed to simplify the startup/shutdown of specific containers.
