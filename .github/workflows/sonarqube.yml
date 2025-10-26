@@ -56,25 +56,28 @@ jobs:
           env | sort
         shell: bash
 
-      - name: Analyze with SonarQube
+      - name: Download SonarScanner CLI
+        run: |
+          SCANNER_VERSION=4.8.0.2856
+          echo "Downloading SonarScanner CLI $SCANNER_VERSION"
+          wget -qO sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SCANNER_VERSION}-linux.zip
+          unzip -q sonar-scanner.zip
+          mv sonar-scanner-${SCANNER_VERSION} sonar-scanner
+        shell: bash
 
-        # You can pin the exact commit or the version.
-        # uses: SonarSource/sonarqube-scan-action@v1.1.0
-        uses: SonarSource/sonarqube-scan-action@7295e71c9583053f5bf40e9d4068a0c974603ec8
+      - name: Run SonarScanner CLI
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Generate a token on SonarQube, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}   # add the URL of your instance to the secrets of this repo with the name SONAR_HOST_URL (Settings > Secrets > Actions > add new repository secret)
-        with:
-          # Additional arguments for the sonarcloud scanner
-          args:
-            # Unique key of your project. You can find it in SonarQube > [my project] > Project Information (top-right menu)
-            # mandatory
-            -Dsonar.projectKey=docker-admin
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.exclusions=**/*.test.js,**/__tests__/**
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          echo "Using JAVA_HOME=$JAVA_HOME"
+          ./sonar-scanner/bin/sonar-scanner \
+            -Dsonar.projectKey=docker-admin \
+            -Dsonar.host.url=${SONAR_HOST_URL} \
+            -Dsonar.login=${SONAR_TOKEN} \
+            -Dsonar.exclusions=**/*.test.js,**/__tests__/** \
             -Dsonar.test.exclusions=**/*.test.js,**/__tests__/**
+        shell: bash
             # Comma-separated paths to directories containing main source files.
             #-Dsonar.sources= # optional, default is project base directory
             # When you need the analysis to take place in a directory other than the one from which it was launched
