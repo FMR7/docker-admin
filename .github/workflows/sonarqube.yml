@@ -62,7 +62,14 @@ jobs:
           echo "Downloading SonarScanner CLI $SCANNER_VERSION"
           wget -qO sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SCANNER_VERSION}-linux.zip
           unzip -q sonar-scanner.zip
-          mv sonar-scanner-${SCANNER_VERSION} sonar-scanner
+          # find the extracted directory (name may include platform suffix) and rename it to sonar-scanner
+          extracted_dir=$(find . -maxdepth 1 -type d -name "sonar-scanner*" | sed -n '1p' | sed 's|^./||')
+          if [ -z "$extracted_dir" ]; then
+            echo "Could not find extracted sonar-scanner directory"
+            ls -la
+            exit 1
+          fi
+          mv "$extracted_dir" sonar-scanner
         shell: bash
 
       - name: Run SonarScanner CLI
