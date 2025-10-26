@@ -47,6 +47,15 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Debug Java
+        run: |
+          echo "JAVA_HOME=$JAVA_HOME"
+          echo "which java: $(which java || true)"
+          java -version || true
+          echo "--- environment ---"
+          env | sort
+        shell: bash
+
       - name: Analyze with SonarQube
 
         # You can pin the exact commit or the version.
@@ -62,6 +71,10 @@ jobs:
             # Unique key of your project. You can find it in SonarQube > [my project] > Project Information (top-right menu)
             # mandatory
             -Dsonar.projectKey=docker-admin
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.exclusions=**/*.test.js,**/__tests__/**
+            -Dsonar.test.exclusions=**/*.test.js,**/__tests__/**
             # Comma-separated paths to directories containing main source files.
             #-Dsonar.sources= # optional, default is project base directory
             # When you need the analysis to take place in a directory other than the one from which it was launched
