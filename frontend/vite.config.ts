@@ -6,8 +6,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   const isSSL = env.VITE_SSL === 'true';
-  const apiPort = env.VITE_API_PORT || 3000;
-  const apiHost = env.VITE_API_HOST || 'localhost';
+  const apiPort = env.VITE_API_PORT ?? 3000;
+  const apiHost = env.VITE_API_HOST ?? 'localhost';
 
 
   console.log('🌐 API PORT:', apiPort);
