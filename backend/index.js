@@ -8,6 +8,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
+const csrf = require('csurf');
 const usuarioRoutes = require('./src/user/userController');
 const containerRoutes = require('./src/container/containerController');
 const containerConfigRoutes = require('./src/containerConfig/containerConfigController');
@@ -36,6 +37,10 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
+
+// CSRF protection for API routes using session-based tokens
+const csrfProtection = csrf({ cookie: false });
+app.use('/api', csrfProtection);
 
 app.use('/api', usuarioRoutes);
 app.use('/api', containerRoutes);
