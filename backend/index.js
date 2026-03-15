@@ -46,7 +46,8 @@ const csrfExemptPaths = [
   '/usuario/login',
   '/usuario/register',
   '/usuario/logout',
-  '/usuario/logged'
+  '/usuario/logged',
+  '/usuario/admin'
 ];
 
 // Endpoint to provide CSRF token for clients that want protection
