@@ -136,6 +136,7 @@ module.exports = {
   validateContainer,
   getStatus,
   getName,
+  controlContainer,
   turnOnContainer,
   turnOffContainer,
   getContainers
