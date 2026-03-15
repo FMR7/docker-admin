@@ -3,6 +3,7 @@ import { Trash2 } from 'lucide-preact';
 import Toogle from '../../components/Toogle';
 import AlertMessage from '../../components/AlertMessage';
 import { requireLogin } from '../../hooks/useRequireLogin';
+import { apiFetch } from '../../utils/api';
 
 const Users = () => {
   requireLogin();
@@ -12,9 +13,8 @@ const Users = () => {
   const [users, setUsers] = useState([]);
 
   const findAll = async () => {
-    const res = await fetch('/api/usuario', {
+    const res = await apiFetch('/api/usuario', {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
     });
 
     const result = await res.json();
@@ -30,9 +30,8 @@ const Users = () => {
   async function onActiveSwitchChange(event, username) {
     const isChecked = event.target.checked;
     console.log('Set active', isChecked, 'for user:', username);
-    const res = await fetch('/api/usuario/active/' + isChecked + '/' + username, {
+    const res = await apiFetch('/api/usuario/active/' + isChecked + '/' + username, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' }
     });
 
     const result = await res.json();
@@ -45,9 +44,8 @@ const Users = () => {
   async function onAdminSwitchChange(event, username) {
     const isChecked = event.target.checked;
     console.log('Set admin', isChecked, 'for user:', username);
-    const res = await fetch('/api/usuario/admin/' + isChecked + '/' + username, {
+    const res = await apiFetch('/api/usuario/admin/' + isChecked + '/' + username, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' }
     });
 
     const result = await res.json();
@@ -79,9 +77,8 @@ const Users = () => {
               <td>
                 <button className="btn btn-error"
                   onClick={async () => {
-                    await fetch(`/api/usuario/${user.username}`, {
+                    await apiFetch(`/api/usuario/${user.username}`, {
                       method: 'DELETE',
-                      headers: { 'Content-Type': 'application/json' },
                     });
 
                     findAll();

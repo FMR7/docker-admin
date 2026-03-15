@@ -40,11 +40,38 @@ app.use(session({
 
 // CSRF protection for API routes using session-based tokens
 const csrfProtection = csrf({ cookie: false });
-app.use('/api', csrfProtection);
+
+// Public endpoints that are allowed without CSRF token
+const csrfExemptPaths = [
+  '/usuario/login',
+  '/usuario/register',
+  '/usuario/logout',
+  '/usuario/logged'
+];
+
+// Endpoint to provide CSRF token for clients that want protection
+app.get('/api/csrf-token', csrfProtection, (req, res) => {
+  res.json({ ok: true, csrfToken: req.csrfToken() });
+});
+
+app.use('/api', (req, res, next) => {
+  if (req.method === 'GET' || csrfExemptPaths.includes(req.path)) {
+    return next();
+  }
+  return csrfProtection(req, res, next);
+});
 
 app.use('/api', usuarioRoutes);
 app.use('/api', containerRoutes);
 app.use('/api', containerConfigRoutes);
+
+// CSRF error handler
+app.use((err, req, res, next) => {
+  if (err.code === 'EBADCSRFTOKEN') {
+    return res.status(403).json({ ok: false, message: 'Invalid CSRF token' });
+  }
+  next(err);
+});
 
 
 // FRONTEND

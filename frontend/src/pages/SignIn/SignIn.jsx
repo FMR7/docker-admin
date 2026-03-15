@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import TextInput from '../../components/TextInput';
 import AlertMessage from '../../components/AlertMessage';
+import { apiFetch } from '../../utils/api';
 
 const SignIn = () => {
   const [error, setError] = useState(null);
@@ -8,10 +9,7 @@ const SignIn = () => {
   useEffect(() => {
     // Simula la lógica de redirección si ya estás logueado
     const checkLogin = async () => {
-      const res = await fetch('/api/usuario/logged', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
+      const res = await apiFetch('/api/usuario/logged', { method: 'GET' });
 
       const result = await res.json();
       if (result.ok) {
@@ -27,18 +25,21 @@ const SignIn = () => {
     const data = new FormData(e.target);
     const userData = Object.fromEntries(data.entries());
 
-    const res = await fetch('/api/usuario/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData),
-    });
+    try {
+      const res = await apiFetch('/api/usuario/login', {
+        method: 'POST',
+        body: JSON.stringify(userData),
+      });
 
-    const result = await res.json();
+      const result = await res.json();
 
-    if (result.ok) {
-      window.location.href = '/home';
-    } else {
-      setError(result.message);
+      if (result.ok) {
+        window.location.href = '/home';
+      } else {
+        setError(result.message);
+      }
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -66,5 +67,6 @@ const SignIn = () => {
     </form>
   );
 };
+
 
 export default SignIn;

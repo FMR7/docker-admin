@@ -6,6 +6,7 @@ import useModal from '../../hooks/useModal';
 import TextInput from '../../components/TextInput';
 import TextArea from '../../components/TextArea';
 import { requireLogin } from '../../hooks/useRequireLogin';
+import { apiFetch } from '../../utils/api';
 
 const ContainerConfig = () => {
   requireLogin();
@@ -18,9 +19,8 @@ const ContainerConfig = () => {
 
 
   const findAll = async () => {
-    const res = await fetch('/api/container-config', {
+    const res = await apiFetch('/api/container-config', {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
     });
 
     const result = await res.json();
@@ -58,9 +58,8 @@ const ContainerConfig = () => {
     const method = editingItem ? 'PUT' : 'POST';
     const url = editingItem ? `/api/container-config/${editingItem.container_key}` : '/api/container-config';
 
-    const res = await fetch(url, {
+    const res = await apiFetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
 
@@ -107,9 +106,8 @@ const ContainerConfig = () => {
 
                 <button className="btn btn-error"
                   onClick={async () => {
-                    await fetch(`/api/container-config/${contConfig.container_key}`, {
+                    await apiFetch(`/api/container-config/${contConfig.container_key}`, {
                       method: 'DELETE',
-                      headers: { 'Content-Type': 'application/json' },
                     });
 
                     findAll();

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import TextInput from '../../components/TextInput';
 import AlertMessage from '../../components/AlertMessage';
+import { apiFetch } from '../../utils/api';
 
 const SignUp = () => {
   const [message, setMessage] = useState(null);
@@ -27,18 +28,22 @@ const SignUp = () => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target).entries());
 
-    const res = await fetch('/api/usuario/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    try {
+      const res = await apiFetch('/api/usuario/register', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
 
-    const result = await res.json();
-    setMessage(result.message);
-    setIsSuccess(result.ok);
+      const result = await res.json();
+      setMessage(result.message);
+      setIsSuccess(result.ok);
 
-    if (result.ok) {
-      e.target.reset();
+      if (result.ok) {
+        e.target.reset();
+      }
+    } catch (err) {
+      setMessage(err.message);
+      setIsSuccess(false);
     }
   };
 
