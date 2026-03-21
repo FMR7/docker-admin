@@ -12,7 +12,7 @@ const e = require('express');
 
 // Middleware to check authentication
 function isAuthenticated(req, res, next) {
-  if (!req.session.user) {
+  if (!req.user) {
     return res.status(401).json({ ok: false, message: 'Not authenticated' });
   }
   next();
@@ -33,7 +33,7 @@ function handleRequest(action, logConfig) {
   return async (req, res) => {
     try {
       const { containerId } = req.params;
-      const result = await action(containerId, req.session.user.admin);
+      const result = await action(containerId, req.user.admin);
 
       console.log(result);
       if (result.ok === null || result.ok === undefined) {
@@ -64,7 +64,7 @@ router.get('/container/turn-on/:containerId',
   isAuthenticated,
   validateContainerId,
   handleRequest(turnOnContainer, (req, result) => ({
-    username: req.session.user.username,
+    username: req.user.username,
     action: logService.ACTIONS.CONTAINER_TURN_ON,
     detail: `Container ${req.params.containerId} turned on`
   }))
@@ -74,7 +74,7 @@ router.get('/container/turn-off/:containerId',
   isAuthenticated,
   validateContainerId,
   handleRequest(turnOffContainer, (req, result) => ({
-    username: req.session.user.username,
+    username: req.user.username,
     action: logService.ACTIONS.CONTAINER_TURN_OFF,
     detail: `Container ${req.params.containerId} turned off`
   }))
@@ -83,7 +83,7 @@ router.get('/container/turn-off/:containerId',
 
 router.get('/container', isAuthenticated, async (req, res) => {
   try {
-    const { containers, messages } = await getContainers(req.session.user.admin);
+    const { containers, messages } = await getContainers(req.user.admin);
     return res.json({ ok: true, containers, messages });
   } catch (err) {
     console.error(err);

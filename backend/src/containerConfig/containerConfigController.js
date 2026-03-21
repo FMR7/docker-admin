@@ -3,10 +3,10 @@ const router = express.Router();
 const service = require('./containerConfigService');
 
 router.get('/container-config', async (req, res) => {
-  if (!req.session.user) {
+  if (!req.user) {
     return res.status(401).json({ ok: false, message: 'Not authenticated' });
   }
-  if (!req.session.user.admin) {
+  if (!req.user.admin) {
     return res.status(401).json({ ok: false, message: 'Not admin' });
   }
 
@@ -20,10 +20,10 @@ router.get('/container-config', async (req, res) => {
 
 router.post('/container-config', async (req, res) => {
   try {
-    if (!req.session.user) {
+    if (!req.user) {
       return res.status(401).json({ ok: false, message: 'Not authenticated' });
     }
-    if (!req.session.user.admin) {
+    if (!req.user.admin) {
       return res.status(401).json({ ok: false, message: 'Not admin' });
     }
 
@@ -37,10 +37,10 @@ router.post('/container-config', async (req, res) => {
 
 router.put('/container-config/:container_key', async (req, res) => {
   try {
-    if (!req.session.user) {
+    if (!req.user) {
       return res.status(401).json({ ok: false, message: 'Not authenticated' });
     }
-    if (!req.session.user.admin) {
+    if (!req.user.admin) {
       return res.status(401).json({ ok: false, message: 'Not admin' });
     }
 
@@ -54,10 +54,10 @@ router.put('/container-config/:container_key', async (req, res) => {
 });
 
 router.delete('/container-config/:container_key', async (req, res) => {
-  if (!req.session.user) {
+  if (!req.user) {
     return res.status(401).json({ ok: false, message: 'Not authenticated' });
   }
-  if (!req.session.user.admin) {
+  if (!req.user.admin) {
     return res.status(401).json({ ok: false, message: 'Not admin' });
   }
 

@@ -6,9 +6,8 @@ const https = require('https');
 const fs = require('fs');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
-const session = require('express-session');
-const pgSession = require('connect-pg-simple')(session);
-const csrf = require('csurf');
+const authJwt = require('./src/middleware/authJwt');
+const csrfHeader = require('./src/middleware/csrfHeader');
 const usuarioRoutes = require('./src/user/userController');
 const containerRoutes = require('./src/container/containerController');
 const containerConfigRoutes = require('./src/containerConfig/containerConfigController');
@@ -27,53 +26,25 @@ const frontendLimiter = rateLimit({
 });
 
 
-app.use(session({
-  store: new pgSession({
-    pool: db,
-    tableName: 'session',
-    createTableIfMissing: true
-  }),
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false
-}));
-
-// CSRF protection for API routes using session-based tokens
-const csrfProtection = csrf({ cookie: false });
-
-// Public endpoints that are allowed without CSRF token
-const csrfExemptPaths = [
+// JWT + header-based CSRF protection
+const apiPublicPaths = [
   '/usuario/login',
-  '/usuario/register',
-  '/usuario/logout',
-  '/usuario/logged',
-  '/usuario/admin'
+  '/usuario/register'
 ];
 
-// Endpoint to provide CSRF token for clients that want protection
-app.get('/api/csrf-token', csrfProtection, (req, res) => {
-  res.json({ ok: true, csrfToken: req.csrfToken() });
-});
-
 app.use('/api', (req, res, next) => {
-  if (req.method === 'GET' || csrfExemptPaths.includes(req.path)) {
+  if (apiPublicPaths.includes(req.path) && req.method === 'POST') {
     return next();
   }
-  return csrfProtection(req, res, next);
+  authJwt(req, res, (err) => {
+    if (err) return next(err);
+    csrfHeader(req, res, next);
+  });
 });
 
 app.use('/api', usuarioRoutes);
 app.use('/api', containerRoutes);
 app.use('/api', containerConfigRoutes);
-
-// CSRF error handler
-app.use((err, req, res, next) => {
-  if (err.code === 'EBADCSRFTOKEN') {
-    return res.status(403).json({ ok: false, message: 'Invalid CSRF token' });
-  }
-  next(err);
-});
-
 
 // FRONTEND
 const frontendPath = path.join(__dirname, '../frontend/dist');

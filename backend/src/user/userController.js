@@ -1,7 +1,12 @@
 const express = require('express');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 const logService = require('../log/logService');
 const usuarioService = require('./userService');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'replace-this-with-secure-secret';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 
 router.post('/usuario/login', async (req, res) => {
   const { username, password } = req.body;
@@ -15,10 +20,23 @@ router.post('/usuario/login', async (req, res) => {
 
   try {
     const user = await usuarioService.signin(username, password);
-    req.session.cookie.maxAge = 24 * 60 * 60 * 1000; // 1 day
-    req.session.user = user;
+
+    // generate per-login CSRF token (stored inside JWT for stateless validation)
+    const csrfToken = crypto.randomBytes(24).toString('hex');
+    const payload = {
+      username: user.username,
+      active: user.active,
+      admin: user.admin,
+      csrfToken,
+    };
+
+    const accessToken = jwt.sign(payload, JWT_SECRET, {
+      expiresIn: JWT_EXPIRES_IN,
+      algorithm: 'HS256',
+    });
+
     await logService.insert(user.username, logService.ACTIONS.USER_LOGIN, 'User logged in');
-    return res.json({ ok: true, user });
+    return res.json({ ok: true, user, token: accessToken, csrfToken });
   } catch (err) {
     return res.status(401).json({ ok: false, message: err.message });
   }
@@ -49,10 +67,10 @@ router.post('/usuario/register', async (req, res) => {
 });
 
 router.delete('/usuario/:username', async (req, res) => {
-  if (!req.session.user) {
+  if (!req.user) {
     return res.status(401).json({ ok: false, message: 'Not authenticated' });
   }
-  if (!req.session.user.admin) {
+  if (!req.user.admin) {
     return res.status(401).json({ ok: false, message: 'Not admin' });
   }
 
@@ -67,10 +85,10 @@ router.delete('/usuario/:username', async (req, res) => {
 });
 
 router.get('/usuario', async (req, res) => {
-  if (!req.session.user) {
+  if (!req.user) {
     return res.status(401).json({ ok: false, message: 'Not authenticated' });
   }
-  if (!req.session.user.admin) {
+  if (!req.user.admin) {
     return res.status(401).json({ ok: false, message: 'Not admin' });
   }
 
@@ -83,10 +101,10 @@ router.get('/usuario', async (req, res) => {
 });
 
 router.put('/usuario/active/:active/:username', async (req, res) => {
-  if (!req.session.user) {
+  if (!req.user) {
     return res.status(401).json({ ok: false, message: 'Not authenticated' });
   }
-  if (!req.session.user.admin) {
+  if (!req.user.admin) {
     return res.status(401).json({ ok: false, message: 'Not admin' });
   }
 
@@ -97,7 +115,7 @@ router.put('/usuario/active/:active/:username', async (req, res) => {
 
   try {
     const user = await usuarioService.setActive(username, active === 'true');
-    await logService.insert(req.session.user.username, active === 'true' ? logService.ACTIONS.USER_ACTIVATE_TRUE : logService.ACTIONS.USER_ACTIVATE_FALSE, 'User ' + username + ' ' + (active === 'true' ? 'activated' : 'deactivated'));
+    await logService.insert(user.username, active === 'true' ? logService.ACTIONS.USER_ACTIVATE_TRUE : logService.ACTIONS.USER_ACTIVATE_FALSE, 'User ' + username + ' ' + (active === 'true' ? 'activated' : 'deactivated'));
     const msg = 'User <strong>' + username + '</strong> ' + (active === 'true' ? 'activated' : 'deactivated');
     return res.json({ ok: true, user, message: msg });
   } catch (err) {
@@ -106,10 +124,10 @@ router.put('/usuario/active/:active/:username', async (req, res) => {
 });
 
 router.put('/usuario/admin/:admin/:username', async (req, res) => {
-  if (!req.session.user) {
+  if (!req.user) {
     return res.status(401).json({ ok: false, message: 'Not authenticated' });
   }
-  if (!req.session.user.admin) {
+  if (!req.user.admin) {
     return res.status(401).json({ ok: false, message: 'Not admin' });
   }
 
@@ -120,7 +138,7 @@ router.put('/usuario/admin/:admin/:username', async (req, res) => {
 
   try {
     const user = await usuarioService.setAdmin(username, admin === 'true');
-    await logService.insert(req.session.user.username, admin === 'true' ? logService.ACTIONS.USER_ADMIN_TRUE : logService.ACTIONS.USER_ADMIN_FALSE, 'User ' + username + ' ' + (admin === 'true' ? 'promoted to admin' : 'demoted from admin'));
+    await logService.insert(req.user.username, admin === 'true' ? logService.ACTIONS.USER_ADMIN_TRUE : logService.ACTIONS.USER_ADMIN_FALSE, 'User ' + username + ' ' + (admin === 'true' ? 'promoted to admin' : 'demoted from admin'));
     const msg = 'User <strong>' + username + '</strong> ' + (admin === 'true' ? ' promoted to admin' : ' demoted from admin');
     return res.json({ ok: true, user, message: msg });
   } catch (err) {
@@ -129,30 +147,26 @@ router.put('/usuario/admin/:admin/:username', async (req, res) => {
 });
 
 router.get('/usuario/logout', async (req, res) => {
-  if (!req.session?.user) {
-    return res.status(400).json({ ok: false, message: 'No active session to destroy' });
+  if (!req.user) {
+    return res.status(401).json({ ok: false, message: 'Not authenticated' });
   }
 
-  req.session.destroy(err => {
-    if (err) {
-      return res.status(500).json({ ok: false, message: 'Error closing session' });
-    }
-    return res.json({ ok: true, message: 'Session closed' });
-  });
+  // stateless JWT - client should discard token to logout
+  return res.json({ ok: true, message: 'Logged out (client should clear token)' });
 });
 
 router.get('/usuario/logged', async (req, res) => {
-  if (!req.session.user) {
+  if (!req.user) {
     return res.json({ ok: false, message: 'Not authenticated' });
   }
   return res.json({ ok: true, message: 'Authenticated' });
 });
 
 router.get('/usuario/admin', async (req, res) => {
-  if (!req.session.user) {
+  if (!req.user) {
     return res.status(401).json({ ok: false, message: 'Not authenticated' });
   }
-  if (!req.session.user.admin) {
+  if (!req.user.admin) {
     return res.json({ ok: false, message: 'Not admin' });
   }
   return res.json({ ok: true, message: 'Authenticated as admin' });

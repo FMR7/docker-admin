@@ -1,25 +1,28 @@
-let sessionData = null;
-let destroyMock = jest.fn((cb) => cb(null)); // default to success
+const jwt = require('jsonwebtoken');
 
-const mockSession = jest.fn(() => (req, res, next) => {
-  req.session = {
-    cookie: {},
-    ...sessionData,
-    destroy: (...args) => destroyMock(...args), // delegate to the mocked function
-  };
+const JWT_SECRET = process.env.JWT_SECRET || 'replace-this-with-secure-secret';
+
+let userData = null;
+
+const mockAuthJwt = jest.fn(() => (req, res, next) => {
+  if (userData) {
+    const token = jwt.sign(userData, JWT_SECRET, { expiresIn: '1h', algorithm: 'HS256' });
+    req.headers.authorization = `Bearer ${token}`;
+    req.user = userData;
+  }
   next();
 });
 
-mockSession.setSession = (data) => {
-  sessionData = data;
+mockAuthJwt.setUser = (data) => {
+  userData = data;
 };
 
-mockSession.clearSession = () => {
-  sessionData = null;
+mockAuthJwt.clearUser = () => {
+  userData = null;
 };
 
-mockSession.setDestroyMock = (fn) => {
-  destroyMock = fn;
+mockAuthJwt.generateToken = (data) => {
+  return jwt.sign(data, JWT_SECRET, { expiresIn: '1h', algorithm: 'HS256' });
 };
 
-module.exports = mockSession;
+module.exports = mockAuthJwt;
