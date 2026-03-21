@@ -25,15 +25,27 @@ const frontendLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
+// Rate limiter for API requests
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => apiPublicPaths.has(req.path), // Skip rate limiting for public paths
+});
+
 
 // JWT + header-based CSRF protection
 const apiPublicPaths = new Set([
   '/usuario/login',
-  '/usuario/register'
+  '/usuario/register',
+  '/usuario/logged'
 ]);
 
+app.use('/api', apiLimiter);
+
 app.use('/api', (req, res, next) => {
-  if (apiPublicPaths.has(req.path) && req.method === 'POST') {
+  if (apiPublicPaths.has(req.path)) {
     return next();
   }
   authJwt(req, res, (err) => {
