@@ -11,7 +11,7 @@ services:
       DB_SCHEMA: public
       DB_USER: dbuser
       DB_PASSWORD: securepassword
-      SESSION_SECRET: changeme-session-secret
+      JWT_SECRET: changeme-jwt-secret
       SSL: "true"
       SSL_KEY: /certs/key.pem
       SSL_CERT: /certs/cert.pem

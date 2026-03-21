@@ -35,7 +35,7 @@ cd docker-admin
 ### ⚙️ 1. Configure Environment Variables
 
 Edit the `docker-compose.yml` file and replace the placeholder values with your actual environment configuration.
-Only `DB` values and `SESSION_SECRET` should be changed:
+Only `DB` values and `JWT_SECRET` should be changed:
 ```yaml
 environment:
   NODE_ENV: production
@@ -45,7 +45,7 @@ environment:
   DB_SCHEMA: public
   DB_USER: dbuser
   DB_PASSWORD: securepassword
-  SESSION_SECRET: changeme-session-secret
+  JWT_SECRET: changeme-jwt-secret
   SSL: "true"
   SSL_KEY: /certs/key.pem
   SSL_CERT: /certs/cert.pem
@@ -94,7 +94,7 @@ DB_SCHEMA: public
 DB_USER: dbuser
 DB_PASSWORD: securepassword
 
-SESSION_SECRET: changeme-session-secret
+JWT_SECRET: changeme-jwt-secret
 SSL: "true"
 SSL_KEY: /certs/key.pem
 SSL_CERT: /certs/cert.pem
