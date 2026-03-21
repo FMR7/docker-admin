@@ -3,6 +3,7 @@ import AlertMessage from '../../components/AlertMessage';
 import Toogle from '../../components/Toogle';
 import { requireLogin } from '../../hooks/useRequireLogin';
 import Spinner from '../../components/Spinner';
+import { apiFetch } from '../../utils/api';
 
 export function Home() {
 	requireLogin();
@@ -21,9 +22,8 @@ export function Home() {
 	};
 
 	const findAll = async () => {
-		const res = await fetch('/api/container', {
-			method: 'GET',
-			headers: { 'Content-Type': 'application/json' }
+		const res = await apiFetch('/api/container', {
+			method: 'GET'
 		}).then(res => res.json()).catch(err => {
 			console.log(err);
 			setErrorMessage('Error fetching containers');
@@ -48,18 +48,16 @@ export function Home() {
 	};
 
 	const turnOn = async (container_key) => {
-		const res = await fetch('/api/container/turn-on/' + container_key, {
-			method: 'GET',
-			headers: { 'Content-Type': 'application/json' }
+		const res = await apiFetch('/api/container/turn-on/' + container_key, {
+			method: 'GET'
 		});
 
 		return await res.json();
 	};
 
 	const turnOff = async (container_key) => {
-		const res = await fetch('/api/container/turn-off/' + container_key, {
-			method: 'GET',
-			headers: { 'Content-Type': 'application/json' }
+		const res = await apiFetch('/api/container/turn-off/' + container_key, {
+			method: 'GET'
 		});
 
 		return await res.json();

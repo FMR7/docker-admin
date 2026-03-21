@@ -1,11 +1,11 @@
 import { useEffect } from 'preact/hooks';
+import { apiFetch } from '../utils/api';
 
 export function requireLogin() {
   useEffect(() => {
     const checkLogin = async () => {
-      const res = await fetch('/api/usuario/logged', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+      const res = await apiFetch('/api/usuario/logged', {
+        method: 'GET'
       });
 
       const result = await res.json();

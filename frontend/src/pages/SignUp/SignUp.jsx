@@ -10,14 +10,13 @@ const SignUp = () => {
   useEffect(() => {
     // Simula la lógica de redirección si ya estás logueado
     const checkLogin = async () => {
-      const res = await fetch('/api/usuario/logged', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+      const res = await apiFetch('/api/usuario/logged', {
+        method: 'GET'
       });
 
       const result = await res.json();
       if (result.ok) {
-        window.location.href = '/';
+        window.location.href = '/home';
       }
     };
 

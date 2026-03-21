@@ -1,37 +1,17 @@
-const CSRF_ENDPOINT = '/api/csrf-token';
-let csrfTokenCache = null;
-
-export const getCsrfToken = async () => {
-  if (csrfTokenCache) {
-    return csrfTokenCache;
-  }
-
-  const res = await fetch(CSRF_ENDPOINT, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-  });
-
-  if (!res.ok) {
-    throw new Error('Unable to retrieve CSRF token');
-  }
-
-  const body = await res.json();
-  if (!body.ok || !body.csrfToken) {
-    throw new Error('Invalid CSRF token response');
-  }
-
-  csrfTokenCache = body.csrfToken;
-  return csrfTokenCache;
-};
-
 export const apiFetch = async (url, options = {}) => {
   const method = (options.method || 'GET').toUpperCase();
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
 
-  if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) {
-    const token = await getCsrfToken();
-    headers['X-CSRF-Token'] = token;
+  const token = localStorage.getItem('token');
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  if (!['GET', 'HEAD', 'OPTIONS'].includes(method) && !url.includes('/usuario/login') && !url.includes('/usuario/register')) {
+    const csrfToken = localStorage.getItem('csrfToken');
+    if (csrfToken) {
+      headers['x-csrf-token'] = csrfToken;
+    }
   }
 
   const res = await fetch(url, {

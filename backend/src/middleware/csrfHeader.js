@@ -1,6 +1,10 @@
 const unsafeMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
 function csrfHeader(req, res, next) {
+  if (req.path === '/usuario/login' || req.path === '/usuario/register') {
+    return next();
+  }
+
   if (!unsafeMethods.includes(req.method)) {
     return next();
   }

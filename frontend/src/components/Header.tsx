@@ -2,6 +2,7 @@ import { Moon, Sun } from 'lucide-preact';
 import { useLocation } from 'preact-iso';
 import { useEffect, useState } from 'preact/hooks';
 import ThemeSelector from './ThemeSelector';
+import { apiFetch } from '../utils/api';
 
 
 export function Header() {
@@ -18,18 +19,16 @@ export function Header() {
 	};
 
 	const checkLogin = async () => {
-		const res = await fetch('/api/usuario/logged', {
-			method: 'GET',
-			headers: { 'Content-Type': 'application/json' }
+		const res = await apiFetch('/api/usuario/logged', {
+			method: 'GET'
 		});
 		const result = await res.json();
 		setLoggedIn(result.ok);
 	};
 
 	const checkAdmin = async () => {
-		const res = await fetch('/api/usuario/admin', {
-			method: 'GET',
-			headers: { 'Content-Type': 'application/json' }
+		const res = await apiFetch('/api/usuario/admin', {
+			method: 'GET'
 		});
 		const result = await res.json();
 		setAdmin(result.ok);
@@ -43,11 +42,11 @@ export function Header() {
 
 	// Logout
 	const logout = async () => {
-		await fetch('/api/usuario/logout', {
+		await apiFetch('/api/usuario/logout', {
 			method: 'GET',
-			headers: { 'Content-Type': 'application/json' },
 		});
-
+		localStorage.removeItem('token');
+		localStorage.removeItem('csrfToken');
 		window.location.href = '/';
 	};
 

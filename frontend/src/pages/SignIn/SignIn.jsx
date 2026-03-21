@@ -34,6 +34,8 @@ const SignIn = () => {
       const result = await res.json();
 
       if (result.ok) {
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('csrfToken', result.csrfToken);
         window.location.href = '/home';
       } else {
         setError(result.message);
