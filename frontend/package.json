@@ -8,13 +8,13 @@
 		"start": "vite preview"
 	},
 	"dependencies": {
+		"@preact/preset-vite": "^2.10.2",
 		"@tailwindcss/vite": "^4.1.18",
 		"lucide-preact": "^0.562.0",
 		"preact": "^10.28.2",
 		"preact-iso": "^2.11.1"
 	},
 	"devDependencies": {
-		"@preact/preset-vite": "^2.10.2",
 		"autoprefixer": "^10.4.23",
 		"daisyui": "^5.5.14",
 		"eslint": "^9.39.2",
