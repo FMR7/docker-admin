@@ -1,5 +1,5 @@
 const express = require('express');
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const logService = require('../log/logService');
