@@ -9,13 +9,9 @@ function authJwt(req, res, next) {
   }
 
   const token = authHeader.split(' ')[1];
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
-    req.user = decoded;
-    next();
-  } catch (err) {
-    return res.status(401).json({ ok: false, message: 'Invalid token' });
-  }
+  const decoded = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
+  req.user = decoded;
+  next();
 }
 
 module.exports = authJwt;
