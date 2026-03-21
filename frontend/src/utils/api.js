@@ -1,6 +1,7 @@
 export const apiFetch = async (url, options = {}) => {
   const method = (options.method || 'GET').toUpperCase();
-  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  options.headers = options.headers || {};
+  const headers = { 'Content-Type': 'application/json', ...options.headers };
 
   const token = localStorage.getItem('token');
   if (token) {
