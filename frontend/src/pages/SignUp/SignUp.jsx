@@ -16,7 +16,7 @@ const SignUp = () => {
 
       const result = await res.json();
       if (result.ok) {
-        window.location.href = '/home';
+        globalThis.location.href = '/home';
       }
     };
 
