@@ -27,13 +27,14 @@ const frontendLimiter = rateLimit({
 
 
 // JWT + header-based CSRF protection
-const apiPublicPaths = [
+const apiPublicPaths = new Set([
   '/usuario/login',
-  '/usuario/register'
-];
+  '/usuario/register',
+  '/usuario/logged'
+]);
 
 app.use('/api', (req, res, next) => {
-  if (apiPublicPaths.includes(req.path) && req.method === 'POST') {
+  if (apiPublicPaths.has(req.path)) {
     return next();
   }
   authJwt(req, res, (err) => {
