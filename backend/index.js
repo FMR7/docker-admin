@@ -1,9 +1,9 @@
-const path = require('path');
+const path = require('node:path');
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config({ path: path.join(__dirname, '.env') });
 }
-const https = require('https');
-const fs = require('fs');
+const https = require('node:https');
+const fs = require('node:fs');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const authJwt = require('./src/middleware/authJwt');

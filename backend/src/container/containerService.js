@@ -1,5 +1,5 @@
 const Docker = require('dockerode');
-const os = require('os');
+const os = require('node:os');
 const socketPath = os.platform() === 'win32' 
   ? '//./pipe/docker_engine' 
   : '/var/run/docker.sock';
