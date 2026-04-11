@@ -15,7 +15,7 @@ export function Header() {
 		const newTheme = theme === 'dark' ? 'light' : 'dark';
 		setTheme(newTheme);
 		localStorage.setItem('theme', newTheme);
-		document.documentElement.setAttribute('data-theme', newTheme);
+		document.documentElement.dataset.theme = newTheme;
 	};
 
 	const checkLogin = async () => {
@@ -35,7 +35,7 @@ export function Header() {
 	};
 
 	useEffect(() => {
-		document.documentElement.setAttribute('data-theme', theme);
+		document.documentElement.dataset.theme = theme;
 		checkLogin();
 		checkAdmin();
 	}, [theme]);

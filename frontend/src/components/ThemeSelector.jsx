@@ -15,7 +15,7 @@ const ThemeSelector = () => {
   });
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', selectedTheme);
+    document.documentElement.dataset.theme = selectedTheme;
     localStorage.setItem('theme', selectedTheme);
   }, [selectedTheme]);
 
