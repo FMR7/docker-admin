@@ -38,8 +38,7 @@ const apiLimiter = rateLimit({
 // JWT + header-based CSRF protection
 const apiPublicPaths = new Set([
   '/usuario/login',
-  '/usuario/register',
-  '/usuario/logged'
+  '/usuario/register'
 ]);
 
 app.use('/api', apiLimiter);
