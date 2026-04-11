@@ -10,7 +10,7 @@ export function requireLogin() {
 
       const result = await res.json();
       if (!result.ok) {
-        window.location.href = '/';
+        globalThis.location.href = '/';
       }
     };
 

@@ -13,7 +13,7 @@ const SignIn = () => {
 
       const result = await res.json();
       if (result.ok) {
-        window.location.href = '/home';
+        globalThis.location.href = '/home';
       }
     };
 
@@ -36,7 +36,7 @@ const SignIn = () => {
       if (result.ok) {
         localStorage.setItem('token', result.token);
         localStorage.setItem('csrfToken', result.csrfToken);
-        window.location.href = '/home';
+        globalThis.location.href = '/home';
       } else {
         setError(result.message);
       }
