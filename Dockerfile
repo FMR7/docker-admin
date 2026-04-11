@@ -1,8 +1,8 @@
 # BUILD FRONTEND
-FROM node:23-alpine AS build-frontend
+FROM node:slim AS build-frontend
 
 WORKDIR /app/frontend
-RUN apk update && apk upgrade --no-cache busybox
+RUN apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY frontend/package*.json ./
 RUN npm install --production --ignore-scripts
 COPY frontend/ .
@@ -10,22 +10,21 @@ RUN npm run build
 
 
 # BUILD BACKEND
-FROM node:23-alpine AS build-backend
+FROM node:slim AS build-backend
 
 WORKDIR /app/backend
-RUN apk update && apk upgrade --no-cache busybox
+RUN apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY package*.json ./
 RUN npm install --production --ignore-scripts
 COPY backend/ .
 
 # FINAL IMAGE
-FROM node:23-alpine
+FROM node:slim
 
-RUN addgroup -S nonroot \
-    && adduser -S nonroot -G nonroot
+RUN groupadd -r nonroot && useradd -r -g nonroot nonroot
 
 WORKDIR /app
-RUN apk update && apk upgrade --no-cache busybox
+RUN apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY --from=build-backend /app/backend ./backend
 COPY --from=build-frontend /app/frontend/dist ./frontend/dist
 
