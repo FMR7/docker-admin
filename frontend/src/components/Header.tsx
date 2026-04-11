@@ -47,7 +47,7 @@ export function Header() {
 		});
 		localStorage.removeItem('token');
 		localStorage.removeItem('csrfToken');
-		window.location.href = '/';
+		globalThis.location.href = '/';
 	};
 
 
