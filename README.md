@@ -14,14 +14,6 @@ Built with **Node.js**, **Express**, **PostgreSQL**, **TailwindCSS** and **daisy
 - Password encryption with `bcrypt`
 - Connection to PostgreSQL database
 
-## 🐘 Database
-Run the script [initDB.sql](https://raw.githubusercontent.com/FMR7/docker-admin/refs/heads/master/backend/src/config/initDB.sql) using your favorite DBMS.
-
-Or in the terminal, type:
-```bash
-psql -U dbuser -h db.example.local -p 5432 -d mydatabase -f ./src/config/initDB.sql
-```
-
 ## 💻 Installation
 Clone the repository:
 ```bash
@@ -29,13 +21,73 @@ git clone https://github.com/FMR7/docker-admin.git
 cd docker-admin
 ```
 
-<details open>
-<summary><h2>📦 Docker Deployment</h2></summary>
+
+## 📦 Docker Deployment
+
+Choose one of the two deployment options below:
+
+<details close>
+<summary><h2>🟢 Option 1: App + Database in One Deployment (Recommended)</h2></summary>
+
+This option deploys both the application and PostgreSQL database together.
 
 ### ⚙️ 1. Configure Environment Variables
 
 Edit the `docker-compose.yml` file and replace the placeholder values with your actual environment configuration.
-Only `DB` values and `JWT_SECRET` should be changed:
+Only `JWT_SECRET` and `SSL_KEY`/`SSL_CERT` paths should be changed:
+```yaml
+environment:
+  NODE_ENV: production
+  DB_HOST: db
+  DB_PORT: 5432
+  DB_NAME: mydatabase
+  DB_SCHEMA: public
+  DB_USER: dbuser
+  DB_PASSWORD: securepassword
+  JWT_SECRET: changeme-jwt-secret
+  SSL: "true"
+  SSL_KEY: /certs/key.pem
+  SSL_CERT: /certs/cert.pem
+  PORT: 3000
+  ENABLE_DB_LOGS: "true"
+```
+
+### 🐳 2. Build and start the containers
+
+```bash
+docker compose up --build
+```
+
+The database will be initialized automatically from [initDB.sql](backend/src/config/initDB.sql) on first run.
+
+### 🔐 3. Certificates
+
+Ensure you have valid SSL certificates in the `certs` directory. 
+
+You can generate self-signed certificates for testing purposes:
+```bash
+mkdir certs
+openssl req -nodes -new -x509 -keyout certs/key.pem -out certs/cert.pem
+```
+
+### 🧪 4. Test the Deployment
+
+Visit: [https://localhost](https://localhost)
+
+### 🟢 5. Ready
+The default admin account (`admin` / `admin`) is pre-created and active. Log in immediately to create additional users and manage their roles. For security, it's recommended to create a new admin user and deactivate the default account afterward.
+
+</details>
+
+<details close>
+<summary><h2>🔵 Option 2: App Only (External Database)</h2></summary>
+
+Use this if you have an external PostgreSQL database already running.
+
+### ⚙️ 1. Configure Environment Variables
+
+Edit the `docker-compose_noDB.yml` file and replace the placeholder values with your actual environment configuration.
+Update all `DB_*` values to point to your external database:
 ```yaml
 environment:
   NODE_ENV: production
@@ -53,13 +105,20 @@ environment:
   ENABLE_DB_LOGS: "true"
 ```
 
-### 🐳 2. Build and start the container
+### 🐘 2. Initialize Your Database
 
+Run the initialization script on your external PostgreSQL database:
 ```bash
-docker compose up --build
+psql -U dbuser -h db.example.local -p 5432 -d mydatabase -f ./backend/src/config/initDB.sql
 ```
 
-### 🔐 3. Certificates
+### 🐳 3. Build and start the container
+
+```bash
+docker compose -f docker-compose_noDB.yml up --build
+```
+
+### 🔐 4. Certificates
 
 Ensure you have valid SSL certificates in the `certs` directory. 
 
@@ -69,13 +128,13 @@ mkdir certs
 openssl req -nodes -new -x509 -keyout certs/key.pem -out certs/cert.pem
 ```
 
-
-### 🧪 4. Test the Container
+### 🧪 5. Test the Container
 
 Visit: [https://localhost](https://localhost)
 
-### 🟢 5. Ready
-Now sign up, activate your user and give yourself the admin role using your favorite DBMS.
+### 🟢 6. Ready
+The default admin account (`admin` / `admin`) is pre-created and active. Log in immediately to create additional users and manage their roles. For security, it's recommended to create a new admin user and deactivate the default account afterward.
+
 </details>
 
 

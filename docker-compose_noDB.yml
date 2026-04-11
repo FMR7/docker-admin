@@ -1,16 +1,12 @@
-version: "3.9"
-
 services:
   backend:
     image: fmr0/docker-admin
     user: root
-    depends_on:
-      - db
     ports:
       - "443:3000"
     environment:
       NODE_ENV: production
-      DB_HOST: db
+      DB_HOST: db.example.local
       DB_PORT: 5432
       DB_NAME: mydatabase
       DB_SCHEMA: public
@@ -26,17 +22,3 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./certs:/certs:ro
     restart: unless-stopped
-
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: mydatabase
-      POSTGRES_USER: dbuser
-      POSTGRES_PASSWORD: securepassword
-    volumes:
-      - db-data:/var/lib/postgresql/data
-      - ./backend/src/config/initDB.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    restart: unless-stopped
-
-volumes:
-  db-data:
