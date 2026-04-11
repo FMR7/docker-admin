@@ -4,7 +4,7 @@ const repo = require('./containerConfigRepository');
 async function findAll() {
   try {
     const result = await repo.findAll();
-    return !result ? [] : result;
+    return result || [];
   } catch (err) {
     console.error('Error finding container configs:', err);
     throw err;
@@ -14,7 +14,7 @@ async function findAll() {
 async function findById(id) {
   try {
     const result = await repo.findById(id);
-    return !result ? undefined : result;
+    return result || undefined;
   } catch (err) {
     console.error('Error finding container config:', err);
     throw err;
@@ -37,7 +37,7 @@ async function insert(container_key, name, description, active, admin_only) {
     }
 
     const result = await repo.insert(container_key, name, description, active, admin_only);
-    return !result ? undefined : result;
+    return result || undefined;
   } catch (err) {
     console.error('Error inserting container config:', err);
     throw err;
@@ -60,7 +60,7 @@ async function update(container_key, name, description, active, admin_only) {
     }
 
     const result = await repo.update(container_key, name, description, active, admin_only);
-    return !result ? undefined : result;
+    return result || undefined;
   } catch (err) {
     console.error('Error updating container config:', err);
     throw err;
@@ -72,7 +72,7 @@ async function deleteContainer(container_key) {
     if (!container_key) throw new Error('Container key is required');
 
     const result = await repo.deleteContainer(container_key);
-    return !result ? undefined : result;
+    return result || undefined;
   } catch (err) {
     console.error('Error deleting container config:', err);
     throw err;

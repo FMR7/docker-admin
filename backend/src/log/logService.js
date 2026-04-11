@@ -18,7 +18,7 @@ const ACTIONS = Object.freeze({
 async function findAll() {
   try {
     const result = await logRepo.findAll();
-    return !result ? [] : result;
+    return result || [];
   } catch (err) {
     console.error('Error finding user:', err);
     throw err;
@@ -36,7 +36,7 @@ async function insert(username, action, detail) {
     if (!Object.values(ACTIONS).includes(action)) throw new Error('Invalid action');
 
     const result = await logRepo.insert(username, action, detail);
-    return !result ? undefined : result;
+    return result || undefined;
   }
   catch (err) {
     console.error('Error inserting log:', err);
