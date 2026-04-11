@@ -1,5 +1,5 @@
 # BUILD FRONTEND
-FROM node:22-alpine AS build-frontend
+FROM node:23-alpine AS build-frontend
 
 WORKDIR /app/frontend
 RUN apk update && apk upgrade --no-cache busybox
@@ -10,7 +10,7 @@ RUN npm run build
 
 
 # BUILD BACKEND
-FROM node:22-alpine AS build-backend
+FROM node:23-alpine AS build-backend
 
 WORKDIR /app/backend
 RUN apk update && apk upgrade --no-cache busybox
@@ -19,7 +19,7 @@ RUN npm install --production --ignore-scripts
 COPY backend/ .
 
 # FINAL IMAGE
-FROM node:22-alpine
+FROM node:23-alpine
 
 RUN addgroup -S nonroot \
     && adduser -S nonroot -G nonroot
