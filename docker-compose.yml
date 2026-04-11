@@ -1,6 +1,7 @@
 services:
   backend:
     image: fmr0/docker-admin
+    user: root
     ports:
       - "443:3000"
     environment:
